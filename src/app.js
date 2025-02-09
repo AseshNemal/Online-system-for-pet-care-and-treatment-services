@@ -7,6 +7,9 @@ import { connect } from "./utils/database.connection";
 import { googleAuth } from "./configs/google.auth";
 import passport from "passport";
 import { routesInit } from "./API/routes";
+import MongoStore from "connect-mongo";
+import config from "./configs";
+
 
 const app = express();
 const PORT = process.env.PORT || "8090";
@@ -18,6 +21,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: config. DB_CONNECTION_STRING }),
     cookie: { 
         secure: false,
         expires: new Date(Date.now() + 10000),

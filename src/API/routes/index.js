@@ -3,7 +3,10 @@ const routesInit =  (app, passport) => {
     
     app.get('/auth/google/callback', 
         passport.authenticate('google',
-             { failureRedirect: '/login' }),
+             { 
+                failureRedirect: '/login',
+                successRedirect: '/user',
+              }),
         
         (req,res) => {
             console.log("user authenticated");
