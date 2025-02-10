@@ -45,3 +45,4 @@ app.listen(PORT, () => {
     routesInit(app, passport);
     googleAuth(passport);
 });
+export default app;
