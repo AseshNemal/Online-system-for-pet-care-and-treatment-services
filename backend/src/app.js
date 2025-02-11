@@ -6,9 +6,11 @@ import logger from "./utils/logger";
 import { connect } from "./utils/database.connection";
 import { googleAuth } from "./configs/google.auth";
 import passport from "passport";
-import { routesInit } from "./API/routes";
 import MongoStore from "connect-mongo";
 import config from "./configs";
+import { routesInit } from "./API/routes";
+import router from "./API/routes/pets.js";
+
 
 
 const app = express();
@@ -32,6 +34,12 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+const petRouter = require("./API/routes/pets.js")
+app.use("/pet" , petRouter)
+
+
+
 
 
 app.get("/", (req, res, next) => {
