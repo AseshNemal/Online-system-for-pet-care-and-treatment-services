@@ -7,7 +7,7 @@ const petSchema = new Schema({
     petName : { type : String, required : true},
     userId : {type : Number, required : true},
     species : { type : String, required : true},
-    age : {type : Number, required : true},
+    bDate : {type : String, required : true},
     gender : { type : String, required : true},
     weight : { type : String, required : false},
     color : { type : String, required : false},
