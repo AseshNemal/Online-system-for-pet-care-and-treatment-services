@@ -1,14 +1,22 @@
+import React from 'react';
 import './App.css';
 import Header from './components/Header';
 import AddPet from './components/addPet';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";  // Correct import from react-router-dom
-
+import AllPets from './components/allPets';
+import SessionCheck from './components/sessionChack';
+import UserPets from './components/userPetList';
+import Login from './components/login';
 function App() {
   return (
-    <Router>  {/* BrowserRouter wraps your app */}
+    <Router>  
       <Header />
-      <Routes>  {/* Routes is used for routing */}
-        <Route path="/pet/add" element={<AddPet />} />  {/* Route definition */}
+      <SessionCheck/>
+      <Routes>
+        <Route path="/pet/add" element={<AddPet />} />
+        <Route path="/pet" element={<AllPets />}/>
+        <Route path="/pet" element={<UserPets />}/>
+        <Route path="/login" element={<Login />}/>
       </Routes>
     </Router>
   );

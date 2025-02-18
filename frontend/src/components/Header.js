@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 
 function Header(){
     return(
@@ -6,35 +8,36 @@ function Header(){
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="#">PetWellness</a>
+    <a class="navbar-brand" href="/">PetWellness</a>
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
       <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
         <li class="nav-item active">
-          <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          <Link to="/" class="nav-link">Home <span class="sr-only"></span></Link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Shopping</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">Appointment</a>
+          <a class="nav-link" href="/">Shopping</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="#">New Pet</a>
+          <a class="nav-link" href="/">Appointment</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="#">Medical History</a>
+          <a class="nav-link" href="/">New Pet</a>
+        </li>
+
+        <li className="nav-item">
+  <Link to="/pet" className="nav-link">Medical History</Link>
+</li>
+
+
+        <li class="nav-item">
+          <a class="nav-link" href="/">About us</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="#">About us</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="#">Chat with</a>
+          <a class="nav-link" href="/">Chat with</a>
         </li>
         
         

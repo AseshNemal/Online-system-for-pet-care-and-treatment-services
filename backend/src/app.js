@@ -26,8 +26,8 @@ app.use(session({
     store: MongoStore.create({ mongoUrl: config. DB_CONNECTION_STRING }),
     cookie: { 
         secure: false,
-        expires: new Date(Date.now() + 10000),
-        maxAge: 10000
+        expires: new Date(Date.now() + 1000000),
+        maxAge: 1000000
     }
 }
 ));
@@ -46,6 +46,21 @@ app.get("/", (req, res, next) => {
     res.send("<a href='http://localhost:8090/auth/google'>Login with Google</a> <h1>hi</h1>");
     next();
 });
+
+app.get("/get-session", (req, res) => {
+    if (req.session.user) {
+      res.send({ sessionID: req.sessionID, user: req.session.user });
+    } else {
+      res.send({ message: "No session found" });
+    }
+  });
+  
+  app.get("/logout", (req, res) => {
+    req.session.destroy();
+    res.send({ message: "Logged out" });
+  });
+  
+
 
 app.listen(PORT, () => {
     logger.info(`Server is up and running on PORT ${PORT}`);

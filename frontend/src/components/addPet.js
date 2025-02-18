@@ -1,47 +1,45 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 function AddPet() {
-    
-    const [petName, setPetName] =useState("");
-    const [userId, setUserId] =useState("");
-    const [species,setSpecies] =useState("");
-    const [bDate,setBDate] =useState("");
-    const [gender,setGender] =useState("");
-    const [weight,setWeight] =useState("");
-    const [color,setColor] =useState("");
-    const [breed,setBreed] =useState("");
+  const [petName, setPetName] = useState("");
+  const [userId, setUserId] = useState("");
+  const [species, setSpecies] = useState("");
+  const [bDate, setBDate] = useState("");
+  const [gender, setGender] = useState("");
+  const [weight, setWeight] = useState("");
+  const [color, setColor] = useState("");
+  const [breed, setBreed] = useState("");
 
-    function sendData(e){
-        e.preventDefault();
+  function sendData(e) {
+    e.preventDefault();
 
-        const newPet={
-            petName,
-            userId,
-            species,
-            bDate,
-            gender,
-            weight,
-            color,
-            breed
-        }
+    const newPet = {
+      petName,
+      userId,
+      species,
+      bDate,
+      gender,
+      weight,
+      color,
+      breed,
+    };
 
-        alert("Pet ");
-
-        axios
+    axios
       .post("http://localhost:8090/pet/add", newPet)
       .then(() => {
-        alert("Pet Added");
+        alert("Pet Added Successfully");
       })
       .catch((err) => {
-        alert(err);
-      });}
-
+        console.error(err);
+        alert("Failed to add pet. Please check the data and try again.");
+      });
+  }
 
   return (
     <>
       <style>
-        {`
+      {`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
         * {
@@ -164,87 +162,114 @@ function AddPet() {
         }
         `}
       </style>
-    <form onSubmit={sendData}>
-      <div className="wrapper rounded bg-white">
-        <div className="h3">Add Pet</div>
+      <form onSubmit={sendData}>
+        <div className="wrapper rounded bg-white">
+          <div className="h3">Add Pet</div>
 
-        <div className="form">
-          <div className="row">
-            <div className="col-md-6 mt-md-0 mt-3">
-              <label>Pet Name</label>
-              <input type="text" className="form-control" required onChange={(e)=>{
-                setPetName(e.target.value);
-              }}/>
-            </div>
-            <div className="col-md-6 mt-md-0 mt-3">
-              <label>User ID</label>
-              <input type="text" className="form-control" required  onChange={(e)=>{
-                setUserId(e.target.value);
-              }}/>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-md-6 mt-md-0 mt-3">
-                <label>Species</label>
-                <input type="text" className="form-control" required  onChange={(e)=>{
-                    setSpecies(e.target.value);
-                }}/>
-                </div>
-
-
-            <div className="col-md-6 mt-md-0 mt-3">
-              <label>Birthday</label>
-              <input type="date" className="form-control" required onChange={(e)=>{
-                setBDate(e.target.value);
-              }}/>
-            </div>
-            <div className="col-md-6 mt-md-0 mt-3">
-              <label>Gender</label>
-              <div className="d-flex align-items-center mt-2">
-                <label className="option">
-                  <input type="radio" name="gender" value="Male" /> Male
-                  <span className="checkmark" onChange={(e)=>{
-                setGender(e.target.value);
-              }}></span>
-                </label>
-                <label className="option ms-4">
-                  <input type="radio" name="gender" value="Female" onChange={(e)=>{
-                setGender(e.target.value);
-              }}/> Female
-                  <span className="checkmark"></span>
-                </label>
+          <div className="form">
+            <div className="row">
+              <div className="col-md-6 mt-md-0 mt-3">
+                <label>Pet Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  required
+                  onChange={(e) => setPetName(e.target.value)}
+                />
+              </div>
+              <div className="col-md-6 mt-md-0 mt-3">
+                <label>User ID</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  required
+                  onChange={(e) => setUserId(e.target.value)}
+                />
               </div>
             </div>
-          </div>
 
-          <div className="row">
-            <div className="col-md-6 mt-md-0 mt-3">
-              <label>Weight</label>
-              <input type="text" className="form-control" required onChange={(e)=>{
-                setWeight(e.target.value);
-              }}/>
+            <div className="row">
+              <div className="col-md-6 mt-md-0 mt-3">
+                <label>Species</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  required
+                  onChange={(e) => setSpecies(e.target.value)}
+                />
+              </div>
+              <div className="col-md-6 mt-md-0 mt-3">
+                <label>Birthday</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  required
+                  onChange={(e) => setBDate(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="col-md-6 mt-md-0 mt-3">
-              <label>Color</label>
-              <input type="tel" className="form-control" required onChange={(e)=>{
-                setColor(e.target.value);
-              }}/>
-            </div>
-          </div>
 
-          <div className="col-md-6 mt-md-0 mt-3">
+            <div className="row">
+              <div className="col-md-6 mt-md-0 mt-3">
+                <label>Gender</label>
+                <div className="d-flex align-items-center mt-2">
+                  <label className="option">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="Male"
+                      onChange={(e) => setGender(e.target.value)}
+                    />{" "}
+                    Male
+                    <span className="checkmark"></span>
+                  </label>
+                  <label className="option ms-4">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="Female"
+                      onChange={(e) => setGender(e.target.value)}
+                    />{" "}
+                    Female
+                    <span className="checkmark"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 mt-md-0 mt-3">
+                <label>Weight</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  required
+                  onChange={(e) => setWeight(e.target.value)}
+                />
+              </div>
+              <div className="col-md-6 mt-md-0 mt-3">
+                <label>Color</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  required
+                  onChange={(e) => setColor(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-6 mt-md-0 mt-3">
               <label>Breed</label>
-              <input type="tel" className="form-control" onChange={(e)=>{
-                setBreed(e.target.value);
-              }}/>
+              <input
+                type="text"
+                className="form-control"
+                onChange={(e) => setBreed(e.target.value)}
+              />
             </div>
 
-          
-
-          <button className="btn btn-primary mt-3">Submit</button>
+            <button className="btn btn-primary mt-3">Submit</button>
+          </div>
         </div>
-      </div>
       </form>
     </>
   );
