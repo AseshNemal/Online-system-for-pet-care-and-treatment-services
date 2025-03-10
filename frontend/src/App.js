@@ -7,6 +7,7 @@ import AllPets from './components/allPets';
 import SessionCheck from './components/sessionChack';
 import UserPets from './components/userPetList';
 import Login from './components/login';
+import Profile from './components/profile';
 function App() {
   return (
     <Router>  
@@ -17,6 +18,8 @@ function App() {
         <Route path="/pet" element={<AllPets />}/>
         <Route path="/pet" element={<UserPets />}/>
         <Route path="/login" element={<Login />}/>
+        <Route path="/profile" element={<Profile />}/>
+
       </Routes>
     </Router>
   );

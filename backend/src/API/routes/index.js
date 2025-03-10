@@ -16,7 +16,9 @@ const routesInit =  (app, passport) => {
     );
 
     app.get("/user", authenticate, (req,res)=> {
-        res.send("<h3>user is authenticated<h3>");
+        res.send("<h3>User is authenticated</h3><a href='http://localhost:3000/profile'>Profile</a>");
+
+
     });
 };
 export { routesInit };
