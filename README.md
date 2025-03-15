@@ -31,4 +31,13 @@ Step 11:<br/>
     &nbsp;&nbsp; After downloading all the dependencies try to run the frontend using `npm start` command<br/>
     &nbsp;&nbsp; If successfully installed frontend will open on the web browser<br/><br/>
 ### BACKEND START = `yarn dev`
-### FRONTEND START = `npm start`
+### FRONTEND START = `npm start`<br/><br/>
+
+## IMPORTANT
+
+### After setup whole project, before change anything, create a branch.
+### Please don't make changes in the main branch.
+### Before start coding commit all the changes to the created branch (including node_modules).
+
+
+
