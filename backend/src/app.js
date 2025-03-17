@@ -13,6 +13,7 @@ import router from "./API/routes/pets.js";
 
 
 
+
 const app = express();
 const PORT = process.env.PORT || "8090";
 
@@ -38,8 +39,13 @@ app.use(passport.session());
 const petRouter = require("./API/routes/pets.js")
 app.use("/pet" , petRouter)
 
+//Route for product
+const productRouter = require("./API/routes/productRoutes.js")
+app.use("/product", productRouter)
 
-
+//Router for category
+const categoryRouter = require("./API/routes/categoryRoute.js")
+app.use("/category", categoryRouter)
 
 
 app.get("/", (req, res, next) => {
@@ -68,4 +74,5 @@ app.listen(PORT, () => {
     routesInit(app, passport);
     googleAuth(passport);
 });
+
 export default app;

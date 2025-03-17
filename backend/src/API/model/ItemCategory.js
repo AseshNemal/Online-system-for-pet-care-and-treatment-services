@@ -7,4 +7,4 @@ const itemCategorySchema = new mongoose.Schema({
 
 const ItemCategory = mongoose.model('ItemCategory', itemCategorySchema);
 
-export default ItemCategory;
+ module.exports = ItemCategory;

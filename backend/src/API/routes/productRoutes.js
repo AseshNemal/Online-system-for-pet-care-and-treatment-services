@@ -8,8 +8,9 @@ router.post('/add', async (req, res) => {
     try {
         const { name, description, price, category, stock, images } = req.body;
         const categoryExists = await ItemCategory.findById(category);
-        if (!categoryExists) 
+        if (!categoryExists) {
             return res.status(404).json({ message: 'Invalid category ID' });
+        }
 
         const newProduct = new Product({ name, description, price, category, stock, images });
         await newProduct.save();
