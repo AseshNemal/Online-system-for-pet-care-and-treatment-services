@@ -9,6 +9,7 @@ import UserPets from './components/userPetList';
 import Login from './components/login';
 import Profile from './components/profile';
 import Chatbot from './components/chatbot';
+import DeviceData from './components/deviceData';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Header />
       <SessionCheck/>
       <Chatbot/>
+      <DeviceData/>
       <Routes>
         <Route path="/pet/add" element={<AddPet />} />
         <Route path="/pet" element={<AllPets />}/>

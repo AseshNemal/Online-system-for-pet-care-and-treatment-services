@@ -13,6 +13,8 @@ import router from "./API/routes/pets.js";
 
 
 
+
+
 const app = express();
 const PORT = process.env.PORT || "8090";
 
@@ -38,6 +40,8 @@ app.use(passport.session());
 const petRouter = require("./API/routes/pets.js")
 app.use("/pet" , petRouter)
 
+const dataRoutes = require("./API/routes/dataRoutes.js")
+app.use('/api', dataRoutes);
 
 
 
