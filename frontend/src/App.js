@@ -9,6 +9,8 @@ import UserPets from './components/userPetList';
 import Login from './components/login';
 import Profile from './components/profile';
 import Chatbot from './components/chatbot';
+import StorePage from './components/storePage';
+import AdminDashboard from './components/adminProducts';
 
 function App() {
   return (
@@ -22,7 +24,8 @@ function App() {
         <Route path="/pet" element={<UserPets />}/>
         <Route path="/login" element={<Login />}/>
         <Route path="/profile" element={<Profile />}/>
-
+        <Route path="/product/all" element={<StorePage />}/>
+        <Route path="/adminProducts" element={<AdminDashboard />}/>
       </Routes>
     </Router>
   );

@@ -1,18 +1,29 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer')
 const Product = require('../model/Product');
-const ItemCategory = require('../model/ItemCategory');
+
+// Multer storage setup
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "uploads/"); // Save images to 'uploads' folder
+    },
+    filename: (req, file, cb) => {
+        const filename = Date.now() + "-" + file.originalname;
+        console.log("Saving file:", filename); // Log the filename
+        cb(null, filename);
+    }
+});
+
+const upload = multer({ storage });
 
 //Add New Product
-router.post('/add', async (req, res) => {
+router.post('/add', upload.single("image"), async (req, res) => {
     try {
-        const { name, description, price, category, stock, images } = req.body;
-        const categoryExists = await ItemCategory.findById(category);
-        if (!categoryExists) {
-            return res.status(404).json({ message: 'Invalid category ID' });
-        }
+        const { name, description, price, category, stock } = req.body;
+        const image = req.file ? req.file.path : "";
 
-        const newProduct = new Product({ name, description, price, category, stock, images });
+        const newProduct = new Product({ name, description, price, category, stock, image });
         await newProduct.save();
         res.status(200).json(newProduct);
     } catch (error) {
@@ -21,15 +32,36 @@ router.post('/add', async (req, res) => {
 });
 
 //Update a product
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', upload.single("image"), async (req, res) => {
     try {
-        const { id } = req.params;
-        const updatedProduct = await Product.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedProduct) 
-            return res.status(404).json({ message: 'Product not found' });
-        res.json(updatedProduct);
+        const { name, description, price, category, stock } = req.body;
+        const image = req.file ? req.file.path : undefined;
+
+        const updateData = {
+            name,
+            description,
+            price,
+            category,
+            stock,
+        };
+
+        if (image) {
+            updateData.image = image;
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+
+        res.json({ message: "Product updated successfully", updatedProduct });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Error updating product", error });
     }
 });
 
@@ -49,8 +81,13 @@ router.delete('/delete/:id', async (req, res) => {
 // Get all products
 router.get('/all', async (req, res) => {
     try {
-        const products = await Product.find().populate('category');
-        res.json(products);
+        const products = await Product.find();
+        
+        const updatedProducts = products.map(prod => ({
+            ...prod._doc,
+            image: prod.image ? prod.image.replace(/\\/g, "/") : ""  // Convert \ to /
+        }));
+        res.json(updatedProducts);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -68,5 +105,30 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+router.get("/by-category", async (req, res) => {
+    try {
+        const { categoryId } = req.query;
+
+        if (!categoryId) {
+            return res.status(400).json({ message: "Category ID is required" });
+        }
+
+        // Validate if category exists
+        const categoryExists = await ItemCategory.findById(categoryId);
+        if (!categoryExists) {
+            return res.status(404).json({ message: "Category not found" });
+        }
+
+        // Fetch products by category ID
+        const products = await Product.find({ category: categoryId });
+
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
 
 module.exports = router;

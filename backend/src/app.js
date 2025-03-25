@@ -10,6 +10,7 @@ import MongoStore from "connect-mongo";
 import config from "./configs";
 import { routesInit } from "./API/routes";
 import router from "./API/routes/pets.js";
+import path from "path";
 
 
 
@@ -43,9 +44,9 @@ app.use("/pet" , petRouter)
 const productRouter = require("./API/routes/productRoutes.js")
 app.use("/product", productRouter)
 
-//Router for category
-const categoryRouter = require("./API/routes/categoryRoute.js")
-app.use("/category", categoryRouter)
+// Serve static files from the uploads folder
+app.use("/uploads", express.static("uploads"));
+
 
 
 app.get("/", (req, res, next) => {
