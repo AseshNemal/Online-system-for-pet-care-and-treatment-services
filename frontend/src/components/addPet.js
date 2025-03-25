@@ -1,7 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+
 function AddPet() {
+  var UID = "0000"
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetch("http://localhost:8090/get-session", { credentials: "include" })
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data.user || null);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+  if (user) {
+    console.log({ id: user._id });
+    UID = user._id;
+  } else {
+    console.log("User not available");
+  }
+
   const [petName, setPetName] = useState("");
   const [userId, setUserId] = useState("");
   const [species, setSpecies] = useState("");
@@ -11,6 +34,9 @@ function AddPet() {
   const [color, setColor] = useState("");
   const [breed, setBreed] = useState("");
 
+
+
+  
   function sendData(e) {
     e.preventDefault();
 
@@ -34,6 +60,9 @@ function AddPet() {
         console.error(err);
         alert("Failed to add pet. Please check the data and try again.");
       });
+  }
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -183,7 +212,8 @@ function AddPet() {
                   type="text"
                   className="form-control"
                   required
-                  onChange={(e) => setUserId(e.target.value)}
+                  onChange={(e) => setUserId(UID)}
+                  
                 />
               </div>
             </div>

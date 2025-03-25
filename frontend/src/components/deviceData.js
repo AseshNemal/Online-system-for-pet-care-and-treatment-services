@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { realtimeDB } from "../firebase"; // Ensure your Firebase config is correctly set up
 import { ref, onValue } from "firebase/database";
 import { Line } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"; // Import Google Map components
 import {
   Chart as ChartJS,
@@ -12,10 +13,20 @@ import {
   Title,
   Tooltip,
   Legend,
+  ArcElement
 } from "chart.js";
 
 // Register Chart.js components
-ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const DeviceData = () => {
   const [deviceData, setDeviceData] = useState([]);
@@ -38,7 +49,7 @@ const DeviceData = () => {
           Longitude: rawData[key].Longitude ? Number(rawData[key].Longitude) : null,
           Altitude: rawData[key].Altitude || "N/A",
           Temperature: rawData[key].Temperature ? Number(rawData[key].Temperature) : 0,
-          HeartRate: rawData[key].hartrate ? Number(rawData[key].hartrate) : 0,
+          HeartRate: rawData[key].hartrate ? Number(rawData[key].hartrate/5) : 0,
           Steps: rawData[key].step ? Number(rawData[key].step) : 0,
           Timestamp: rawData[key].timestamp || "No timestamp",
         }));
@@ -140,14 +151,28 @@ const DeviceData = () => {
     },
   };
 
+  const stepchartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        
+        ticks: {
+          stepSize: 5,
+          callback: (value) => `${value}`,
+        },
+      },
+    },
+  };
+
   // Chart options for Heart Rate
   const heartRateChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
       y: {
-        min: 300,
-        max: 700,
+        min: 0,
+        max: 300,
         ticks: {
           stepSize: 25,
           callback: (value) => `${value} BPM`,
@@ -166,20 +191,76 @@ const DeviceData = () => {
     )) / 1000 / 60 <= 4
   ) : false;
 
+  const handleRefresh = () => {
+    window.location.reload(); // Reloads the entire page
+  };
+
+  const getStepsForToday = () => {
+    const today = new Date();
+    const todayDate = today.toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+
+    // Filter the records for today
+    const todayData = deviceData.filter((data) => {
+      const recordDate = new Date(data.Timestamp.split(", ")[0].split("/").reverse().join("-"));
+      return recordDate.toISOString().split("T")[0] === todayDate;
+    });
+
+    // Sum up the steps for today
+    const totalSteps = todayData.reduce((acc, data) => acc + data.Steps, 0);
+
+    return totalSteps;
+  };
+
+  // Prepare data for Pie chart
+  const totalStepsToday = getStepsForToday();
+
+  
+  let remainingSteps
+  if(totalStepsToday < 5000){
+    remainingSteps = 5000 - totalStepsToday
+  }
+  else{
+    remainingSteps = 0
+  }
+  console.log("step"+remainingSteps)
+  
+  const pieChartData = {
+    labels: ["Steps Today", "Remaining Steps"],
+    datasets: [
+      {
+        data: [totalStepsToday, remainingSteps],
+        backgroundColor: ["#36A2EB", "#FF6384"], // Colors for the segments
+        hoverBackgroundColor: ["#36A2EB", "#FF6384"], // Hover colors
+      },
+    ],
+  };
+  
+
+  // Pie chart options
+  const pieChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
+  };
+
   return (
     <div style={{ padding: "20px" }}>
-      <h2>
-        {deviceData.length > 0 && latestData ? (
-          isDeviceConnected ? "Device Connected" : "Device Not Connected"
-        ) : (
-          "No Data Available"
-        )}
-      </h2>
+      <div style={{ padding: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
+        <h6 style={{ color: deviceData.length > 0 && latestData ? (isDeviceConnected ? "blue" : "red") : "gray" }}>
+          {deviceData.length > 0 && latestData ? (isDeviceConnected ? "Device Connected" : "Device Not Connected") : "No Data Available"}
+        </h6>
+        <button onClick={handleRefresh} style={{ padding: "10px 20px", borderRadius: "20px", fontSize: "16px", border: "none", backgroundColor: "#007bff", color: "white", cursor: "pointer" }}>
+          🔄 Reconnect
+        </button>
+      </div>
 
       {/* Charts */}
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
         <div style={{ width: "45%", height: "300px" }}>
-          <h3>Temperature Chart</h3>
+          <h3>Body Temperature Chart</h3>
           <Line data={temperatureChartData} options={chartOptions} />
         </div>
 
@@ -187,30 +268,45 @@ const DeviceData = () => {
           <h3>Heart Rate Chart</h3>
           <Line data={heartRateChartData} options={heartRateChartOptions} />
         </div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
 
-        <div style={{ width: "45%", height: "300px" }}>
+        <div style={{ width: "45%", height: "300px", marginTop: "50px" }}>
           <h3>Step Chart</h3>
-          <Line data={stepRateChartData} options={chartOptions} />
+          <Line data={stepRateChartData} options={stepchartOptions} />
         </div>
+      
+
+      <div style={{ padding: "20px" , width: "45%", height: "300px" , marginTop: "50px" }}>
+        <h3>Step Count Today</h3>
+        <Pie data={pieChartData} options={pieChartOptions} />
+      </div>
+      <h6>Steps for Today: {getStepsForToday()}</h6>
       </div>
 
+      <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" ,marginTop: "50px", marginBottom:"100px"}}>
+        <div>
+            <h3>Air quality</h3>
+        </div>
+        <div>
+            <h3>Enviroment temperature and humidity</h3>
+        </div>
+      
+      </div>
+      
+      
+
       {/* Google Map */}
-      <div style={{ height: "400px", width: "100%", marginTop: "20px" }}>
+      <div style={{ height: "400px", width: "100%", marginTop: "50px" }}>
         <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-          <GoogleMap
-            center={location}
-            zoom={15}
-            mapContainerStyle={{ width: "100%", height: "100%" }}
-          >
+          <GoogleMap center={location} zoom={15} mapContainerStyle={{ width: "100%", height: "100%" }}>
             <Marker position={location} />
           </GoogleMap>
         </LoadScript>
       </div>
-      <br />
-
-      <h2>Device Data</h2>
 
       {/* Table */}
+      <h2>Device Data</h2>
       <table border="1" style={{ width: "100%", textAlign: "center", marginBottom: "20px" }}>
         <thead>
           <tr>

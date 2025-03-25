@@ -21,7 +21,7 @@ export default function AllPets() {
     return(
         <div className="container">
 
-        <a class="nav-link" href="http://localhost:8090/">Chat with</a>
+        
             
         <h1>All Pets</h1>
 

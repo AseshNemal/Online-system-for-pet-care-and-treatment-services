@@ -17,13 +17,16 @@ function App() {
       <Header />
       <SessionCheck/>
       <Chatbot/>
-      <DeviceData/>
+      <UserPets/>
+      
       <Routes>
         <Route path="/pet/add" element={<AddPet />} />
-        <Route path="/pet" element={<AllPets />}/>
+        <Route path="/pet" element={<DeviceData/>}/>
+        <Route path="/pet/view" element={<AllPets />}/>
         <Route path="/pet" element={<UserPets />}/>
         <Route path="/login" element={<Login />}/>
         <Route path="/profile" element={<Profile />}/>
+
 
       </Routes>
     </Router>
