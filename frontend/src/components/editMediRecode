@@ -1,0 +1,82 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+
+const EditMedicalRecord = () => {
+  const { petId, recordId } = useParams();
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    visitType: '',
+    visitDate: '',
+    veterinarian: '',
+    diagnosis: '',
+    treatment: '',
+    notes: ''
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchRecord = async () => {
+      try {
+        const res = await axios.get(`/api/medical-records/${recordId}`);
+        setFormData({
+          ...res.data,
+          visitDate: res.data.visitDate.split('T')[0]
+        });
+      } catch (err) {
+        setError('Failed to load record');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRecord();
+  }, [recordId]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`/api/medical-records/${recordId}`, formData);
+      navigate(`/pets/${petId}/medical-records`);
+    } catch (err) {
+      setError('Failed to update record');
+    }
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="error">{error}</div>;
+
+  return (
+    <div className="container">
+      <h1>Edit Medical Record</h1>
+      <form onSubmit={handleSubmit}>
+        {/* Form fields same as before */}
+        <div className="form-group">
+          <label>Visit Type</label>
+          <select 
+            name="visitType" 
+            value={formData.visitType}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Type</option>
+            <option value="Checkup">Checkup</option>
+            <option value="Vaccination">Vaccination</option>
+            <option value="Surgery">Surgery</option>
+          </select>
+        </div>
+        
+        {/* Add other form fields here */}
+        
+        <button type="submit">Save Changes</button>
+      </form>
+    </div>
+  );
+};
+
+export default EditMedicalRecord;

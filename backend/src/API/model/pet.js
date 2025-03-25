@@ -11,7 +11,8 @@ const petSchema = new Schema({
     gender : { type : String, required : true},
     weight : { type : String, required : false},
     color : { type : String, required : false},
-    breed : { type : String, required : false}
+    breed : { type : String, required : false},
+    deviceId : { type : Number, required : false},
 
 
 })

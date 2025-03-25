@@ -79,7 +79,7 @@ function AddPet() {
         }
 
         body {
-            background: linear-gradient(45deg, #ce1e53, #8f00c7);
+            
             min-height: 100vh;
         }
 
@@ -212,6 +212,7 @@ function AddPet() {
                   type="text"
                   className="form-control"
                   required
+                  disabled
                   onChange={(e) => setUserId(UID)}
                   
                 />

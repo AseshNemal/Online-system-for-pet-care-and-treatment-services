@@ -63,6 +63,13 @@ function UserPets() {
           </li>
         ))}
       </ul>
+
+
+          <button onClick={() => navigate(`/pet/add`)}
+        className="add-record-button">
+        + Add New Pet
+        </button>
+        
     </div>
   );
 }
@@ -77,6 +84,19 @@ const styles = `
     padding: 1.5rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
+
+  .add-record-button {
+          background-color: #3498db;
+          color: white;
+          border: none;
+          padding: 0.7rem 1.2rem;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 0.9rem;
+          transition: background-color 0.2s;
+          margin: 2rem auto;
+          
+        }
 
   .user-pets-title {
     color: #2c3e50;

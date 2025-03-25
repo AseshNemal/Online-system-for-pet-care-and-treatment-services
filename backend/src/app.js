@@ -77,8 +77,13 @@ app.use("/pet" , petRouter)
 const dataRoutes = require("./API/routes/dataRoutes.js")
 app.use('/api', dataRoutes);
 
+const medicalRecords = require("./API/routes/medicalRecords.js")
+app.use('/medical', medicalRecords);
 
-// ✅ Start Server
+
+
+
+
 app.listen(PORT, () => {
     logger.info(`Server is running on PORT ${PORT}`);
     connect();

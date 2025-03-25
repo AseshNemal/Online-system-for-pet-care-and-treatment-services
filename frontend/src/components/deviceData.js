@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { realtimeDB } from "../firebase"; // Ensure your Firebase config is correctly set up
+import { realtimeDB } from "../firebase";
 import { ref, onValue } from "firebase/database";
-import { Line } from "react-chartjs-2";
-import { Pie } from "react-chartjs-2";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api"; // Import Google Map components
+import { Line, Pie } from "react-chartjs-2";
+import { useParams } from 'react-router-dom';
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,7 +16,6 @@ import {
   ArcElement
 } from "chart.js";
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,17 +29,21 @@ ChartJS.register(
 
 const DeviceData = () => {
   const [deviceData, setDeviceData] = useState([]);
-  const [latestData, setLatestData] = useState(null); // State to store the latest data
-  const [location, setLocation] = useState({ lat: 6.9875, lng: 80.2239 }); // Default location
-  const [count, setCount] = useState(0); // Use state for count
+  const [latestData, setLatestData] = useState(null);
+  const [location, setLocation] = useState({ lat: 6.9875, lng: 80.2239 });
+  const [count, setCount] = useState(0);
+  const [selectedDeviceId, setSelectedDeviceId] = useState('');
+  const [selectedDeviceData, setSelectedDeviceData] = useState(null);
+  const { deviceId } = useParams();
+  console.log("Dddd",deviceId)
 
   useEffect(() => {
-    const dataRef = ref(realtimeDB, "petcare"); // Ensure this path is correct
+    const dataRef = ref(realtimeDB, "petcare");
 
     onValue(dataRef, (snapshot) => {
       if (snapshot.exists()) {
         const rawData = snapshot.val();
-        console.log("Firebase Data:", rawData); // Debugging
+        console.log("Firebase Data:", rawData);
 
         const formattedData = Object.keys(rawData).map((key) => ({
           id: key,
@@ -54,9 +57,7 @@ const DeviceData = () => {
           Timestamp: rawData[key].timestamp || "No timestamp",
         }));
 
-        // Sort the data by Timestamp to ensure the most recent data is first
         const sortedData = formattedData.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
-
         setDeviceData(sortedData);
 
         const recordCount = sortedData.length;
@@ -66,7 +67,12 @@ const DeviceData = () => {
         setLatestData(latestRecord);
         setCount(recordCount);
 
-        // Fetch and update the location based on the most recent data
+        setSelectedDeviceId(deviceId)
+        if (selectedDeviceId) {
+          const device = sortedData.find(item => item.DeviceID === selectedDeviceId);
+          setSelectedDeviceData(device || null);
+        }
+
         if (latestRecord && latestRecord.Latitude && latestRecord.Longitude) {
           fetchLocation(latestRecord.Latitude, latestRecord.Longitude);
         }
@@ -75,9 +81,8 @@ const DeviceData = () => {
         setDeviceData([]);
       }
     });
-  }, []); // Empty dependency array, runs once on mount
+  },[selectedDeviceId]);
 
-  // Function to update map location
   const fetchLocation = (latitude, longitude) => {
     console.log(`Attempting to update location with Latitude: ${latitude}, Longitude: ${longitude}`);
     if (!isNaN(latitude) && !isNaN(longitude)) {
@@ -88,10 +93,15 @@ const DeviceData = () => {
     }
   };
 
-  // Get the last 20 records for the chart
-  const last20Records = deviceData.slice(count - 21, count - 1);
 
-  // Prepare chart data for Temperature
+  const last20Records = selectedDeviceId 
+    ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-20)
+    : deviceData.slice(count - 21, count - 1);
+
+  const last30Records = selectedDeviceId
+    ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-30)
+    : deviceData.slice(count - 30, count - 1);
+
   const temperatureChartData = {
     labels: last20Records.map((data) => data.Timestamp),
     datasets: [
@@ -106,7 +116,6 @@ const DeviceData = () => {
     ],
   };
 
-  // Prepare chart data for Heart Rate
   const heartRateChartData = {
     labels: last20Records.map((data) => data.Timestamp),
     datasets: [
@@ -135,7 +144,6 @@ const DeviceData = () => {
     ],
   };
 
-  // Chart options for Temperature
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -156,7 +164,6 @@ const DeviceData = () => {
     maintainAspectRatio: false,
     scales: {
       y: {
-        
         ticks: {
           stepSize: 5,
           callback: (value) => `${value}`,
@@ -165,7 +172,6 @@ const DeviceData = () => {
     },
   };
 
-  // Chart options for Heart Rate
   const heartRateChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -181,9 +187,6 @@ const DeviceData = () => {
     },
   };
 
-  // Get the last 30 records for the table
-  const last30Records = deviceData.slice(count - 30, count - 1);
-
   const isDeviceConnected = latestData ? (
     (new Date() - new Date(
       latestData.Timestamp.split(", ")[0].split("/").reverse().join("-") + "T" +
@@ -192,51 +195,33 @@ const DeviceData = () => {
   ) : false;
 
   const handleRefresh = () => {
-    window.location.reload(); // Reloads the entire page
+    window.location.reload();
   };
 
   const getStepsForToday = () => {
     const today = new Date();
-    const todayDate = today.toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-
-    // Filter the records for today
+    const todayDate = today.toISOString().split("T")[0];
     const todayData = deviceData.filter((data) => {
       const recordDate = new Date(data.Timestamp.split(", ")[0].split("/").reverse().join("-"));
       return recordDate.toISOString().split("T")[0] === todayDate;
     });
-
-    // Sum up the steps for today
-    const totalSteps = todayData.reduce((acc, data) => acc + data.Steps, 0);
-
-    return totalSteps;
+    return todayData.reduce((acc, data) => acc + data.Steps, 0);
   };
 
-  // Prepare data for Pie chart
   const totalStepsToday = getStepsForToday();
-
-  
-  let remainingSteps
-  if(totalStepsToday < 5000){
-    remainingSteps = 5000 - totalStepsToday
-  }
-  else{
-    remainingSteps = 0
-  }
-  console.log("step"+remainingSteps)
+  const remainingSteps = totalStepsToday < 5000 ? 5000 - totalStepsToday : 0;
   
   const pieChartData = {
     labels: ["Steps Today", "Remaining Steps"],
     datasets: [
       {
         data: [totalStepsToday, remainingSteps],
-        backgroundColor: ["#36A2EB", "#FF6384"], // Colors for the segments
-        hoverBackgroundColor: ["#36A2EB", "#FF6384"], // Hover colors
+        backgroundColor: ["#36A2EB", "#FF6384"],
+        hoverBackgroundColor: ["#36A2EB", "#FF6384"],
       },
     ],
   };
-  
 
-  // Pie chart options
   const pieChartOptions = {
     responsive: true,
     plugins: {
@@ -257,6 +242,35 @@ const DeviceData = () => {
         </button>
       </div>
 
+      {selectedDeviceData && (
+        <div style={{ 
+          background: '#f8f9fa', 
+          padding: '20px', 
+          borderRadius: '8px',
+          margin: '20px 0',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          <h3>Device Details: {selectedDeviceData.DeviceID}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px' }}>
+            <div>
+              <p><strong>Last Location:</strong></p>
+              <p>Latitude: {selectedDeviceData.Latitude || 'N/A'}</p>
+              <p>Longitude: {selectedDeviceData.Longitude || 'N/A'}</p>
+            </div>
+            <div>
+              <p><strong>Health Metrics:</strong></p>
+              <p>Temperature: {selectedDeviceData.Temperature}°C</p>
+              <p>Heart Rate: {selectedDeviceData.HeartRate} BPM</p>
+              <p>Steps: {selectedDeviceData.Steps}</p>
+            </div>
+            <div>
+              <p><strong>Last Update:</strong></p>
+              <p>{selectedDeviceData.Timestamp}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Charts */}
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
         <div style={{ width: "45%", height: "300px" }}>
@@ -269,32 +283,28 @@ const DeviceData = () => {
           <Line data={heartRateChartData} options={heartRateChartOptions} />
         </div>
       </div>
+      
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
-
         <div style={{ width: "45%", height: "300px", marginTop: "50px" }}>
           <h3>Step Chart</h3>
           <Line data={stepRateChartData} options={stepchartOptions} />
         </div>
-      
 
-      <div style={{ padding: "20px" , width: "45%", height: "300px" , marginTop: "50px" }}>
-        <h3>Step Count Today</h3>
-        <Pie data={pieChartData} options={pieChartOptions} />
-      </div>
-      <h6>Steps for Today: {getStepsForToday()}</h6>
+        <div style={{ padding: "20px", width: "45%", height: "300px", marginTop: "50px" }}>
+          <h3>Step Count Today</h3>
+          <Pie data={pieChartData} options={pieChartOptions} />
+          <h6>Steps for Today: {getStepsForToday()}</h6>
+        </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" ,marginTop: "50px", marginBottom:"100px"}}>
+      <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "50px", marginBottom:"100px"}}>
         <div>
-            <h3>Air quality</h3>
+          <h3>Air quality</h3>
         </div>
         <div>
-            <h3>Enviroment temperature and humidity</h3>
+          <h3>Environment temperature and humidity</h3>
         </div>
-      
       </div>
-      
-      
 
       {/* Google Map */}
       <div style={{ height: "400px", width: "100%", marginTop: "50px" }}>
@@ -306,7 +316,7 @@ const DeviceData = () => {
       </div>
 
       {/* Table */}
-      <h2>Device Data</h2>
+      <h2>Device Data {selectedDeviceId ? `(Filtered: ${selectedDeviceId})` : ''}</h2>
       <table border="1" style={{ width: "100%", textAlign: "center", marginBottom: "20px" }}>
         <thead>
           <tr>
