@@ -10,6 +10,8 @@ import MongoStore from "connect-mongo";
 import config from "./configs";
 import { routesInit } from "./API/routes";
 import router from "./API/routes/pets.js";
+//import employeeRoutes from "./API/routes/employeeRoutes.js"
+import Employee from "./API/model/Employee.js";
 
 
 
@@ -37,6 +39,9 @@ app.use(passport.session());
 
 const petRouter = require("./API/routes/pets.js")
 app.use("/pet" , petRouter)
+
+const employeeRoutes = require("./API/routes/employeeRoutes.js")
+app.use("/employee",employeeRoutes)
 
 
 
