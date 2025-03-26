@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-
 function AddPet() {
-  var UID = "0000"
   const [user, setUser] = useState(null);
+  const [UID, setUID] = useState("0000"); // State to track User ID
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     fetch("http://localhost:8090/get-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
-        setUser(data.user || null);
+        if (data.user) {
+          setUser(data.user);
+          setUID(data.user._id);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -18,15 +21,8 @@ function AddPet() {
         setLoading(false);
       });
   }, []);
-  if (user) {
-    console.log({ id: user._id });
-    UID = user._id;
-  } else {
-    console.log("User not available");
-  }
 
   const [petName, setPetName] = useState("");
-  const [userId, setUserId] = useState("");
   const [species, setSpecies] = useState("");
   const [bDate, setBDate] = useState("");
   const [gender, setGender] = useState("");
@@ -34,15 +30,12 @@ function AddPet() {
   const [color, setColor] = useState("");
   const [breed, setBreed] = useState("");
 
-
-
-  
   function sendData(e) {
     e.preventDefault();
 
     const newPet = {
       petName,
-      userId,
+      userId: UID, // Ensure user ID is properly included
       species,
       bDate,
       gender,
@@ -55,12 +48,14 @@ function AddPet() {
       .post("http://localhost:8090/pet/add", newPet)
       .then(() => {
         alert("Pet Added Successfully");
+        
       })
       .catch((err) => {
         console.error(err);
         alert("Failed to add pet. Please check the data and try again.");
       });
   }
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -68,127 +63,71 @@ function AddPet() {
   return (
     <>
       <style>
-      {`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+          * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+              font-family: 'Poppins', sans-serif;
+          }
 
-        body {
-            
-            min-height: 100vh;
-        }
+          body {
+              min-height: 100vh;
+          }
 
-        body::-webkit-scrollbar {
-            display: none;
-        }
+          body::-webkit-scrollbar {
+              display: none;
+          }
 
-        .wrapper {
-            max-width: 800px;
-            margin: 80px auto;
-            padding: 30px 45px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 5px 25px 35px rgba(53, 53, 53, 0.42);
-        }
+          .wrapper {
+              max-width: 800px;
+              margin: 80px auto;
+              padding: 30px 45px;
+              background: #fff;
+              border-radius: 8px;
+              box-shadow: 5px 25px 35px rgba(53, 53, 53, 0.42);
+          }
 
-        .wrapper label {
-            display: block;
-            padding-bottom: 0.2rem;
-        }
+          .wrapper label {
+              display: block;
+              padding-bottom: 0.2rem;
+          }
 
-        .wrapper .form .row {
-            padding: 0.6rem 0;
-        }
+          .wrapper .form .row {
+              padding: 0.6rem 0;
+          }
 
-        .wrapper .form .row .form-control {
-            box-shadow: none;
-        }
+          .wrapper .form .row .form-control {
+              box-shadow: none;
+          }
 
-        .wrapper .form .option {
-            position: relative;
-            padding-left: 20px;
-            cursor: pointer;
-        }
+          #sub {
+              display: block;
+              width: 100%;
+              border: 1px solid #ddd;
+              padding: 10px;
+              border-radius: 5px;
+              color: #333;
+          }
 
-        .wrapper .form .option input {
-            opacity: 0;
-        }
+          #sub:focus {
+              outline: none;
+          }
 
-        .wrapper .form .checkmark {
-            position: absolute;
-            top: 1px;
-            left: 0;
-            height: 20px;
-            width: 20px;
-            border: 1px solid #bbb;
-            border-radius: 50%;
-        }
+          @media(max-width: 768.5px) {
+              .wrapper {
+                  margin: 30px;
+              }
+          }
 
-        .wrapper .form .option input:checked~.checkmark:after {
-            display: block;
-        }
-
-        .wrapper .form .option:hover .checkmark {
-            background: #f3f3f3;
-        }
-
-        .wrapper .form .option .checkmark:after {
-            content: "";
-            width: 10px;
-            height: 10px;
-            display: block;
-            background: linear-gradient(45deg, #ce1e53, #8f00c7);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            border-radius: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            transition: 300ms ease-in-out 0s;
-        }
-
-        .wrapper .form .option input[type="radio"]:checked~.checkmark {
-            background: #fff;
-            transition: 300ms ease-in-out 0s;
-        }
-
-        .wrapper .form .option input[type="radio"]:checked~.checkmark:after {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        #sub {
-            display: block;
-            width: 100%;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-            color: #333;
-        }
-
-        #sub:focus {
-            outline: none;
-        }
-
-        @media(max-width: 768.5px) {
-            .wrapper {
-                margin: 30px;
-            }
-
-            .wrapper .form .row {
-                padding: 0;
-            }
-        }
-
-        @media(max-width: 400px) {
-            .wrapper {
-                padding: 25px;
-                margin: 20px;
-            }
-        }
+          @media(max-width: 400px) {
+              .wrapper {
+                  padding: 25px;
+                  margin: 20px;
+              }
+          }
         `}
       </style>
       <form onSubmit={sendData}>
@@ -213,8 +152,7 @@ function AddPet() {
                   className="form-control"
                   required
                   disabled
-                  onChange={(e) => setUserId(UID)}
-                  
+                  value={UID} // Use UID since it's updated
                 />
               </div>
             </div>
@@ -230,14 +168,16 @@ function AddPet() {
                 />
               </div>
               <div className="col-md-6 mt-md-0 mt-3">
-                <label>Birthday</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  required
-                  onChange={(e) => setBDate(e.target.value)}
-                />
-              </div>
+  <label>Birthday</label>
+  <input
+    type="date"
+    className="form-control"
+    required
+    max={new Date().toISOString().split("T")[0]} // Sets max to today’s date
+    onChange={(e) => setBDate(e.target.value)}
+  />
+</div>
+
             </div>
 
             <div className="row">

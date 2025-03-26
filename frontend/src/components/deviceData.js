@@ -30,7 +30,7 @@ ChartJS.register(
 const DeviceData = () => {
   const [deviceData, setDeviceData] = useState([]);
   const [latestData, setLatestData] = useState(null);
-  const [location, setLocation] = useState({ lat: 6.9875, lng: 80.2239 });
+  const [location, setLocation] = useState({ lat: 6.914716310240717, lng: 79.9728071125578 });
   const [count, setCount] = useState(0);
   const [selectedDeviceId, setSelectedDeviceId] = useState('');
   const [selectedDeviceData, setSelectedDeviceData] = useState(null);
@@ -233,10 +233,16 @@ const DeviceData = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <div style={{ padding: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
-        <h6 style={{ color: deviceData.length > 0 && latestData ? (isDeviceConnected ? "blue" : "red") : "gray" }}>
-          {deviceData.length > 0 && latestData ? (isDeviceConnected ? "Device Connected" : "Device Not Connected") : "No Data Available"}
-        </h6>
+  <div style={{ padding: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
+    <h6 style={{ 
+      color: deviceData.length > 0 && latestData ? 
+        (isDeviceConnected ? "#4CAF50" : "#F44336") : 
+        "#9E9E9E"
+    }}>
+      {deviceData.length > 0 && latestData ? 
+        (isDeviceConnected ? "Device Connected" : "Device Not Connected") : 
+        "No Data Available"}
+    </h6>
         <button onClick={handleRefresh} style={{ padding: "10px 20px", borderRadius: "20px", fontSize: "16px", border: "none", backgroundColor: "#007bff", color: "white", cursor: "pointer" }}>
           🔄 Reconnect
         </button>
@@ -283,7 +289,7 @@ const DeviceData = () => {
           <Line data={heartRateChartData} options={heartRateChartOptions} />
         </div>
       </div>
-      
+      <br/><br/>
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
         <div style={{ width: "45%", height: "300px", marginTop: "50px" }}>
           <h3>Step Chart</h3>
@@ -300,6 +306,8 @@ const DeviceData = () => {
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "50px", marginBottom:"100px"}}>
         <div>
           <h3>Air quality</h3>
+          <br/><br/>
+          
         </div>
         <div>
           <h3>Environment temperature and humidity</h3>
