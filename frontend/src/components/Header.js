@@ -16,11 +16,11 @@ function Header(){
           <Link to="/" class="nav-link">Home <span class="sr-only"></span></Link>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/product/all">Shopping</a>
+          <a class="nav-link" href="/">Shopping</a>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link" href="/adminProducts">Appointment</a>
+          <a class="nav-link" href="/">Appointment</a>
         </li>
 
         <li class="nav-item">
