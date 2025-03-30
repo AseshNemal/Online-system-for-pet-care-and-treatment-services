@@ -12,6 +12,8 @@ const AdminDashboard = () => {
     price: "",
     category: "",
     stock: "",
+    restockLevel: "",
+    restockAmount: "",
     image: null,
   })
   const [editingProductId, setEditingProductId] = useState(null)
@@ -107,6 +109,8 @@ const AdminDashboard = () => {
               <th>Category</th>
               <th>Price</th>
               <th>Stock</th>
+              <th>Restock Level</th>
+              <th>Restock Amount</th>
               <th>Image</th>
               <th>Actions</th>
             </tr>
@@ -120,6 +124,8 @@ const AdminDashboard = () => {
                   <td>{prod.category}</td>
                   <td>Rs. {prod.price}.00</td>
                   <td>{prod.stock}</td>
+                  <td>{prod.restockLevel}</td>
+                  <td>{prod.restockAmount}</td>
                   <td>
                     <div className="product-image-container">
                       <img src={`http://localhost:8090/${prod.image}`} alt={prod.name} className="product-image" />
@@ -221,6 +227,36 @@ const AdminDashboard = () => {
                   required
                 />
               </div>
+
+              <div className="form-group">
+                <label htmlFor="restockLevel">Restock Level</label>
+                <input
+                  id="restockLevel"
+                  type="number"
+                  name="restockLevel"
+                  placeholder="Restock Level"
+                  min="1"
+                  max={product.stock}
+                  value={product.restockLevel}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="restockAmount">Restock Amount</label>
+                <input
+                  id="restockAmount"
+                  type="number"
+                  name="restockAmount"
+                  placeholder="Restock Amount"
+                  min={product.restockLevel}
+                  value={product.restockAmount}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
 
               <div className="form-group">
                 <label htmlFor="image">Product Image</label>
