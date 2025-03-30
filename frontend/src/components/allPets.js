@@ -21,7 +21,7 @@ export default function AllPets() {
     return(
         <div className="container">
 
-        <a class="nav-link" href="http://localhost:8090/">Chat with</a>
+        
             
         <h1>All Pets</h1>
 
@@ -31,8 +31,13 @@ export default function AllPets() {
             <tr>
             <th scope="col">Id</th>
             <th scope="col">Name</th>
-            <th scope="col">Age</th>
+            <th scope="col">User ID</th>
+            <th scope="col">Species</th>
             <th scope="col">Gender</th>
+            <th scope="col">Birthday</th>
+            <th scope="col">Weight</th>
+            <th scope="col">Color</th>
+            <th scope="col">Breed</th>
             </tr>
             </thead>
             <tbody>

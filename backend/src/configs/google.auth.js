@@ -1,55 +1,54 @@
-import GoogleStrategy from "passport-google-oauth20"
-import config from "."
-import User from "../API/model/user.model";
+import GoogleStrategy from "passport-google-oauth20";
+import config from "../configs/index.js";
+import User from "../API/model/user.model.js";
 
-const googleAuth =(passport) => {
-    GoogleStrategy.Strategy;
+const googleAuth = (passport) => {
+  passport.use(
+    new GoogleStrategy.Strategy(
+      {
+        clientID: config.GOOGLE_CLIENT_ID,
+        clientSecret: config.GOOGLE_CLIENT_SECRET,
+        callbackURL: config.GOOGLE_REDIRECT_URL,
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        try {
+          const userObj = {
+            googleId: profile.id,
+            displayName: profile.displayName,
+            gmail: profile.emails[0].value,
+            image: profile.photos?.[0]?.value,
+            firstName: profile.name.givenName,
+            lastName: profile.name.familyName,
+          };
 
-    console.log(config);
+          let user = await User.findOne({ googleId: profile.id });
 
-    passport.use(new GoogleStrategy({
-      clientID: config.GOOGLE_CLIENT_ID,
-      clientSecret: config.GOOGLE_CLIENT_SECRET,
-      callbackURL: config.GOOGLE_REDIRECT_URL,
-  },
-  async (accessToken, refreshToken, profile, callback) => { 
-      const userObj = {
-        googleId: profile.id,
-        displayName: profile.displayName,
-        gmail: profile.emails[0].value,
-        image: profile.photos[0].value,
-        firstName: profile.name.givenName,
-        lastName: profile.name.familyName
+          if (!user) {
+            user = await User.create(userObj);
+          }
+
+          return done(null, user);
+        } catch (err) {
+          return done(err, null);
+        }
       }
-      let user =await User.findOne({ googleId: profile.id})
-      if(user){
-        return callback(null, user);
-      }
+    )
+  );
 
-      User.create(userObj)
-      .then((user) => {
-        return callback(null, user);
-      })
-      .catch((err) => {
-        return callback(err.message);
-      })
-}
-
-));
-
-passport.serializeUser(function(user, callback) {
-    callback(null, user.id);
+  // **Serialize User**
+  passport.serializeUser((user, done) => {
+    done(null, user.id); // Store only user ID in session
   });
-  
-  passport.deserializeUser(async (id, callback) => {
+
+  // **Deserialize User**
+  passport.deserializeUser(async (id, done) => {
     try {
       const user = await User.findById(id);
-      callback(null, user);
+      done(null, user);
     } catch (err) {
-      callback(err, null);
+      done(err, null);
     }
- 
-  
   });
-}; 
- export { googleAuth };
+};
+
+export { googleAuth };

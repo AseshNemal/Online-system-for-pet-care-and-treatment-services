@@ -1,3 +1,4 @@
+/* header Nav */
 .App {
   text-align: center;
 }
@@ -42,5 +43,32 @@
 height: 100vh ;
 }
 }
+
+
+.navbar .dropdown-toggle {
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.navbar .dropdown-toggle:focus {
+  box-shadow: none;
+}
+
+.navbar .dropdown-menu {
+  margin-top: 8px;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.navbar .btn-outline-primary {
+  margin-left: 10px;
+}
+
+.d-flex.align-items-center {
+  height: 100%;
+}
+
+/* header Nav end*/
 
 

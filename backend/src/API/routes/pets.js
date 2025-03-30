@@ -13,6 +13,7 @@ router.route("/add").post((req,res)=>{
     const weight = req.body.weight;
     const color = req.body.color;
     const breed = req.body.breed;
+    const deviceId = req.body.deviceId;
 
     const newPet = new Pet({
         petName,
@@ -22,8 +23,12 @@ router.route("/add").post((req,res)=>{
         gender,
         weight,
         color,
-        breed
+        breed,
+        deviceId
     })
+
+    
+
     newPet.save().then(()=>{
         res.json("Pet Added")
     }).catch((err) => {
@@ -44,37 +49,42 @@ router.route("/").get((req, res) => {
 });
 
 
-router.route("/update/:id").put(async(req,res) =>{
-    
-    let petid = req.body.id;
-    
-    const {petName,userID,species,age,gender,weight,color,breed} = req.body;
-    
-    const updatePet ={
-        petName,
-        userID,
-        species,
-        age,
-        gender,
-        weight,
-        color,
-        breed 
-    }
-
-
-    const update = await Pet.findByIdAndUpdate(petid,updatePet).then(()=>{
-        if (!update) {
-            return res.status(404).json({ status: "Pet not found" });
+router.route("/update/:id").put(async (req, res) => {
+    try {
+        const pet = await Pet.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        
+        if (!pet) {
+            return res.status(404).json({ error: "Pet not found" });
         }
-        res.status(200).send({status: "Pet Updated",user: update})
-    }).catch((err) => {
-        console.log(err);
-        res.status(500).send({status: "Error with updatating data"});
-    })
+        
+        res.json({ 
+            status: "Pet Updated",
+            pet // Return the updated pet
+        });
+    } catch (err) {
+        res.status(500).json({ 
+            error: "Error updating pet",
+            details: err.message 
+        });
+    }
+});
 
-    
 
-})
+router.get('/petDetaile/:petId', async (req, res) => {
+    try {
+      const pet = await Pet.findById(req.params.petId);
+      if (!pet) {
+        return res.status(404).json({ message: 'Pet not found' });
+      }
+      res.json({ pet });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
 
 router.route("/delete/:id").delete(async(req,res) =>{
     let petid = req.params.id;
