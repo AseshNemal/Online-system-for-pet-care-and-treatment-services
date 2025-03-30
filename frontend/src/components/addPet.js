@@ -3,7 +3,7 @@ import axios from "axios";
 
 function AddPet() {
   const [user, setUser] = useState(null);
-  const [UID, setUID] = useState("0000"); // State to track User ID
+  const [UID, setUID] = useState("0000");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ function AddPet() {
         setLoading(false);
       });
   }, []);
-
+  console.log(user)
   const [petName, setPetName] = useState("");
   const [species, setSpecies] = useState("");
   const [bDate, setBDate] = useState("");
@@ -35,7 +35,7 @@ function AddPet() {
 
     const newPet = {
       petName,
-      userId: UID, // Ensure user ID is properly included
+      userId: UID, 
       species,
       bDate,
       gender,
@@ -168,15 +168,15 @@ function AddPet() {
                 />
               </div>
               <div className="col-md-6 mt-md-0 mt-3">
-  <label>Birthday</label>
-  <input
-    type="date"
-    className="form-control"
-    required
-    max={new Date().toISOString().split("T")[0]} // Sets max to today’s date
-    onChange={(e) => setBDate(e.target.value)}
-  />
-</div>
+              <label>Birthday</label>
+              <input
+                type="date"
+                className="form-control"
+                required
+                max={new Date().toISOString().split("T")[0]} 
+                onChange={(e) => setBDate(e.target.value)}
+              />
+            </div>
 
             </div>
 

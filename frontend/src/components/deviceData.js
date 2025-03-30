@@ -4,6 +4,7 @@ import { ref, onValue } from "firebase/database";
 import { Line, Pie } from "react-chartjs-2";
 import { useParams } from 'react-router-dom';
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -35,7 +36,6 @@ const DeviceData = () => {
   const [selectedDeviceId, setSelectedDeviceId] = useState('');
   const [selectedDeviceData, setSelectedDeviceData] = useState(null);
   const { deviceId } = useParams();
-  console.log("Dddd",deviceId)
 
   useEffect(() => {
     const dataRef = ref(realtimeDB, "petcare");
@@ -51,6 +51,9 @@ const DeviceData = () => {
           Latitude: rawData[key].Latitude ? Number(rawData[key].Latitude) : null,
           Longitude: rawData[key].Longitude ? Number(rawData[key].Longitude) : null,
           Altitude: rawData[key].Altitude || "N/A",
+          En_Temperature: rawData[key].En_temperature ? Number(rawData[key].En_temperature) : 0,
+          En_Humidity: rawData[key].en_humidity ? Number(rawData[key].en_humidity) : 0,
+          AirQuality: rawData[key].Air_quality ? Number(rawData[key].Air_quality/4) : 0,
           Temperature: rawData[key].Temperature ? Number(rawData[key].Temperature) : 0,
           HeartRate: rawData[key].hartrate ? Number(rawData[key].hartrate/5) : 0,
           Steps: rawData[key].step ? Number(rawData[key].step) : 0,
@@ -93,7 +96,6 @@ const DeviceData = () => {
     }
   };
 
-
   const last20Records = selectedDeviceId 
     ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-20)
     : deviceData.slice(count - 21, count - 1);
@@ -102,6 +104,7 @@ const DeviceData = () => {
     ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-30)
     : deviceData.slice(count - 30, count - 1);
 
+  // Temperature Chart Data
   const temperatureChartData = {
     labels: last20Records.map((data) => data.Timestamp),
     datasets: [
@@ -116,6 +119,7 @@ const DeviceData = () => {
     ],
   };
 
+  // Heart Rate Chart Data
   const heartRateChartData = {
     labels: last20Records.map((data) => data.Timestamp),
     datasets: [
@@ -130,6 +134,7 @@ const DeviceData = () => {
     ],
   };
 
+  // Step Rate Chart Data
   const stepRateChartData = {
     labels: last20Records.map((data) => data.Timestamp),
     datasets: [
@@ -144,6 +149,52 @@ const DeviceData = () => {
     ],
   };
 
+  // Environment Temperature Chart Data
+  const envTemperatureChartData = {
+    labels: last20Records.map((data) => data.Timestamp),
+    datasets: [
+      {
+        label: "Environment Temperature (°C)",
+        data: last20Records.map((data) => data.En_Temperature),
+        fill: false,
+        borderColor: "rgb(153, 102, 255)",
+        backgroundColor: "rgba(153, 102, 255, 0.5)",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  // Environment Humidity Chart Data
+  const envHumidityChartData = {
+    labels: last20Records.map((data) => data.Timestamp),
+    datasets: [
+      {
+        label: "Environment Humidity (%)",
+        data: last20Records.map((data) => data.En_Humidity),
+        fill: false,
+        borderColor: "rgb(54, 162, 235)",
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  // Air Quality Chart Data
+  const airQualityChartData = {
+    labels: last20Records.map((data) => data.Timestamp),
+    datasets: [
+      {
+        label: "Air Quality (PPM)",
+        data: last20Records.map((data) => data.AirQuality),
+        fill: false,
+        borderColor: "rgb(255, 159, 64)",
+        backgroundColor: "rgba(255, 159, 64, 0.5)",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  // Chart Options
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -182,6 +233,50 @@ const DeviceData = () => {
         ticks: {
           stepSize: 25,
           callback: (value) => `${value} BPM`,
+        },
+      },
+    },
+  };
+
+  const envTemperatureChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        min: 0,
+        max: 50,
+        ticks: {
+          stepSize: 5,
+          callback: (value) => `${value}°C`,
+        },
+      },
+    },
+  };
+
+  const envHumidityChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        ticks: {
+          stepSize: 10,
+          callback: (value) => `${value}%`,
+        },
+      },
+    },
+  };
+
+  const airQualityChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+
+        ticks: {
+          stepSize: 50,
+          callback: (value) => `${value} PPM`,
         },
       },
     },
@@ -231,18 +326,132 @@ const DeviceData = () => {
     },
   };
 
+
+  const generateHealthSuggestions = () => {
+    if (!latestData) return [];
+    
+    const suggestions = [];
+    const now = new Date();
+    const lastUpdate = new Date(
+      latestData.Timestamp.split(", ")[0].split("/").reverse().join("-") + "T" +
+      latestData.Timestamp.split(", ")[1]
+    );
+    const hoursSinceUpdate = (now - lastUpdate) / (1000 * 60 * 60);
+
+    // Device connection status
+    if (hoursSinceUpdate > 4) {
+      suggestions.push({
+        type: 'warning',
+        message: 'Device has not sent data in over 4 hours. Check device connectivity and battery.'
+      });
+    }
+
+    // Temperature suggestions
+    if (latestData.Temperature > 39.5) {
+      suggestions.push({
+        type: 'danger',
+        message: 'High body temperature detected. Consider consulting a veterinarian as this could indicate fever or heat stress.'
+      });
+    } else if (latestData.Temperature < 37.5) {
+      suggestions.push({
+        type: 'danger',
+        message: 'Low body temperature detected. This could indicate hypothermia. Keep your pet warm and consult a veterinarian.'
+      });
+    }
+
+    // Heart rate suggestions
+    if (latestData.HeartRate > 180) {
+      suggestions.push({
+        type: 'danger',
+        message: 'Elevated heart rate detected. This could indicate stress, pain, or cardiac issues. Monitor closely.'
+      });
+    } else if (latestData.HeartRate < 60) {
+      suggestions.push({
+        type: 'danger',
+        message: 'Low heart rate detected. This could indicate health issues. Consult a veterinarian if this persists.'
+      });
+    }
+
+    // Activity suggestions
+    if (latestData.Steps < 1000 && totalStepsToday < 3000) {
+      suggestions.push({
+        type: 'warning',
+        message: 'Low activity level detected. Consider increasing exercise and playtime for your pet.'
+      });
+    } else if (latestData.Steps > 5000 || totalStepsToday > 15000) {
+      suggestions.push({
+        type: 'warning',
+        message: 'High activity level detected. Ensure your pet has adequate rest and hydration.'
+      });
+    }
+
+    // Environmental suggestions
+    if (latestData.En_Temperature > 30) {
+      suggestions.push({
+        type: 'warning',
+        message: 'High environment temperature. Ensure your pet has access to shade and fresh water to prevent overheating.'
+      });
+    } else if (latestData.En_Temperature < 15) {
+      suggestions.push({
+        type: 'warning',
+        message: 'Low environment temperature. Provide warm bedding and shelter for your pet.'
+      });
+    }
+
+    if (latestData.En_Humidity > 80) {
+      suggestions.push({
+        type: 'warning',
+        message: 'High humidity detected. Ensure proper ventilation to prevent respiratory issues.'
+      });
+    } else if (latestData.En_Humidity < 30) {
+      suggestions.push({
+        type: 'warning',
+        message: 'Low humidity detected. Consider using a humidifier if indoors to prevent dry skin.'
+      });
+    }
+
+    if (latestData.AirQuality > 150) {
+      suggestions.push({
+        type: 'danger',
+        message: 'Poor air quality detected. Consider improving ventilation or moving your pet to a cleaner air environment.'
+      });
+    }
+
+    // General health check reminder
+    if (suggestions.length === 0) {
+      suggestions.push({
+        type: 'success',
+        message: 'All vitals appear normal. Regular check-ups are still recommended for optimal pet health.'
+      });
+    }
+
+
+    
+
+    return suggestions;
+  };
+
+  
+
+  
+
+  const healthSuggestions = generateHealthSuggestions();
+
+
+  
+
   return (
     <div style={{ padding: "20px" }}>
-  <div style={{ padding: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
-    <h6 style={{ 
-      color: deviceData.length > 0 && latestData ? 
-        (isDeviceConnected ? "#4CAF50" : "#F44336") : 
-        "#9E9E9E"
-    }}>
-      {deviceData.length > 0 && latestData ? 
-        (isDeviceConnected ? "Device Connected" : "Device Not Connected") : 
-        "No Data Available"}
-    </h6>
+      <div style={{ padding: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
+        <h6 style={{ 
+          color: deviceData.length > 0 && latestData ? 
+            (isDeviceConnected ? "#4CAF50" : "#F44336") : 
+            "#9E9E9E"
+        }}>
+          {deviceData.length > 0 && latestData ? 
+            (isDeviceConnected ? "Device Connected" : "Device Not Connected") : 
+            "No Data Available"}
+        </h6>
         <button onClick={handleRefresh} style={{ padding: "10px 20px", borderRadius: "20px", fontSize: "16px", border: "none", backgroundColor: "#007bff", color: "white", cursor: "pointer" }}>
           🔄 Reconnect
         </button>
@@ -256,28 +465,34 @@ const DeviceData = () => {
           margin: '20px 0',
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
-          <h3>Device Details: {selectedDeviceData.DeviceID}</h3>
+          <h3>Device Details: {latestData.DeviceID}</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px' }}>
             <div>
               <p><strong>Last Location:</strong></p>
-              <p>Latitude: {selectedDeviceData.Latitude || 'N/A'}</p>
-              <p>Longitude: {selectedDeviceData.Longitude || 'N/A'}</p>
+              <p>Latitude: {latestData.Latitude || 'N/A'}</p>
+              <p>Longitude: {latestData.Longitude || 'N/A'}</p>
             </div>
             <div>
               <p><strong>Health Metrics:</strong></p>
-              <p>Temperature: {selectedDeviceData.Temperature}°C</p>
-              <p>Heart Rate: {selectedDeviceData.HeartRate} BPM</p>
-              <p>Steps: {selectedDeviceData.Steps}</p>
+              <p>Temperature: {latestData.Temperature}°C</p>
+              <p>Heart Rate: {latestData.HeartRate} BPM</p>
+              <p>Steps: {latestData.Steps}</p>
+            </div>
+            <div>
+              <p><strong>Environment Data:</strong></p>
+              <p>Temperature: {latestData.En_Temperature}°C</p>
+              <p>Humidity: {latestData.En_Humidity}%</p>
+              <p>Air Quality: {latestData.AirQuality} PPM</p>
             </div>
             <div>
               <p><strong>Last Update:</strong></p>
-              <p>{selectedDeviceData.Timestamp}</p>
+              <p>{latestData.Timestamp}</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Charts */}
+      {/* Health Metrics Charts */}
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
         <div style={{ width: "45%", height: "300px" }}>
           <h3>Body Temperature Chart</h3>
@@ -290,6 +505,8 @@ const DeviceData = () => {
         </div>
       </div>
       <br/><br/>
+
+      {/* Steps Charts */}
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
         <div style={{ width: "45%", height: "300px", marginTop: "50px" }}>
           <h3>Step Chart</h3>
@@ -303,15 +520,22 @@ const DeviceData = () => {
         </div>
       </div>
 
+      {/* Environment Data Charts */}
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", marginTop: "50px", marginBottom:"100px"}}>
-        <div>
-          <h3>Air quality</h3>
-          <br/><br/>
-          
+        <div style={{ width: "45%", height: "300px" }}>
+          <h3>Environment Temperature</h3>
+          <Line data={envTemperatureChartData} options={envTemperatureChartOptions} />
         </div>
-        <div>
-          <h3>Environment temperature and humidity</h3>
+        <div style={{ width: "45%", height: "300px" }}>
+          <h3>Environment Humidity</h3>
+          <Line data={envHumidityChartData} options={envHumidityChartOptions} />
         </div>
+      </div>
+
+      {/* Air Quality Chart */}
+      <div style={{ width: "90%", height: "300px", margin: "0 auto 50px" }}>
+        <h3>Air Quality</h3>
+        <Line data={airQualityChartData} options={airQualityChartOptions} />
       </div>
 
       {/* Google Map */}
@@ -323,6 +547,45 @@ const DeviceData = () => {
         </LoadScript>
       </div>
 
+      <div style={{ 
+        margin: "30px 0",
+        padding: "20px",
+        borderRadius: "8px",
+        backgroundColor: "#f8f9fa",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+      }}>
+        <h2>Health Suggestions</h2>
+        {healthSuggestions.length > 0 ? (
+          <div style={{ display: "grid", gap: "15px" }}>
+            {healthSuggestions.map((suggestion, index) => (
+              <div 
+                key={index}
+                style={{
+                  padding: "15px",
+                  borderRadius: "5px",
+                  backgroundColor: 
+                    suggestion.type === 'danger' ? "#f8d7da" :
+                    suggestion.type === 'warning' ? "#fff3cd" :
+                    "#d1e7dd",
+                  borderLeft: 
+                    suggestion.type === 'danger' ? "5px solid #dc3545" :
+                    suggestion.type === 'warning' ? "5px solid #ffc107" :
+                    "5px solid #198754",
+                  color: 
+                    suggestion.type === 'danger' ? "#721c24" :
+                    suggestion.type === 'warning' ? "#856404" :
+                    "#0f5132"
+                }}
+              >
+                <p style={{ margin: 0, fontWeight: "500" }}>{suggestion.message}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p>No data available to generate suggestions.</p>
+        )}
+      </div>
+
       {/* Table */}
       <h2>Device Data {selectedDeviceId ? `(Filtered: ${selectedDeviceId})` : ''}</h2>
       <table border="1" style={{ width: "100%", textAlign: "center", marginBottom: "20px" }}>
@@ -332,6 +595,9 @@ const DeviceData = () => {
             <th>Steps</th>
             <th>Heart Rate (BPM)</th>
             <th>Temperature (°C)</th>
+            <th>Environment Temperature (°C)</th>
+            <th>Environment Humidity (%)</th>
+            <th>Air Quality (PPM)</th>
             <th>Timestamp</th>
           </tr>
         </thead>
@@ -342,6 +608,9 @@ const DeviceData = () => {
               <td>{data.Steps}</td>
               <td>{data.HeartRate} BPM</td>
               <td>{data.Temperature}°C</td>
+              <td>{data.En_Temperature}°C</td>
+              <td>{data.En_Humidity}%</td>
+              <td>{data.AirQuality} PPM</td>
               <td>{data.Timestamp}</td>
             </tr>
           ))}
