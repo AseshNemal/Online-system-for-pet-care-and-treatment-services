@@ -1,7 +1,7 @@
 #node_modules
 #client_secret_.json
 
-/node_modules
+node_modules/
 /.pnp
 .pnp.js
 
