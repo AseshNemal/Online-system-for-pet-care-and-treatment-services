@@ -15,6 +15,8 @@ import Footer from './components/footer';
 import Home from './components/home';
 import EditPet from './components/editPet';
 import EditMedicalRecord from './components/editMediRecode';
+import StorePage from './components/storePage';
+import AdminDashboard from './components/adminProducts';
 function App() {
   return (
     <Router>  
@@ -36,6 +38,8 @@ function App() {
         <Route path="/pets/:petId" element={<PetRecord />} />
         <Route path="/pets/:petId/medical" element={<AddMedicalRecord />} />
         <Route path="/pets/:petId/medical/edit/:medicalId" element={<EditMedicalRecord/>}/>
+        <Route path="/product/all" element={<StorePage />}/>
+        <Route path="/adminProducts" element={<AdminDashboard />}/>
 
 
       </Routes>

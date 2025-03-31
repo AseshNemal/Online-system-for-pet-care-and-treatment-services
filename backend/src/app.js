@@ -80,6 +80,12 @@ app.use('/api', dataRoutes);
 const medicalRecords = require("./API/routes/medicalRecords.js")
 app.use('/medical', medicalRecords);
 
+//Route for product
+const productRouter = require("./API/routes/productRoutes.js")
+app.use("/product", productRouter)
+
+// Serve static files from the uploads folder
+app.use("/uploads", express.static("uploads"));
 
 
 
