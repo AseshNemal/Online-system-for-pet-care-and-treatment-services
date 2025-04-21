@@ -39,7 +39,7 @@ function Header() {
             <Link to="/" className="nav-link">Home <span className="sr-only"></span></Link>
           </li>
           <li className="nav-item">
-            <Link to="/shopping" className="nav-link">Shopping</Link>
+            <Link to="/product/all" className="nav-link">Shopping</Link>
           </li>
           <li className="nav-item">
             <Link to="/appointment" className="nav-link">Appointment</Link>
@@ -48,13 +48,10 @@ function Header() {
             <Link to="/pet" className="nav-link">Pet</Link>
           </li>
           <li className="nav-item">
-            <Link to="/medical-history" className="nav-link">Medical History</Link>
+            <Link to="/pet" className="nav-link">Medical History</Link>
           </li>
           <li className="nav-item">
             <Link to="/about" className="nav-link">About us</Link>
-          </li>
-          <li className="nav-item">
-            <Link to="/chat" className="nav-link">Chat</Link>
           </li>
         </ul>
         

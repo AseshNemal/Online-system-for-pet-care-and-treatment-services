@@ -168,7 +168,7 @@ function Home() {
             Our advanced pet monitoring system keeps you connected to your furry friend's
             health and activity 24/7, giving you peace of mind wherever you are.
           </p>
-          <Link to="/devices" style={styles.ctaButton}>Get Started</Link>
+          <Link to="/pet" style={styles.ctaButton}>Get Started</Link>
         </div>
       </header>
 
