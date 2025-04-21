@@ -11,7 +11,7 @@ import Profile from './components/profile';
 import Chatbot from './components/chatbot';
 import AddEmployee from './components/AddEmployee';
 import Dashboard from "./components/Dashboard";
-import Home from "./components/Home";
+
 
 function App() {
   return (
@@ -70,7 +70,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/employee" element={<AddEmployee />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/" element={<Home />} />
+        
       </Routes>
     </Router>
   );
