@@ -221,7 +221,7 @@ function Header() {
                   </div>
                 </div>
               ) : (
-                <a href="http://localhost:8090/auth/google" className="btn btn-outline-primary">
+                <a href="/login" className="btn btn-outline-primary">
                   Login
                 </a>
               )}
