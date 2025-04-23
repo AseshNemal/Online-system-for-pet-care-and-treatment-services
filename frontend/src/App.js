@@ -17,6 +17,8 @@ import EditPet from './components/editPet';
 import EditMedicalRecord from './components/editMediRecode';
 import StorePage from './components/storePage';
 import AdminDashboard from './components/adminProducts';
+import SearchResults from './components/SearchResults';
+import AboutUs from './components/AboutUs';
 function App() {
   return (
     <Router>  
@@ -27,6 +29,8 @@ function App() {
       
       <Routes>
         <Route path="/" element={<Home/>} />
+        <Route path="/AboutUs" element={<AboutUs/>} />
+        <Route path="/search" element={<SearchResults />} />
         <Route path="/pet/add" element={<AddPet />} />
         <Route path="/pet/:deviceId" element={<DeviceData/>}/>
         <Route path="/pet/view" element={<AllPets />}/>

@@ -14,7 +14,6 @@ const app = express();
 const PORT = process.env.PORT || "8090";
 
 
-// ✅ Enable CORS with credentials
 app.use(cors({
     origin: "http://localhost:3000", // Frontend URL
     credentials: true 
