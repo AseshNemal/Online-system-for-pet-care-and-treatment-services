@@ -17,6 +17,8 @@ import EditPet from './components/editPet';
 import EditMedicalRecord from './components/editMediRecode';
 import StorePage from './components/storePage';
 import AdminDashboard from './components/adminProducts';
+import AddEmployee from './components/AddEmployee';
+import Dashboard from "./components/Dashboard";
 function App() {
   return (
     <Router>  
@@ -40,6 +42,8 @@ function App() {
         <Route path="/pets/:petId/medical/edit/:medicalId" element={<EditMedicalRecord/>}/>
         <Route path="/product/all" element={<StorePage />}/>
         <Route path="/adminProducts" element={<AdminDashboard />}/>
+        <Route path="/employee" element={<AddEmployee />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
 
       </Routes>
