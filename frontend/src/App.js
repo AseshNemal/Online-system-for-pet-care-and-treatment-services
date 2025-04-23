@@ -19,6 +19,7 @@ import StorePage from './components/storePage';
 import AdminDashboard from './components/adminProducts';
 import AddEmployee from './components/AddEmployee';
 import Dashboard from "./components/Dashboard";
+import Logout from './components/Logout';
 function App() {
   return (
     <Router>  
@@ -43,7 +44,8 @@ function App() {
         <Route path="/product/all" element={<StorePage />}/>
         <Route path="/adminProducts" element={<AdminDashboard />}/>
         <Route path="/employee" element={<AddEmployee />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/adminDashboard" element={<Dashboard />} />
+        <Route path="/logout" element={<Logout />} />
 
 
       </Routes>

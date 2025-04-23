@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
+// Schema for storing appointment data received from the appointment scheduling student
 const appointmentDataSchema = new mongoose.Schema({
     employeeId: {
         type: String,
         required: true,
-        unique: true
+        unique: true // Ensures unique employeeId, handled by findOneAndUpdate
     },
     name: {
         type: String,

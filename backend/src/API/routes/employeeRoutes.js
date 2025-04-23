@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Employee = require('../model/Employee');
-const AppointmentData = require('../model/AppointmentData'); // Model for appointment data
+const AppointmentData = require('../model/AppointmentData');
 
 // Create Employee
 router.post('/create', async (req, res) => {
@@ -14,7 +14,7 @@ router.post('/create', async (req, res) => {
             lastName,
             username,
             email,
-            password,
+            password, // Plain text as per your request (April 22, 2025)
             role,
             availability: []
         });
@@ -22,6 +22,7 @@ router.post('/create', async (req, res) => {
         await employee.save();
         res.status(201).send(employee);
     } catch (error) {
+        console.error('Error creating employee:', error);
         res.status(400).send({ error: error.message });
     }
 });
@@ -32,6 +33,7 @@ router.get('/', async (req, res) => {
         const employees = await Employee.find();
         res.status(200).json(employees);
     } catch (error) {
+        console.error('Error fetching employees:', error);
         res.status(400).send({ error: error.message });
     }
 });
@@ -52,6 +54,7 @@ router.post('/login', async (req, res) => {
 
         res.status(200).json({ message: "Login successful", user: employee });
     } catch (error) {
+        console.error('Error logging in:', error);
         res.status(500).send({ error: error.message });
     }
 });
@@ -65,6 +68,7 @@ router.delete('/:id', async (req, res) => {
         }
         res.status(200).send("Employee deleted");
     } catch (error) {
+        console.error('Error deleting employee:', error);
         res.status(400).send({ error: error.message });
     }
 });
@@ -91,6 +95,7 @@ router.put('/:id', async (req, res) => {
         await employee.save();
         res.status(200).send(employee);
     } catch (error) {
+        console.error('Error updating employee:', error);
         res.status(400).send({ error: error.message });
     }
 });
@@ -117,6 +122,7 @@ router.post('/appointment', async (req, res) => {
         await employee.save();
         res.status(201).send({ message: "Appointment added successfully", employee });
     } catch (error) {
+        console.error('Error adding appointment:', error);
         res.status(400).send({ error: error.message });
     }
 });
@@ -136,49 +142,64 @@ router.get('/appointment-counts', async (req, res) => {
         appointmentCounts.sort((a, b) => b.totalAppointments - a.totalAppointments);
         res.status(200).json(appointmentCounts);
     } catch (error) {
+        console.error('Error fetching appointment counts:', error);
         res.status(400).send({ error: error.message });
     }
 });
 
-// Receive appointment data from another student
+// SECTION 1: RECEIVING APPOINTMENT DATA FROM APPOINTMENT SCHEDULING STUDENT
+// This endpoint is called by the appointment scheduling student to send appointment data
+// (employeeId, name, role, appointmentCount). The data is stored in the AppointmentData
+// collection in MongoDB. Uses findOneAndUpdate to update existing records or create new ones
+// to avoid duplicate key errors.
 router.post('/receive-appointment-data', async (req, res) => {
     try {
+        console.log('Received data:', req.body); // Log incoming data for debugging
         const { employeeId, name, role, appointmentCount } = req.body;
 
+        // Validate required fields
         if (!employeeId || !name || !role || appointmentCount === undefined) {
             return res.status(400).send({ error: "employeeId, name, role, and appointmentCount are required" });
         }
 
-        const appointmentData = new AppointmentData({
-            employeeId,
-            name,
-            role,
-            appointmentCount
-        });
+        // Update existing record or create new one
+        const appointmentData = await AppointmentData.findOneAndUpdate(
+            { employeeId }, // Find by employeeId
+            { name, role, appointmentCount, createdAt: Date.now() }, // Update fields
+            { upsert: true, new: true } // Create if not exists, return updated document
+        );
 
-        await appointmentData.save();
         res.status(201).send({ message: "Appointment data received successfully", appointmentData });
     } catch (error) {
+        console.error('Error saving appointment data:', error);
         res.status(400).send({ error: error.message });
     }
 });
 
-// Get sorted appointment data
+// SECTION 2: PROVIDING SORTED APPOINTMENT DATA FOR FINANCE MANAGEMENT STUDENT
+// This endpoint allows the finance management student to retrieve the sorted appointment
+// data (by appointmentCount, descending) after you sort and upload it via the Dashboard.
+// Returns all records from the AppointmentData collection, sorted by appointmentCount.
 router.get('/sorted-appointment-data', async (req, res) => {
     try {
         const appointmentData = await AppointmentData.find().sort({ appointmentCount: -1 });
         res.status(200).json(appointmentData);
     } catch (error) {
+        console.error('Error fetching sorted appointment data:', error);
         res.status(400).send({ error: error.message });
     }
 });
 
-// Clear appointment data (used before uploading sorted data)
+// SECTION 3: CLEARING APPOINTMENT DATA BEFORE UPLOADING SORTED DATA
+// This endpoint clears the AppointmentData collection before uploading sorted data
+// to ensure a clean, sorted dataset for the finance management student.
 router.delete('/sorted-appointment-data', async (req, res) => {
     try {
+        console.log('Clearing AppointmentData collection'); // Log for debugging
         await AppointmentData.deleteMany({});
         res.status(200).send({ message: "Appointment data cleared successfully" });
     } catch (error) {
+        console.error('Error clearing appointment data:', error);
         res.status(400).send({ error: error.message });
     }
 });
