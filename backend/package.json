@@ -34,7 +34,6 @@
     "passport-google-oauth20": "^2.0.0",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
-    "session": "^0.1.0",
-    "stripe": "^18.0.0"
+    "session": "^0.1.0"
   }
 }

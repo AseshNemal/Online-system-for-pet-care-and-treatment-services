@@ -194,6 +194,7 @@ const AdminDashboard = () => {
                     name="price"
                     placeholder="Price"
                     min="1"
+                    max="999999"
                     value={product.price}
                     onChange={handleChange}
                     required
@@ -208,6 +209,7 @@ const AdminDashboard = () => {
                     name="stock"
                     placeholder="Stock"
                     min="1"
+                    max="9999"
                     value={product.stock}
                     onChange={handleChange}
                     required
@@ -251,6 +253,7 @@ const AdminDashboard = () => {
                   name="restockAmount"
                   placeholder="Restock Amount"
                   min={product.restockLevel}
+                  max="9999"
                   value={product.restockAmount}
                   onChange={handleChange}
                   required

@@ -12,6 +12,10 @@ const StorePage = () => {
   const [showCart, setShowCart] = useState(false);
   const navigate = useNavigate();
 
+  const goToMyOrders = () => {
+    navigate("/my-orders");
+  };
+
   useEffect(() => {
     fetchProducts()
   }, [])
@@ -98,6 +102,7 @@ const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
       <button className="view-cart-btn" onClick={() => setShowCart(true)}>
         {cartItemCount > 0 ? `${cartItemCount} Products in the Cart` : "View Cart"}
       </button>
+      <button onClick={goToMyOrders} className="my-orders-btn">My Orders</button>
       </div>
       <div className="products-grid">
         {products
@@ -107,7 +112,7 @@ const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
               <img src={`http://localhost:8090/${prod.image}`} alt={prod.name} className="product-image" />
               <h3 className="product-name">{prod.name}</h3>
               <p className="product-category">{prod.category}</p>
-              <p className="product-price">Rs.{prod.price}</p>
+              <p className="product-price">Rs. {prod.price}.00</p>
               <p>Stock: {prod.stock > 0 ? prod.stock : "Out of Stock"}</p>
               <button onClick={() => openProductPopup(prod)} disabled={prod.stock === 0}>Add to Cart</button>
             </div>

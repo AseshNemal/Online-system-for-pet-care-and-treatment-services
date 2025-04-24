@@ -18,6 +18,7 @@ import EditMedicalRecord from './components/editMediRecode';
 import StorePage from './components/storePage';
 import AdminDashboard from './components/adminProducts';
 import PaymentPage from './components/PaymentPage';
+import MyOrdersPage from './components/MyOrdersPage';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
         <Route path="/product/all" element={<StorePage />}/>
         <Route path="/adminProducts" element={<AdminDashboard />}/>
         <Route path="/payment" element={<PaymentPage />}/>
+        <Route path="/my-orders" element={<MyOrdersPage />}/>
 
 
       </Routes>
