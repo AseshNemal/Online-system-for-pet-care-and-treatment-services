@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom";
 import "../storePage.css"
 
 const StorePage = () => {
@@ -9,6 +10,7 @@ const StorePage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showCart, setShowCart] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProducts()
@@ -174,7 +176,7 @@ const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
               )}
               <h3 className="cart-total">Sub total: <b>Rs.{totalValue}.00</b></h3>
               <div className="cart-buttons">
-                <button className="checkout-btn">Proceed to Payment</button>
+                <button className="checkout-btn" onClick = {() => navigate("/payment", {state: {cart,totalValue}})}>Proceed to Payment</button>
                 <button className="close-cart-btn" onClick={() => setShowCart(false)}>Close</button>
               </div>
             </div>
