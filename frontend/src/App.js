@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom"; 
-
 import Header from './components/Header';
 import AddPet from './components/addPet';
 import AllPets from './components/allPets';
@@ -20,6 +19,8 @@ import StorePage from './components/storePage';
 import AdminDashboard from './components/adminProducts';
 import SearchResults from './components/SearchResults';
 import AboutUs from './components/AboutUs';
+import PaymentPage from './components/PaymentPage';
+import MyOrdersPage from './components/MyOrdersPage';
 
 function AppContent() {
   const location = useLocation();
@@ -44,10 +45,16 @@ function AppContent() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/pets/:petId" element={<PetRecord />} />
         <Route path="/pets/:petId/medical" element={<AddMedicalRecord />} />
+        <Route path="/pets/:petId/medical/edit/:medicalId" element={<EditMedicalRecord/>}/>
+        <Route path="/product/all" element={<StorePage />}/>
+        <Route path="/adminProducts" element={<AdminDashboard />}/>
+        <Route path="/payment" element={<PaymentPage />}/>
+        <Route path="/my-orders" element={<MyOrdersPage />}/>
         <Route path="/pets/:petId/medical/edit/:medicalId" element={<EditMedicalRecord />} />
         <Route path="/product/all" element={<StorePage />} />
         <Route path="/adminDashboard" element={<AdminDashboard />} />
       </Routes>
+
 
       {!isAdminRoute && <Footer />}
     </>

@@ -83,6 +83,10 @@ app.use('/medical', medicalRecords);
 const productRouter = require("./API/routes/productRoutes.js")
 app.use("/product", productRouter)
 
+//Route for Order
+const orderRoutes = require("./API/routes/orderRoutes.js")
+app.use("/order", orderRoutes);
+
 // Serve static files from the uploads folder
 app.use("/uploads", express.static("uploads"));
 

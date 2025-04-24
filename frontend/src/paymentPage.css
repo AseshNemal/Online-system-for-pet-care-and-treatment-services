@@ -1,0 +1,235 @@
+.payment-container {
+    display: flex;
+    max-width: 1000px;
+    margin: 40px auto;
+    background-color: #f0f0f0; /* Lighter background for the container */
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    padding: 20px; /* Add padding around the sections */
+  }
+  
+  /* Order Summary Section */
+  .payment-summary {
+    flex: 1;
+    padding: 30px;
+    background-color: #fff; /* White background */
+    border-right: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Deeper shadow */
+    margin-right: 10px; /* Add space between sections */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Add a subtle pattern to the summary section */
+  .payment-summary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #5b247a, #1bcedf);
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .payment-summary h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .items-list {
+    margin-bottom: 24px;
+  }
+  
+  .item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .item-name {
+    flex: 2;
+    font-weight: 500;
+  }
+  
+  .item-quantity {
+    flex: 1;
+    text-align: center;
+    color: #666;
+  }
+  
+  .item-price {
+    flex: 1;
+    text-align: right;
+    font-weight: 500;
+  }
+  
+  .total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #ddd;
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  
+  /* Payment Details Section */
+  .payment-details {
+    flex: 1.2;
+    padding: 30px;
+    position: relative;
+    background-color: #fff; /* White background */
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Deeper shadow */
+    margin-left: 10px; /* Add space between sections */
+    overflow: hidden;
+  }
+  
+  /* Add a subtle pattern to the payment details section */
+  .payment-details::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #1bcedf, #5b247a);
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .payment-details h2 {
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .card-icon {
+    position: relative;
+    height: 50px;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #5b247a, #1bcedf);
+    border-radius: 8px;
+    padding: 15px;
+    color: white;
+  }
+  
+  .chip {
+    position: absolute;
+    width: 40px;
+    height: 30px;
+    background-color: #f4d35e;
+    border-radius: 5px;
+    top: 10px;
+    left: 15px;
+  }
+  
+  .card-type {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .form-row .form-group {
+    flex: 1;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #5b247a;
+  }
+  
+  input.error {
+    border-color: #e74c3c;
+  }
+  
+  .error-message {
+    display: block;
+    color: #e74c3c;
+    font-size: 0.8rem;
+    margin-top: 5px;
+  }
+  
+  .pay-button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    background-color: #5b247a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .pay-button:hover {
+    background-color: #4a1d64;
+  }
+  
+  .pay-button.disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .payment-container {
+      flex-direction: column;
+      margin: 20px;
+      padding: 15px;
+    }
+  
+    .payment-summary {
+      border-right: none;
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+  
+    .payment-details {
+      margin-left: 0;
+    }
+  
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+  
