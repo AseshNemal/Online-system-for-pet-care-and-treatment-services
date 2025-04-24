@@ -6,8 +6,14 @@ function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission logic (e.g., call an API for authentication)
+    
     console.log("Email:", email, "Password:", password);
+
+    if(email == "admin" && password == "admin"){
+      alert("Login successful!");
+      window.location.href = "/adminDashboard";
+    }
+
   };
 
   return (
@@ -72,16 +78,16 @@ function Login() {
                       <div className="col-12">
                         <div className="form-floating mb-3">
                           <input
-                            type="email"
+                            type="text"
                             className="form-control"
                             name="email"
                             id="email"
-                            placeholder="name@example.com"
+                            placeholder="Username"
                             required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                           />
-                          <label htmlFor="email">Email</label>
+                          <label htmlFor="email">Username</label>
                         </div>
                       </div>
                       <div className="col-12">
