@@ -21,7 +21,9 @@ import SearchResults from './components/SearchResults';
 import AboutUs from './components/AboutUs';
 import PaymentPage from './components/PaymentPage';
 import MyOrdersPage from './components/MyOrdersPage';
+/*import AppointmentLanding from './components/AppointmentLanding';*/
 
+import ServicesLanding from './components/Appointment/ServicesLanding';
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname === '/adminDashboard';
@@ -53,6 +55,8 @@ function AppContent() {
         <Route path="/pets/:petId/medical/edit/:medicalId" element={<EditMedicalRecord />} />
         <Route path="/product/all" element={<StorePage />} />
         <Route path="/adminDashboard" element={<AdminDashboard />} />
+        <Route path="/appointments" element={<ServicesLanding />} />
+        
       </Routes>
 
 
