@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 
 function AddEmployee() {
@@ -16,6 +16,8 @@ function AddEmployee() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [editingEmployee, setEditingEmployee] = useState(null);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         fetchEmployees();
@@ -59,7 +61,7 @@ function AddEmployee() {
             lastName,
             username,
             email,
-            password, // Plain text as requested
+            password,
             role,
         };
 
@@ -126,123 +128,167 @@ function AddEmployee() {
 
     return (
         <div className="dashboard-wrapper">
-            <div className="sidebar">
-                <h3>Pet Care Admin</h3>
+            <div className="top-navbar">
+                <div className="navbar-brand">Pet Care Admin</div>
+                <div className="navbar-user">
+                    <span>Admin User</span>
+                    <Link to="/logout" className="logout-link">
+                        <i className="fas fa-sign-out-alt"></i> Logout
+                    </Link>
+                </div>
+            </div>
+            <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+                <button className="sidebar-toggle" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
+                    <i className={`fas ${isSidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'}`}></i>
+                </button>
+                <h3 className="sidebar-title">Menu</h3>
                 <ul>
-                    <li><Link to="/adminDashboard">Dashboard</Link></li>
-                    <li><Link to="/employee">Employee Management</Link></li>
-                    <li><Link to="/logout">Logout</Link></li>
+                    <li className={location.pathname === '/adminDashboard' ? 'active' : ''}>
+                        <Link to="/adminDashboard">
+                            <i className="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </Link>
+                    </li>
+                    <li className={location.pathname === '/employee' ? 'active' : ''}>
+                        <Link to="/employee">
+                            <i className="fas fa-users"></i>
+                            <span>Employee Management</span>
+                        </Link>
+                    </li>
                 </ul>
             </div>
-            <div className="main-content">
-                <h2 className="text-center mb-4">{editingEmployee ? "Edit Employee" : "Add New Employee"}</h2>
+            <div className={`main-content ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+                <h2 className="page-title">{editingEmployee ? "Edit Employee" : "Add New Employee"}</h2>
 
                 {success && <div className="alert alert-success">{success}</div>}
                 {error && <div className="alert alert-danger">{error}</div>}
 
-                <form onSubmit={handleSubmit} className="p-4 shadow rounded bg-white form-container">
-                    <div className="row">
-                        <div className="col-md-6 mb-3">
-                            <label className="form-label">Employee ID</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={employeeId}
-                                onChange={(e) => setEmployeeId(e.target.value)}
-                                required
-                            />
+                <div className="card form-container">
+                    <form onSubmit={handleSubmit}>
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Employee ID</label>
+                                <div className="input-group">
+                                    <span className="input-group-text"><i className="fas fa-id-badge"></i></span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={employeeId}
+                                        onChange={(e) => setEmployeeId(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">First Name</label>
+                                <div className="input-group">
+                                    <span className="input-group-text"><i className="fas fa-user"></i></span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-6 mb-3">
-                            <label className="form-label">First Name</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                required
-                            />
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Last Name</label>
+                                <div className="input-group">
+                                    <span className="input-group-text"><i className="fas fa-user"></i></span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Username</label>
+                                <div className="input-group">
+                                    <span className="input-group-text"><i className="fas fa-user-tag"></i></span>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-6 mb-3">
-                            <label className="form-label">Last Name</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                required
-                            />
+                        <div className="row">
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Email</label>
+                                <div className="input-group">
+                                    <span className="input-group-text"><i className="fas fa-envelope"></i></span>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Password</label>
+                                <div className="input-group">
+                                    <span className="input-group-text"><i className="fas fa-lock"></i></span>
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-6 mb-3">
-                            <label className="form-label">Username</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                required
-                            />
+                        <div className="mb-3">
+                            <label className="form-label">Role</label>
+                            <div className="input-group">
+                                <span className="input-group-text"><i className="fas fa-briefcase"></i></span>
+                                <select
+                                    className="form-control"
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                    required
+                                >
+                                    <option value="">Select Role</option>
+                                    <option value="Vet">Vet</option>
+                                    <option value="Groomer">Groomer</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-6 mb-3">
-                            <label className="form-label">Email</label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="col-md-6 mb-3">
-                            <label className="form-label">Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div className="mb-3">
-                        <label className="form-label">Role</label>
-                        <select
-                            className="form-control"
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            required
-                        >
-                            <option value="">Select Role</option>
-                            <option value="Vet">Vet</option>
-                            <option value="Groomer">Groomer</option>
-                        </select>
-                    </div>
-                    <div className="d-flex gap-2">
-                        <button type="submit" className="btn btn-primary w-100" disabled={loading}>
-                            {loading ? "Processing..." : editingEmployee ? "Update Employee" : "Add Employee"}
-                        </button>
-                        {editingEmployee && (
-                            <button type="button" className="btn btn-secondary w-100" onClick={handleCancelEdit}>
-                                Cancel
+                        <div className="d-flex gap-2">
+                            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+                                {loading ? "Processing..." : editingEmployee ? "Update Employee" : "Add Employee"}
                             </button>
-                        )}
-                    </div>
-                </form>
+                            {editingEmployee && (
+                                <button type="button" className="btn btn-secondary w-100" onClick={handleCancelEdit}>
+                                    Cancel
+                                </button>
+                            )}
+                        </div>
+                    </form>
+                </div>
 
-                <div className="table-container mt-5">
-                    <h2 className="text-center mb-4">Employee List</h2>
+                <div className="card table-container">
+                    <h3>Employee List</h3>
                     {loading ? (
-                        <div className="text-center">
-                            <div className="spinner-border text-primary" role="status">
+                        <div className="loading">
+                            <div className="spinner-border" role="status">
                                 <span className="visually-hidden">Loading...</span>
                             </div>
                         </div>
                     ) : (
                         <table className="table table-striped table-hover">
-                            <thead className="thead-dark">
+                            <thead>
                                 <tr>
                                     <th>Employee ID</th>
                                     <th>First Name</th>
@@ -293,143 +339,211 @@ function AddEmployee() {
             </div>
             <style>
                 {`
-                    .dashboard-wrapper { display: flex; min-height: 100vh; }
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                    * { font-family: 'Inter', sans-serif; }
+                    .dashboard-wrapper { display: flex; min-height: 100vh; background-color: #f1f4f8; }
+                    .top-navbar {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        height: 60px;
+                        background-color: #343a40;
+                        color: #ffffff;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 0 20px;
+                        z-index: 1000;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    }
+                    .navbar-brand { font-size: 20px; font-weight: 600; }
+                    .navbar-user { display: flex; align-items: center; gap: 15px; }
+                    .navbar-user span { font-size: 14px; }
+                    .logout-link { color: #ffffff; text-decoration: none; }
+                    .logout-link:hover { color: #007bff; }
                     .sidebar {
-                        width: 220px;
-                        background-color: #2c3e50;
-                        color: white;
+                        width: 240px;
+                        background-color: #343a40;
+                        color: #ffffff;
                         padding: 20px;
                         position: fixed;
-                        height: 100%;
-                        overflow-y: auto;
+                        top: 60px;
+                        bottom: 0;
+                        transition: width 0.3s ease;
                     }
-                    .sidebar h3 { margin-bottom: 20px; font-family: 'Poppins', sans-serif; }
+                    .sidebar.collapsed { width: 60px; }
+                    .sidebar.collapsed .sidebar-title, .sidebar.collapsed span { display: none; }
+                    .sidebar-toggle {
+                        background: none;
+                        border: none;
+                        color: #ffffff;
+                        font-size: 18px;
+                        margin-bottom: 20px;
+                        cursor: pointer;
+                    }
+                    .sidebar-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
                     .sidebar ul { list-style: none; padding: 0; }
-                    .sidebar li { margin: 15px 0; }
+                    .sidebar li { margin: 10px 0; }
                     .sidebar a {
-                        color: white;
+                        color: #ffffff;
                         text-decoration: none;
-                        font-family: 'Roboto', sans-serif;
-                        font-size: 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        transition: background-color 0.2s ease;
                     }
-                    .sidebar a:hover { color: #17a2b8; }
+                    .sidebar a:hover, .sidebar li.active a { background-color: #007bff; }
                     .main-content {
                         margin-left: 240px;
+                        margin-top: 60px;
                         padding: 30px;
-                        background-color: #f8f9fa;
                         flex-grow: 1;
+                        transition: margin-left 0.3s ease;
                     }
-                    .form-container {
-                        border-radius: 15px;
-                        background-color: #ffffff;
-                        padding: 30px;
-                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                    }
-                    .form-label {
+                    .main-content.collapsed { margin-left: 60px; }
+                    .page-title {
+                        font-size: 24px;
                         font-weight: 600;
-                        color: #2c3e50;
-                        font-family: 'Poppins', sans-serif;
-                    }
-                    .form-control {
-                        border-radius: 8px;
-                        border: 1px solid #ced4da;
-                        padding: 10px;
-                        font-family: 'Roboto', sans-serif;
-                    }
-                    .form-control:focus {
-                        border-color: #17a2b8;
-                        box-shadow: 0 0 8px rgba(23, 162, 184, 0.3);
-                    }
-                    .table-container {
-                        background-color: #ffffff;
-                        border-radius: 15px;
-                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                        padding: 30px;
-                    }
-                    .thead-dark th {
-                        background-color: #2c3e50;
-                        color: #ffffff;
-                        font-weight: 600;
-                        font-family: 'Poppins', sans-serif;
-                    }
-                    .table-hover tbody tr:hover { background-color: #e9ecef; }
-                    .alert {
-                        border-radius: 8px;
-                        font-size: 14px;
-                        font-family: 'Roboto', sans-serif;
-                        background-color: #f8d7da;
-                        color: #721c24;
-                    }
-                    .alert-success {
-                        background-color: #d4edda;
-                        color: #155724;
-                    }
-                    h2 {
-                        color: #2c3e50;
-                        font-weight: 700;
-                        font-family: 'Poppins', sans-serif;
+                        color: #343a40;
+                        margin-bottom: 20px;
                         position: relative;
-                        display: inline-block;
                     }
-                    h2::after {
+                    .page-title::after {
                         content: "";
                         position: absolute;
                         bottom: -5px;
                         left: 0;
-                        width: 50%;
+                        width: 50px;
                         height: 3px;
-                        background-color: #17a2b8;
+                        background-color: #007bff;
                     }
-                    .btn-primary {
-                        background-color: #17a2b8;
-                        border: none;
-                        border-radius: 8px;
-                        padding: 12px;
-                        font-size: 16px;
-                        font-weight: 600;
-                        font-family: 'Poppins', sans-serif;
+                    .card {
+                        background: #ffffff;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                        padding: 20px;
+                        margin-bottom: 30px;
+                        animation: fadeIn 0.5s ease;
+                    }
+                    .form-container { padding: 20px; }
+                    .form-label {
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #343a40;
+                        margin-bottom: 5px;
+                    }
+                    .input-group { position: relative; }
+                    .input-group-text {
+                        background-color: #f8f9fa;
+                        border: 1px solid #ced4da;
+                        border-right: none;
+                        border-radius: 5px 0 0 5px;
+                        color: #6c757d;
+                    }
+                    .form-control {
+                        border-radius: 0 5px 5px 0;
+                        border: 1px solid #ced4da;
+                        padding: 10px;
+                        font-size: 14px;
+                        transition: border-color 0.2s ease;
+                    }
+                    .form-control:focus {
+                        border-color: #007bff;
+                        box-shadow: 0 0 5px rgba(0,123,255,0.3);
+                    }
+                    .table-container h3 { font-size: 18px; font-weight: 600; color: #343a40; margin-bottom: 20px; }
+                    .table { width: 100%; border-collapse: separate; border-spacing: 0; }
+                    .table thead th {
+                        background-color: #343a40;
                         color: #ffffff;
-                        transition: background-color 0.3s ease;
+                        font-weight: 600;
+                        padding: 12px;
+                        font-size: 14px;
                     }
-                    .btn-primary:hover { background-color: #138496; }
+                    .table tbody tr { transition: background-color 0.2s ease; }
+                    .table tbody tr:hover { background-color: #e9ecef; }
+                    .table td { padding: 12px; font-size: 14px; color: #343a40; }
+                    .alert {
+                        border-radius: 5px;
+                        padding: 12px;
+                        font-size: 14px;
+                        margin-bottom: 20px;
+                        animation: fadeIn 0.5s ease;
+                    }
+                    .alert-danger { background-color: #f8d7da; color: #721c24; }
+                    .alert-success { background-color: #d4edda; color: #155724; }
+                    .btn-primary {
+                        background: linear-gradient(135deg, #007bff, #0056b3);
+                        border: none;
+                        border-radius: 5px;
+                        padding: 10px 20px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #ffffff;
+                        transition: transform 0.2s ease, background 0.2s ease;
+                    }
+                    .btn-primary:hover {
+                        background: linear-gradient(135deg, #0056b3, #003d80);
+                        transform: translateY(-2px);
+                    }
                     .btn-warning {
-                        background-color: #ffc107;
+                        background: linear-gradient(135deg, #ffc107, #e0a800);
                         border: none;
                         border-radius: 5px;
-                        font-family: 'Roboto', sans-serif;
+                        font-size: 14px;
+                        color: #212529;
+                        transition: transform 0.2s ease;
                     }
-                    .btn-warning:hover { background-color: #e0a800; }
+                    .btn-warning:hover {
+                        background: linear-gradient(135deg, #e0a800, #c69500);
+                        transform: translateY(-2px);
+                    }
                     .btn-danger {
-                        background-color: #dc3545;
+                        background: linear-gradient(135deg, #dc3545, #c82333);
                         border: none;
                         border-radius: 5px;
-                        font-family: 'Roboto', sans-serif;
+                        font-size: 14px;
+                        color: #ffffff;
+                        transition: transform 0.2s ease;
                     }
-                    .btn-danger:hover { background-color: #c82333; }
+                    .btn-danger:hover {
+                        background: linear-gradient(135deg, #c82333, #b21f2d);
+                        transform: translateY(-2px);
+                    }
                     .btn-secondary {
-                        background-color: #6c757d;
+                        background: linear-gradient(135deg, #6c757d, #5a6268);
                         border: none;
-                        border-radius: 8px;
-                        font-family: 'Poppins', sans-serif;
+                        border-radius: 5px;
+                        font-size: 14px;
+                        color: #ffffff;
+                        transition: transform 0.2s ease;
                     }
-                    .btn-secondary:hover { background-color: #5a6268; }
+                    .btn-secondary:hover {
+                        background: linear-gradient(135deg, #5a6268, #4b5258);
+                        transform: translateY(-2px);
+                    }
+                    .loading { text-align: center; padding: 20px; }
                     .spinner-border {
-                        width: 3rem;
-                        height: 3rem;
-                        border-color: #17a2b8;
+                        width: 2rem;
+                        height: 2rem;
+                        border-color: #007bff;
                         border-right-color: transparent;
                     }
+                    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
                     @media (max-width: 768px) {
-                        .sidebar {
-                            width: 100%;
-                            height: auto;
-                            position: relative;
-                        }
-                        .main-content { margin-left: 0; }
+                        .sidebar { width: 60px; }
+                        .sidebar .sidebar-title, .sidebar span { display: none; }
+                        .main-content { margin-left: 60px; }
                         .row { flex-direction: column; }
+                        .top-navbar { flex-direction: column; height: auto; padding: 10px; }
+                        .navbar-user { margin-top: 10px; }
                     }
                 `}
             </style>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
         </div>
     );
 }

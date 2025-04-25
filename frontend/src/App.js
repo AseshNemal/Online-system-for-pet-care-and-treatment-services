@@ -19,7 +19,10 @@ import StorePage from './components/storePage';
 import AdminDashboard from './components/adminProducts';
 import AddEmployee from './components/AddEmployee';
 import Dashboard from "./components/Dashboard";
+import AdoptionPortal from './components/AdoptionPortal';
+import SubmitAd from './components/SubmitAd';
 import Logout from './components/Logout';
+import PetAdAdminDashboard from './components/PetAdAdminDashboard';
 function App() {
   return (
     <Router>  
@@ -45,6 +48,9 @@ function App() {
         <Route path="/adminProducts" element={<AdminDashboard />}/>
         <Route path="/employee" element={<AddEmployee />} />
         <Route path="/adminDashboard" element={<Dashboard />} />
+        <Route path="/adoption-portal" element={<AdoptionPortal />} />
+        <Route path="/admin-dashboard" element={<PetAdAdminDashboard />} /> {/* Updated for pet ads */}
+        <Route path="/submit-ad" element={<SubmitAd />} />
         <Route path="/logout" element={<Logout />} />
 
 

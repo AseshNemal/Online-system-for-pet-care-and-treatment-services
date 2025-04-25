@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
@@ -14,20 +14,17 @@ function Dashboard() {
     const [sortField, setSortField] = useState('appointmentCount');
     const [sortOrder, setSortOrder] = useState('desc');
     const [filterRole, setFilterRole] = useState('');
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const location = useLocation();
 
-    // Fetch sorted appointment data when the component mounts
     useEffect(() => {
         fetchReceivedData();
     }, []);
 
-    // SECTION 4: FETCHING SORTED APPOINTMENT DATA FOR DISPLAY
-    // This function fetches the appointment data from the database
-    // (populated by the appointment scheduling student via POST /receive-appointment-data)
-    // to display in the chart and table. It’s called on component mount and after sorting.
     async function fetchReceivedData() {
         try {
             setLoading(true);
-            console.log('Fetching sorted appointment data'); // Log for debugging
+            console.log('Fetching sorted appointment data');
             const response = await axios.get("http://localhost:8090/employee/sorted-appointment-data");
             setReceivedData(response.data);
         } catch (error) {
@@ -38,31 +35,18 @@ function Dashboard() {
         }
     }
 
-    // SECTION 5: SORTING AND UPLOADING DATA
-    // This function fetches the appointment data, sorts it by appointmentCount (descending),
-    // clears the existing data, and uploads the sorted data to the database.
-    // The sorted data is then available for the finance management student to access
-    // via GET /sorted-appointment-data.
     async function sortAndUploadData() {
         try {
             setLoading(true);
             setError("");
             setSuccess("");
-
-            // Fetch unsorted data from the database
-            console.log('Fetching data to sort'); // Log for debugging
+            console.log('Fetching data to sort');
             const response = await axios.get("http://localhost:8090/employee/sorted-appointment-data");
             const dataToSort = response.data;
-
-            // Sort by appointmentCount in descending order
             const sortedData = [...dataToSort].sort((a, b) => b.appointmentCount - a.appointmentCount);
-
-            // Clear existing data in the AppointmentData collection
-            console.log('Clearing existing data'); // Log for debugging
+            console.log('Clearing existing data');
             await axios.delete("http://localhost:8090/employee/sorted-appointment-data");
-
-            // Upload sorted data back to the database
-            console.log('Uploading sorted data'); // Log for debugging
+            console.log('Uploading sorted data');
             for (const data of sortedData) {
                 await axios.post("http://localhost:8090/employee/receive-appointment-data", {
                     employeeId: data.employeeId,
@@ -71,9 +55,8 @@ function Dashboard() {
                     appointmentCount: data.appointmentCount
                 });
             }
-
             setSuccess("Data sorted and uploaded successfully!");
-            fetchReceivedData(); // Refresh the chart and table
+            fetchReceivedData();
         } catch (error) {
             console.error("Error sorting and uploading data:", error);
             setError(`Failed to sort and upload data: ${error.message}`);
@@ -82,7 +65,6 @@ function Dashboard() {
         }
     }
 
-    // Handle table column sorting
     const handleSort = (field) => {
         const newOrder = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
         setSortField(field);
@@ -97,10 +79,7 @@ function Dashboard() {
         }));
     };
 
-    // Filter data by role
-    const filteredData = filterRole 
-        ? receivedData.filter(data => data.role === filterRole)
-        : receivedData;
+    const filteredData = filterRole ? receivedData.filter(data => data.role === filterRole) : receivedData;
 
     const chartData = {
         labels: filteredData.map(data => data.name),
@@ -108,8 +87,8 @@ function Dashboard() {
             {
                 label: "Total Appointments",
                 data: filteredData.map(data => data.appointmentCount),
-                backgroundColor: "rgba(23, 162, 184, 0.6)",
-                borderColor: "rgba(23, 162, 184, 1)",
+                backgroundColor: "rgba(0, 123, 255, 0.6)",
+                borderColor: "rgba(0, 123, 255, 1)",
                 borderWidth: 1,
             },
         ],
@@ -130,35 +109,88 @@ function Dashboard() {
 
     return (
         <div className="dashboard-wrapper">
-            <div className="sidebar">
-                <h3>Pet Care Admin</h3>
+            <div className="top-navbar">
+                <div className="navbar-brand">Pet Care Admin</div>
+                <div className="navbar-user">
+                    <span>Admin User</span>
+                    <Link to="/logout" className="logout-link">
+                        <i className="fas fa-sign-out-alt"></i> Logout
+                    </Link>
+                </div>
+            </div>
+            <div className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+                <button className="sidebar-toggle" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
+                    <i className={`fas ${isSidebarCollapsed ? 'fa-chevron-right' : 'fa-chevron-left'}`}></i>
+                </button>
+                <h3 className="sidebar-title">Menu</h3>
                 <ul>
-                    <li><Link to="/adminDashboard">Dashboard</Link></li>
-                    <li><Link to="/employee">Employee Management</Link></li>
-                    <li><Link to="/logout">Logout</Link></li>
+                    <li className={location.pathname === '/adminDashboard' ? 'active' : ''}>
+                        <Link to="/adminDashboard">
+                            <i className="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </Link>
+                    </li>
+                    <li className={location.pathname === '/employee' ? 'active' : ''}>
+                        <Link to="/employee">
+                            <i className="fas fa-users"></i>
+                            <span>Employee Management</span>
+                        </Link>
+                    </li>
+                    <li className={location.pathname === '/adoption-portal' ? 'active' : ''}>
+                        <Link to="/adoption-portal">
+                            <i className="fas fa-paw"></i>
+                            <span>Adoption Portal</span>
+                        </Link>
+                    </li>
+                    <li className={location.pathname === '/submit-ad' ? 'active' : ''}>
+                        <Link to="/submit-ad">
+                            <i className="fas fa-plus-circle"></i>
+                            <span>Submit Ad</span>
+                        </Link>
+                    </li>
+                    <li className={location.pathname === '/admin-dashboard' ? 'active' : ''}>
+                        <Link to="/admin-dashboard">
+                            <i className="fas fa-shield-alt"></i>
+                            <span>Pet Ad Admin Dashboard</span>
+                        </Link>
+                    </li>
+                    <li className={location.pathname === '/medical' ? 'active' : ''}>
+                        <Link to="/medical">
+                            <i className="fas fa-notes-medical"></i>
+                            <span>Medical Records</span>
+                        </Link>
+                    </li>
+                    <li className={location.pathname === '/product' ? 'active' : ''}>
+                        <Link to="/product">
+                            <i className="fas fa-shopping-cart"></i>
+                            <span>Products</span>
+                        </Link>
+                    </li>
                 </ul>
             </div>
-            <div className="main-content">
-                <h2 className="text-center mb-4">Employee Dashboard</h2>
+            <div className={`main-content ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+                <h2 className="page-title">Employee Dashboard</h2>
 
                 {error && <div className="alert alert-danger">{error}</div>}
                 {success && <div className="alert alert-success">{success}</div>}
 
                 <div className="kpi-container">
                     <div className="kpi-card">
+                        <i className="fas fa-calendar-check kpi-icon"></i>
                         <h4>Total Appointments</h4>
                         <p>{receivedData.reduce((sum, data) => sum + data.appointmentCount, 0)}</p>
                     </div>
                     <div className="kpi-card">
+                        <i className="fas fa-users kpi-icon"></i>
                         <h4>Employees</h4>
                         <p>{receivedData.length}</p>
                     </div>
                 </div>
 
-                <div className="chart-container">
+                <div className="card chart-container">
                     {loading ? (
-                        <div className="text-center">
-                            <div className="spinner-border text-primary" role="status">
+                        <div className="loading">
+                            <div className="spinner-border" role="status">
                                 <span className="visually-hidden">Loading...</span>
                             </div>
                         </div>
@@ -167,8 +199,8 @@ function Dashboard() {
                     )}
                 </div>
 
-                <div className="table-container">
-                    <h2 className="text-center mb-4">Received Appointment Data</h2>
+                <div className="card table-container">
+                    <h3>Received Appointment Data</h3>
                     <div className="filter-container">
                         <label htmlFor="role-filter">Filter by Role: </label>
                         <select 
@@ -182,15 +214,15 @@ function Dashboard() {
                         </select>
                     </div>
                     {loading ? (
-                        <div className="text-center">
-                            <div className="spinner-border text-primary" role="status">
+                        <div className="loading">
+                            <div className="spinner-border" role="status">
                                 <span className="visually-hidden">Loading...</span>
                             </div>
                         </div>
                     ) : (
                         <>
                             <table className="table table-striped table-hover">
-                                <thead className="thead-dark">
+                                <thead>
                                     <tr>
                                         <th onClick={() => handleSort('employeeId')}>
                                             Employee ID {sortField === 'employeeId' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -232,128 +264,172 @@ function Dashboard() {
             </div>
             <style>
                 {`
-                    .dashboard-wrapper { display: flex; min-height: 100vh; }
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+                    * { font-family: 'Inter', sans-serif; }
+                    .dashboard-wrapper { display: flex; min-height: 100vh; background-color: #f1f4f8; }
+                    .top-navbar {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        height: 60px;
+                        background-color: #343a40;
+                        color: #ffffff;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 0 20px;
+                        z-index: 1000;
+                        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    }
+                    .navbar-brand { font-size: 20px; font-weight: 600; }
+                    .navbar-user { display: flex; align-items: center; gap: 15px; }
+                    .navbar-user span { font-size: 14px; }
+                    .logout-link { color: #ffffff; text-decoration: none; }
+                    .logout-link:hover { color: #007bff; }
                     .sidebar {
-                        width: 220px;
-                        background-color: #2c3e50;
-                        color: white;
+                        width: 240px;
+                        background-color: #343a40;
+                        color: #ffffff;
                         padding: 20px;
                         position: fixed;
-                        height: 100%;
-                        overflow-y: auto;
+                        top: 60px;
+                        bottom: 0;
+                        transition: width 0.3s ease;
                     }
-                    .sidebar h3 { margin-bottom: 20px; font-family: 'Poppins', sans-serif; }
-                    .sidebar ul { list-style: none; padding: 0; }
-                    .sidebar li { margin: 15px 0; }
-                    .sidebar a {
-                        color: white;
-                        text-decoration: none;
-                        font-family: 'Roboto', sans-serif;
-                        font-size: 16px;
-                    }
-                    .sidebar a:hover { color: #17a2b8; }
-                    .main-content {
-                        margin-left: 240px;
-                        padding: 30px;
-                        background-color: #f8f9fa;
-                        flex-grow: 1;
-                    }
-                    .kpi-container { display: flex; gap: 20px; margin-bottom: 30px; }
-                    .kpi-card {
-                        background-color: #ffffff;
-                        border-radius: 8px;
-                        padding: 15px;
-                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                        flex: 1;
-                        text-align: center;
-                    }
-                    .kpi-card h4 { margin: 0; color: #2c3e50; font-family: 'Poppins', sans-serif; }
-                    .kpi-card p { font-size: 24px; color: #17a2b8; margin: 10px 0 0; }
-                    .chart-container {
-                        background-color: #ffffff;
-                        border-radius: 15px;
-                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                        padding: 20px;
-                        margin-bottom: 30px;
-                    }
-                    .table-container {
-                        background-color: #ffffff;
-                        border-radius: 15px;
-                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                        padding: 30px;
-                    }
-                    .filter-container { margin-bottom: 20px; }
-                    .filter-container label { margin-right: 10px; font-family: 'Roboto', sans-serif; }
-                    .filter-container select {
-                        padding: 8px;
-                        border-radius: 5px;
-                        border: 1px solid #ced4da;
-                        font-family: 'Roboto', sans-serif;
-                    }
-                    .thead-dark th {
-                        background-color: #2c3e50;
+                    .sidebar.collapsed { width: 60px; }
+                    .sidebar.collapsed .sidebar-title, .sidebar.collapsed span { display: none; }
+                    .sidebar-toggle {
+                        background: none;
+                        border: none;
                         color: #ffffff;
-                        font-weight: 600;
-                        font-family: 'Poppins', sans-serif;
+                        font-size: 18px;
+                        margin-bottom: 20px;
                         cursor: pointer;
                     }
-                    .table-hover tbody tr:hover { background-color: #e9ecef; }
-                    .alert {
-                        border-radius: 8px;
-                        font-size: 14px;
-                        font-family: 'Roboto', sans-serif;
-                        background-color: #f8d7da;
-                        color: #721c24;
+                    .sidebar-title { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+                    .sidebar ul { list-style: none; padding: 0; }
+                    .sidebar li { margin: 10px 0; }
+                    .sidebar a {
+                        color: #ffffff;
+                        text-decoration: none;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        transition: background-color 0.2s ease;
                     }
-                    .alert-success {
-                        background-color: #d4edda;
-                        color: #155724;
+                    .sidebar a:hover, .sidebar li.active a { background-color: #007bff; }
+                    .main-content {
+                        margin-left: 240px;
+                        margin-top: 60px;
+                        padding: 30px;
+                        flex-grow: 1;
+                        transition: margin-left 0.3s ease;
                     }
-                    h2 {
-                        color: #2c3e50;
-                        font-weight: 700;
-                        font-family: 'Poppins', sans-serif;
+                    .main-content.collapsed { margin-left: 60px; }
+                    .page-title {
+                        font-size: 24px;
+                        font-weight: 600;
+                        color: #343a40;
+                        margin-bottom: 20px;
                         position: relative;
-                        display: inline-block;
                     }
-                    h2::after {
+                    .page-title::after {
                         content: "";
                         position: absolute;
                         bottom: -5px;
                         left: 0;
-                        width: 50%;
+                        width: 50px;
                         height: 3px;
-                        background-color: #17a2b8;
+                        background-color: #007bff;
                     }
-                    .btn-primary {
-                        background-color: #17a2b8;
-                        border: none;
-                        border-radius: 8px;
-                        padding: 12px;
-                        font-size: 16px;
-                        font-weight: 600;
-                        font-family: 'Poppins', sans-serif;
+                    .kpi-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+                    .kpi-card {
+                        background: linear-gradient(135deg, #ffffff, #f8f9fa);
+                        border-radius: 10px;
+                        padding: 20px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                        text-align: center;
+                        transition: transform 0.2s ease;
+                    }
+                    .kpi-card:hover { transform: translateY(-5px); }
+                    .kpi-icon { font-size: 24px; color: #007bff; margin-bottom: 10px; }
+                    .kpi-card h4 { font-size: 16px; color: #343a40; margin: 0; }
+                    .kpi-card p { font-size: 28px; font-weight: 600; color: #007bff; margin: 10px 0 0; }
+                    .card {
+                        background: #ffffff;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                        padding: 20px;
+                        margin-bottom: 30px;
+                        animation: fadeIn 0.5s ease;
+                    }
+                    .chart-container { padding: 20px; }
+                    .table-container h3 { font-size: 18px; font-weight: 600; color: #343a40; margin-bottom: 20px; }
+                    .filter-container { margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+                    .filter-container label { font-size: 14px; color: #343a40; }
+                    .filter-container select {
+                        padding: 8px;
+                        border-radius: 5px;
+                        border: 1px solid #ced4da;
+                        font-size: 14px;
+                    }
+                    .table { width: 100%; border-collapse: separate; border-spacing: 0; }
+                    .table thead th {
+                        background-color: #343a40;
                         color: #ffffff;
-                        transition: background-color 0.3s ease;
+                        font-weight: 600;
+                        padding: 12px;
+                        cursor: pointer;
+                        font-size: 14px;
                     }
-                    .btn-primary:hover { background-color: #138496; }
+                    .table tbody tr { transition: background-color 0.2s ease; }
+                    .table tbody tr:hover { background-color: #e9ecef; }
+                    .table td { padding: 12px; font-size: 14px; color: #343a40; }
+                    .alert {
+                        border-radius: 5px;
+                        padding: 12px;
+                        font-size: 14px;
+                        margin-bottom: 20px;
+                        animation: fadeIn 0.5s ease;
+                    }
+                    .alert-danger { background-color: #f8d7da; color: #721c24; }
+                    .alert-success { background-color: #d4edda; color: #155724; }
+                    .btn-primary {
+                        background: linear-gradient(135deg, #007bff, #0056b3);
+                        border: none;
+                        border-radius: 5px;
+                        padding: 10px 20px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #ffffff;
+                        transition: transform 0.2s ease, background 0.2s ease;
+                    }
+                    .btn-primary:hover {
+                        background: linear-gradient(135deg, #0056b3, #003d80);
+                        transform: translateY(-2px);
+                    }
+                    .loading { text-align: center; padding: 20px; }
                     .spinner-border {
-                        width: 3rem;
-                        height: 3rem;
-                        border-color: #17a2b8;
+                        width: 2rem;
+                        height: 2rem;
+                        border-color: #007bff;
                         border-right-color: transparent;
                     }
+                    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
                     @media (max-width: 768px) {
-                        .sidebar {
-                            width: 100%;
-                            height: auto;
-                            position: relative;
-                        }
-                        .main-content { margin-left: 0; }
-                        .kpi-container { flex-direction: column; }
+                        .sidebar { width: 60px; }
+                        .sidebar .sidebar-title, .sidebar span { display: none; }
+                        .main-content { margin-left: 60px; }
+                        .kpi-container { grid-template-columns: 1fr; }
+                        .top-navbar { flex-direction: column; height: auto; padding: 10px; }
+                        .navbar-user { margin-top: 10px; }
                     }
                 `}
             </style>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
         </div>
     );
 }
