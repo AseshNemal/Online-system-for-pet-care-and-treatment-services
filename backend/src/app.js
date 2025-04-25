@@ -9,6 +9,10 @@ import { connect } from "./utils/database.connection.js";
 import { googleAuth } from "../src/configs/google.auth.js";
 import { routesInit } from "./API/middleware/routesInit.js";
 import config from "./configs/index.js";
+import router from "./API/routes/pets.js";
+import Employee from "./API/model/Employee.js";
+import PetAd from "./API/model/PetAd.js";
+
 
 const app = express();
 const PORT = process.env.PORT || "8090";
@@ -90,7 +94,11 @@ app.use("/order", orderRoutes);
 // Serve static files from the uploads folder
 app.use("/uploads", express.static("uploads"));
 
+const employeeRoutes = require("./API/routes/employeeRoutes.js")
+app.use("/employee",employeeRoutes)
 
+const PetAdRoutes = require("./API/routes/PetAdRoutes.js")
+app.use("/pet-ad", PetAdRoutes);
 
 
 app.listen(PORT, () => {
