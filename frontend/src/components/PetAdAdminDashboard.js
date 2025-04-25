@@ -114,6 +114,21 @@ function PetAdAdminDashboard() {
                             <span>Employee Management</span>
                         </Link>
                     </li>
+                    
+                    <li className="active">
+                        <Link to="/admin-dashboard">
+                            <i className="fas fa-shield-alt"></i>
+                            <span>Admin Dashboard (Ads)</span>
+                        </Link>
+                    </li>
+                   
+                    <li>
+                        <Link to="/adminDashboard/product">
+                            <i className="fas fa-shopping-cart"></i>
+                            <span>Products</span>
+                        </Link>
+                    </li>
+
                     <li>
                         <Link to="/adoption-portal">
                             <i className="fas fa-paw"></i>
@@ -124,24 +139,6 @@ function PetAdAdminDashboard() {
                         <Link to="/submit-ad">
                             <i className="fas fa-plus-circle"></i>
                             <span>Submit Ad</span>
-                        </Link>
-                    </li>
-                    <li className="active">
-                        <Link to="/admin-dashboard">
-                            <i className="fas fa-shield-alt"></i>
-                            <span>Admin Dashboard (Ads)</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/medical">
-                            <i className="fas fa-notes-medical"></i>
-                            <span>Medical Records</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/product">
-                            <i className="fas fa-shopping-cart"></i>
-                            <span>Products</span>
                         </Link>
                     </li>
                 </ul>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 function AddEmployee() {
@@ -17,7 +17,7 @@ function AddEmployee() {
     const [success, setSuccess] = useState("");
     const [editingEmployee, setEditingEmployee] = useState(null);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-    const location = useLocation();
+
 
     useEffect(() => {
         fetchEmployees();
@@ -132,7 +132,7 @@ function AddEmployee() {
                 <div className="navbar-brand">Pet Care Admin</div>
                 <div className="navbar-user">
                     <span>Admin User</span>
-                    <Link to="/logout" className="logout-link">
+                    <Link to="/" className="logout-link">
                         <i className="fas fa-sign-out-alt"></i> Logout
                     </Link>
                 </div>
@@ -143,18 +143,45 @@ function AddEmployee() {
                 </button>
                 <h3 className="sidebar-title">Menu</h3>
                 <ul>
-                    <li className={location.pathname === '/adminDashboard' ? 'active' : ''}>
-                        <Link to="/adminDashboard">
-                            <i className="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </Link>
-                    </li>
-                    <li className={location.pathname === '/employee' ? 'active' : ''}>
-                        <Link to="/employee">
-                            <i className="fas fa-users"></i>
-                            <span>Employee Management</span>
-                        </Link>
-                    </li>
+                    <li>
+                                            <Link to="/adminDashboard">
+                                                <i className="fas fa-tachometer-alt"></i>
+                                                <span>Dashboard</span>
+                                            </Link>
+                                        </li>
+                                        <li className="active">
+                                            <Link to="/employee">
+                                                <i className="fas fa-users"></i>
+                                                <span>Employee Management</span>
+                                            </Link>
+                                        </li>
+                                        
+                                        <li>
+                                            <Link to="/admin-dashboard">
+                                                <i className="fas fa-shield-alt"></i>
+                                                <span>Admin Dashboard (Ads)</span>
+                                            </Link>
+                                        </li>
+                                       
+                                        <li>
+                                            <Link to="/adminDashboard/product">
+                                                <i className="fas fa-shopping-cart"></i>
+                                                <span>Products</span>
+                                            </Link>
+                                        </li>
+
+                                        <li>
+                                            <Link to="/adoption-portal">
+                                                <i className="fas fa-paw"></i>
+                                                <span>Adoption Portal</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link to="/submit-ad">
+                                                <i className="fas fa-plus-circle"></i>
+                                                <span>Submit Ad</span>
+                                            </Link>
+                                        </li>
                 </ul>
             </div>
             <div className={`main-content ${isSidebarCollapsed ? 'collapsed' : ''}`}>

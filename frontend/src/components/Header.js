@@ -133,6 +133,9 @@ function Header() {
             <Link to="/appointment" className="nav-link">Appointment</Link>
           </li>
           <li className="nav-item">
+            <Link to="/adoption-portal" className="nav-link">Adoption Portal</Link>
+          </li>
+          <li className="nav-item">
             <Link to="/pet" className="nav-link">Pet</Link>
           </li>
           <li className="nav-item">
