@@ -85,9 +85,7 @@ function Footer() {
     heartIcon: {
       color: 'red'
     },
-    contentWrapper: {
-      paddingBottom: '200px'
-    }
+    
   };
 
   return (

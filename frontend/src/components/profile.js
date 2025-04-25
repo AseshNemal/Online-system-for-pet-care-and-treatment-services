@@ -96,12 +96,8 @@ const Profile = () => {
             </span>
           </div>
         </div>
-
         <div className="profile-actions">
-          <button 
-            className="edit-profile-btn"
-            onClick={() => navigate("/profile/edit")}
-          >
+         <button className="edit-profile-btn" onClick={() => navigate("/profile/edit")}>
             Edit Profile
           </button>
           <button 
