@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Home() {
- 
   const styles = {
     container: {
       maxWidth: '1200px',
@@ -39,11 +38,7 @@ function Home() {
       textDecoration: 'none',
       fontWeight: '600',
       fontSize: '1.1rem',
-      transition: 'all 0.3s ease',
-      ':hover': {
-        transform: 'translateY(-3px)',
-        boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
-      }
+      transition: 'all 0.3s ease'
     },
     featuresSection: {
       padding: '80px 0',
@@ -66,11 +61,7 @@ function Home() {
       borderRadius: '15px',
       padding: '30px',
       boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
-      transition: 'all 0.3s ease',
-      ':hover': {
-        transform: 'translateY(-10px)',
-        boxShadow: '0 15px 30px rgba(0,0,0,0.1)'
-      }
+      transition: 'all 0.3s ease'
     },
     featureIcon: {
       fontSize: '3rem',
@@ -258,6 +249,67 @@ function Home() {
         </div>
       </section>
 
+      {/* Why Choose Us Section */}
+      <section style={{ ...styles.featuresSection, background: '#f4f6fc' }}>
+        <div style={styles.container}>
+          <h2 style={styles.sectionTitle}>Why Choose Our System?</h2>
+          <div style={styles.featuresGrid}>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>🔒</div>
+              <h3 style={styles.featureTitle}>Secure & Private</h3>
+              <p style={styles.featureText}>
+                Your pet's data is encrypted and stored securely in the cloud.
+              </p>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>🧠</div>
+              <h3 style={styles.featureTitle}>AI Powered Insights</h3>
+              <p style={styles.featureText}>
+                Get personalized suggestions based on your pet’s health trends.
+              </p>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>🔧</div>
+              <h3 style={styles.featureTitle}>Easy Setup</h3>
+              <p style={styles.featureText}>
+                Plug and play. No complex configurations. Works out of the box.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section style={styles.featuresSection}>
+        <div style={styles.container}>
+          <h2 style={styles.sectionTitle}>What Pet Owners Say</h2>
+          <div style={styles.featuresGrid}>
+            <div style={styles.featureCard}>
+              <p style={{ ...styles.featureText, fontStyle: 'italic' }}>
+                "This system helped detect early signs of fever in my dog. It probably saved his life!"
+              </p>
+              <h4 style={{ marginTop: '15px', color: '#333' }}>– Samantha, Dog Owner</h4>
+            </div>
+            <div style={styles.featureCard}>
+              <p style={{ ...styles.featureText, fontStyle: 'italic' }}>
+                "I love being able to check my cat's location and see how active she is during the day."
+              </p>
+              <h4 style={{ marginTop: '15px', color: '#333' }}>– Alex, Cat Owner</h4>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section style={{ ...styles.header, background: 'linear-gradient(135deg, #43cea2, #185a9d)' }}>
+        <div style={styles.container}>
+          <h2 style={styles.headerTitle}>Join Thousands of Pet Owners Today!</h2>
+          <p style={styles.headerSubtitle}>
+            Experience smart, stress-free pet care. Get started with our AI-powered monitoring system.
+          </p>
+          <Link to="/pet" style={styles.ctaButton}>Start Monitoring</Link>
+        </div>
+      </section>
     </div>
   );
 }

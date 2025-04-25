@@ -18,8 +18,6 @@ const app = express();
 const PORT = process.env.PORT || "8090";
 
 
-
-// ✅ Enable CORS with credentials
 app.use(cors({
     origin: "http://localhost:3000", // Frontend URL
     credentials: true 
@@ -88,6 +86,10 @@ app.use('/medical', medicalRecords);
 //Route for product
 const productRouter = require("./API/routes/productRoutes.js")
 app.use("/product", productRouter)
+
+//Route for Order
+const orderRoutes = require("./API/routes/orderRoutes.js")
+app.use("/order", orderRoutes);
 
 // Serve static files from the uploads folder
 app.use("/uploads", express.static("uploads"));
