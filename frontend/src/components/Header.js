@@ -13,7 +13,7 @@ function Header() {
 
   // Memoized search options to prevent recreation on every render
   const allSearchOptions = useMemo(() => [
-    { name: "Appointment", path: "/appointment" },
+    { name: "Appointment", path: "/appointments" },
     { name: "About us", path: "/about" },
     { name: "Pet Store", path: "/product/all" },
     { name: "Pet Medical Record", path: "/pet" },
@@ -130,7 +130,7 @@ function Header() {
             <Link to="/product/all" className="nav-link">Shopping</Link>
           </li>
           <li className="nav-item">
-            <Link to="/appointment" className="nav-link">Appointment</Link>
+            <Link to="/appointments" className="nav-link">Services</Link>
           </li>
           <li className="nav-item">
             <Link to="/adoption-portal" className="nav-link">Adoption Portal</Link>

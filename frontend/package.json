@@ -2,6 +2,8 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  
+
   "dependencies": {
     "@botpress/webchat": "^1.1.1",
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",

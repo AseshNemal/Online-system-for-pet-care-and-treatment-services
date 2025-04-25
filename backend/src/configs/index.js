@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 
 
+
 const config = {
     DB_CONNECTION_STRING: process.env.MONGODB_URL,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,

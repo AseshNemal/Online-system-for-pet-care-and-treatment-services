@@ -91,6 +91,10 @@ app.use("/product", productRouter)
 const orderRoutes = require("./API/routes/orderRoutes.js")
 app.use("/order", orderRoutes);
 
+// Appointment routes
+import appointmentRoutes from "./API/routes/appointmentRoutes.js";
+app.use("/api/appointments", appointmentRoutes);
+
 // Serve static files from the uploads folder
 app.use("/uploads", express.static("uploads"));
 

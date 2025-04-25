@@ -1,0 +1,118 @@
+/* AppointmentForm.css */
+
+.appointment-form {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    font-family: 'Segoe UI', sans-serif;
+    color: #1a1a1a;
+    animation: fadeInUp 0.5s ease both;
+    transform-origin: top center;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .appointment-form h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #001b44;
+    margin-bottom: 1.5rem;
+    text-transform: capitalize;
+    text-align: center;
+  }
+  
+  .appointment-form .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  .appointment-form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #003087;
+  }
+  
+  .appointment-form input,
+  .appointment-form select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .appointment-form input:focus,
+  .appointment-form select:focus {
+    border-color: #0075c9;
+    box-shadow: 0 0 0 2px rgba(0, 117, 201, 0.2);
+    outline: none;
+  }
+  
+  .appointment-form .success-message {
+    color: green;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .appointment-form .form-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .appointment-form .submit-btn,
+  .appointment-form .cancel-btn {
+    flex: 1;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .appointment-form .submit-btn {
+    background-color: #0075c9;
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .appointment-form .submit-btn:hover {
+    background-color: #004a99;
+  }
+  
+  .appointment-form .cancel-btn {
+    background-color: #f1f5f9;
+    color: #0075c9;
+    border: 1px solid #0075c9;
+    font-weight: 600;
+  }
+  
+  .appointment-form .cancel-btn:hover {
+    background-color: #e2e8f0;
+    color: #004a99;
+  }

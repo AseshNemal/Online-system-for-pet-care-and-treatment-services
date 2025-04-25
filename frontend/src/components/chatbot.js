@@ -2,29 +2,36 @@ import React, { useEffect } from "react";
 
 function Chatbot() {
   useEffect(() => {
-    // Create script elements for Botpress webchat
-    const script1 = document.createElement("script");
-    script1.src = "https://cdn.botpress.cloud/webchat/v2.2/inject.js";
-    script1.async = true;
+    // Create script element for Botpress webchat inject
+    const injectScript = document.createElement("script");
+    injectScript.src = "https://cdn.botpress.cloud/webchat/v2.2/inject.js";
+    injectScript.async = true;
+    
+    // Wait for the inject script to load before loading the bot script
+    injectScript.onload = () => {
+      // Create the bot configuration script
+      const botScript = document.createElement("script");
+      botScript.src = "https://files.bpcontent.cloud/2025/02/06/17/20250206172318-P0CQ3EFJ.js";
+      botScript.async = true;
+      document.body.appendChild(botScript);
+    };
 
-    const script2 = document.createElement("script");
-    script2.src = "https://files.bpcontent.cloud/2025/02/06/17/20250206172318-P0CQ3EFJ.js";
-    script2.async = true;
-
-    // Append the scripts to the document body
-    document.body.appendChild(script1);
-    document.body.appendChild(script2);
+    document.body.appendChild(injectScript);
 
     // Cleanup scripts when the component unmounts
     return () => {
-      document.body.removeChild(script1);
-      document.body.removeChild(script2);
+      const scripts = document.querySelectorAll('script[src*="bpcontent.cloud"], script[src*="botpress.cloud"]');
+      scripts.forEach(script => {
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      });
     };
   }, []); // Empty array ensures the effect runs only once after the component mounts
 
   return (
-    <div>
-      {/* Optionally, add some divs or other elements for styling */}
+    <div id="bp-webchat-container">
+      {/* Container for Botpress chat */}
     </div>
   );
 }
