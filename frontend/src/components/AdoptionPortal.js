@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useMemo, useCallback } from "react"; // Added useCallback
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../adoptionPortal.css";
 
@@ -11,10 +11,36 @@ function AdoptionPortal() {
   const [filterType, setFilterType] = useState("");
   const [selectedPet, setSelectedPet] = useState(null);
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [userId, setUserId] = useState("0000");
+  const [userLoading, setUserLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const response = await fetch("http://localhost:8090/get-session", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.user) {
+        setUserId(data.user._id);
+      } else {
+        navigate("/login");
+      }
+    } catch (err) {
+      console.error("Error fetching user:", err);
+      navigate("/login");
+    } finally {
+      setUserLoading(false);
+    }
+  }, [navigate, setUserId, setUserLoading]);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
 
   useEffect(() => {
     fetchApprovedAds();
-  }, []); // First useEffect to fetch ads
+  }, []);
 
   async function fetchApprovedAds() {
     try {
@@ -29,16 +55,11 @@ function AdoptionPortal() {
     }
   }
 
-  // Use useMemo to compute filteredAds instead of a separate useEffect
   const filteredAds = useMemo(() => {
     let result = [...ads];
-
-    // Filter by type
     if (filterType && filterType !== "all") {
       result = result.filter((ad) => ad.type === filterType);
     }
-
-    // Filter by search term (breed or description)
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(
@@ -47,9 +68,8 @@ function AdoptionPortal() {
           ad.description.toLowerCase().includes(term)
       );
     }
-
     return result;
-  }, [ads, searchTerm, filterType]); // Dependencies for useMemo
+  }, [ads, searchTerm, filterType]);
 
   function handleContactClick(pet) {
     setSelectedPet(pet);
@@ -64,9 +84,12 @@ function AdoptionPortal() {
     setSelectedPet(null);
   }
 
+  if (userLoading) {
+    return <div>Loading user...</div>;
+  }
+
   return (
     <div className="adoption-portal">
-      {/* Hero Section */}
       <div className="hero">
         <div className="hero-pattern"></div>
         <div className="hero-content">
@@ -85,9 +108,11 @@ function AdoptionPortal() {
             />
           </svg>
           <h1 className="hero-title">Find Your Perfect Companion</h1>
-          <p className="hero-subtitle">Browse our selection of loving pets looking for their forever homes</p>
+          <p className="hero-subtitle">
+            Browse our selection of loving pets looking for their forever homes
+          </p>
           <div className="hero-buttons">
-            <Link to="/submit-ad" className="btn-primary">
+            <Link to="/submit-ad" state={{ userId }} className="btn-primary">
               Submit a Pet for Adoption
             </Link>
             <Link to="/dashboard" className="btn-secondary">
@@ -97,7 +122,6 @@ function AdoptionPortal() {
         </div>
       </div>
 
-      {/* Search and Filter */}
       <div className="search-section">
         <div className="search-container">
           <div className="search-input-container">
@@ -142,7 +166,6 @@ function AdoptionPortal() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="content-section">
         {error && (
           <div className="alert alert-error">
@@ -188,7 +211,10 @@ function AdoptionPortal() {
                   </p>
                   <p className="pet-description">{ad.description}</p>
                   <div className="pet-actions">
-                    <button className="btn-outline" onClick={() => setSelectedPet(ad)}>
+                    <button
+                      className="btn-outline"
+                      onClick={() => setSelectedPet(ad)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -200,7 +226,10 @@ function AdoptionPortal() {
                       </svg>
                       Details
                     </button>
-                    <button className="btn-contact" onClick={() => handleContactClick(ad)}>
+                    <button
+                      className="btn-contact"
+                      onClick={() => handleContactClick(ad)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -254,7 +283,6 @@ function AdoptionPortal() {
         )}
       </div>
 
-      {/* Pet Details Dialog */}
       {selectedPet && (
         <div className="dialog-overlay" onClick={closeDetailsDialog}>
           <div className="dialog" onClick={(e) => e.stopPropagation()}>
@@ -263,7 +291,9 @@ function AdoptionPortal() {
                 {selectedPet.breed}
                 <span className="pet-type-badge">{selectedPet.type}</span>
               </div>
-              <div className="dialog-subtitle">Pet ID: {selectedPet._id.substring(0, 8)}</div>
+              <div className="dialog-subtitle">
+                Pet ID: {selectedPet._id.substring(0, 8)}
+              </div>
             </div>
             <div className="dialog-content">
               <img
@@ -311,14 +341,14 @@ function AdoptionPortal() {
         </div>
       )}
 
-      {/* Contact Dialog */}
       {contactDialogOpen && (
         <div className="dialog-overlay" onClick={closeContactDialog}>
           <div className="dialog" onClick={(e) => e.stopPropagation()}>
             <div className="dialog-header">
               <div className="dialog-title">Contact Information</div>
               <div className="dialog-subtitle">
-                Reach out to the owner of {selectedPet?.breed} to discuss adoption
+                Reach out to the owner of {selectedPet?.breed} to discuss
+                adoption
               </div>
             </div>
             <div className="dialog-content">

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const PetAdSchema = new mongoose.Schema({
-  image: { type: String, required: true }, // Base64 string
+  image: { type: String, required: true },
   type: {
     type: String,
     enum: ["Dog", "Cat", "Goat", "Cow", "Bird", "Squirrel", "Other"],
@@ -11,6 +11,11 @@ const PetAdSchema = new mongoose.Schema({
   weight: { type: Number, required: true, min: 0 },
   description: { type: String, required: true, maxlength: 500 },
   contactNumber: { type: String, required: true },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   status: {
     type: String,
     enum: ["Pending", "Approved", "Rejected", "Deleted"],

@@ -2,16 +2,25 @@ const express = require("express");
 const router = express.Router();
 const PetAd = require("../model/PetAd");
 
-// User: Submit a new pet ad
-router.post("/submit", async (req, res) => {
-  try {
-    const { image, type, breed, weight, description, contactNumber } = req.body;
+const isAuthenticated = (req, res, next) => {
+  if (!req.session.user) {
+    return res.status(401).send({ error: "Unauthorized: Please log in" });
+  }
+  next();
+};
 
-    if (!image || !type || !breed || !weight || !description || !contactNumber) {
-      return res.status(400).send({ error: "All fields are required" });
+router.post("/submit", isAuthenticated, async (req, res) => {
+  try {
+    const { image, type, breed, weight, description, contactNumber, userId } = req.body;
+
+    if (userId !== req.session.user._id) {
+      return res.status(403).send({ error: "Forbidden: User ID does not match session" });
     }
 
-    // Validate weight
+    if (!image || !type || !breed || !weight || !description || !contactNumber || !userId) {
+      return res.status(400).send({ error: "All fields are required, including userId" });
+    }
+
     if (weight <= 0) {
       return res.status(400).send({ error: "Weight must be greater than 0" });
     }
@@ -19,7 +28,6 @@ router.post("/submit", async (req, res) => {
       return res.status(400).send({ error: "Weight cannot exceed 200 kg" });
     }
 
-    // Validate phone number (basic regex for 10-12 digits)
     const phoneRegex = /^\d{10,12}$/;
     if (!phoneRegex.test(contactNumber)) {
       return res.status(400).send({ error: "Contact number must be 10-12 digits" });
@@ -32,6 +40,7 @@ router.post("/submit", async (req, res) => {
       weight,
       description,
       contactNumber,
+      userId,
     });
 
     await petAd.save();
@@ -41,7 +50,6 @@ router.post("/submit", async (req, res) => {
   }
 });
 
-// User: Get approved ads for portal
 router.get("/approved", async (req, res) => {
   try {
     const ads = await PetAd.find({ status: "Approved" }).sort({ createdAt: -1 });
@@ -51,7 +59,6 @@ router.get("/approved", async (req, res) => {
   }
 });
 
-// Admin: Get all ads by status
 router.get("/admin/list", async (req, res) => {
   try {
     const { status } = req.query;
@@ -64,7 +71,6 @@ router.get("/admin/list", async (req, res) => {
   }
 });
 
-// Admin: Approve ad
 router.post("/admin/approve/:id", async (req, res) => {
   try {
     const ad = await PetAd.findById(req.params.id);
@@ -80,7 +86,6 @@ router.post("/admin/approve/:id", async (req, res) => {
   }
 });
 
-// Admin: Reject ad
 router.post("/admin/reject/:id", async (req, res) => {
   try {
     const { rejectionReason } = req.body;
@@ -100,7 +105,6 @@ router.post("/admin/reject/:id", async (req, res) => {
   }
 });
 
-// Admin: Delete ad
 router.post("/admin/delete/:id", async (req, res) => {
   try {
     const { rejectionReason } = req.body;
