@@ -91,10 +91,10 @@ router.route("/delete/:id").delete(async(req,res) =>{
 
     await Pet.findByIdAndDelete(petid)
     .then(() => {
-        res.status(200).send({status: "User deleted"})
+        res.status(200).send({status: "Pet deleted"})
     }).catch((err) =>{
         console.log(err.message);
-        res.status(500).send({status: "Error with delete user",eror: err.message});
+        res.status(500).send({status: "Error with delete Pet",eror: err.message});
     })
 
 } )

@@ -212,9 +212,11 @@ function AddPet() {
               <div className="col-md-6 mt-md-0 mt-3">
                 <label>Weight</label>
                 <input
-                  type="text"
+                  type="number"
                   className="form-control"
                   required
+                  min="2"
+                  max="200"
                   onChange={(e) => setWeight(e.target.value)}
                 />
               </div>

@@ -35,12 +35,12 @@ const googleAuth = (passport) => {
     )
   );
 
-  // **Serialize User**
+  
   passport.serializeUser((user, done) => {
-    done(null, user.id); // Store only user ID in session
+    done(null, user.id); 
   });
 
-  // **Deserialize User**
+
   passport.deserializeUser(async (id, done) => {
     try {
       const user = await User.findById(id);

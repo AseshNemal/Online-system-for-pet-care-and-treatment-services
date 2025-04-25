@@ -39,6 +39,20 @@ function UserPets() {
     navigate(`/pets/${petId}`);
   };
 
+  const handleDeletePet = async (petId, e) => {
+    e.stopPropagation(); // Prevent triggering the pet click event
+    try {
+      const confirmDelete = window.confirm("Are you sure you want to delete this pet?");
+      if (!confirmDelete) return;
+      
+      await axios.delete(`http://localhost:8090/pet/delete/${petId}`);
+      setPets(pets.filter(pet => pet._id !== petId));
+    } catch (err) {
+      console.error("Error deleting pet:", err);
+      alert("Failed to delete pet. Please try again.");
+    }
+  };
+
   if (loading) return <div className="loading">Loading pets...</div>;
   if (error) return <div className="error">Error: {error}</div>;
   if (pets.length === 0) return <div className="no-pets">No pets found for this user.</div>;
@@ -59,17 +73,25 @@ function UserPets() {
                 {pet.species} | {pet.breed}
               </span>
             </div>
-            <div className="pet-arrow">→</div>
+            <div className="pet-actions">
+              <button 
+                className="delete-button"
+                onClick={(e) => handleDeletePet(pet._id, e)}
+              >
+                Delete
+              </button>
+              <div className="pet-arrow">→</div>
+            </div>
           </li>
         ))}
       </ul>
 
-
-          <button onClick={() => navigate(`/pet/add`)}
-        className="add-record-button">
+      <button 
+        onClick={() => navigate(`/pet/add`)}
+        className="add-record-button"
+      >
         + Add New Pet
-        </button>
-        
+      </button>
     </div>
   );
 }
@@ -86,17 +108,16 @@ const styles = `
   }
 
   .add-record-button {
-          background-color: #3498db;
-          color: white;
-          border: none;
-          padding: 0.7rem 1.2rem;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 0.9rem;
-          transition: background-color 0.2s;
-          margin: 2rem auto;
-          
-        }
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+    margin: 2rem auto;
+  }
 
   .user-pets-title {
     color: #2c3e50;
@@ -145,6 +166,27 @@ const styles = `
   .pet-details {
     color: #7f8c8d;
     font-size: 0.9rem;
+  }
+
+  .pet-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .delete-button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background-color 0.2s;
+  }
+
+  .delete-button:hover {
+    background-color: #c0392b;
   }
 
   .pet-arrow {
