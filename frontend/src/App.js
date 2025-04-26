@@ -27,6 +27,10 @@ import AboutUs from './components/AboutUs';
 import PaymentPage from './components/PaymentPage';
 import MyOrdersPage from './components/MyOrdersPage';
 import ServicesLanding from './components/Appointment/ServicesLanding';
+import FinancialManagement from './components/FinancialManagement';
+import ExpensesManagement from './components/ExpensesManagement';
+import OrderFinanceManagement from './components/OrderFinanceManagement';
+import HRFinanceManagement from './components/HRFinanceManagement';
 
 
 
@@ -71,7 +75,11 @@ function AppContent() {
         
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
         
-
+        {/* Financial Management Routes */}
+        <Route path="/financial" element={<FinancialManagement />} />
+        <Route path="/financial/expenses" element={<ExpensesManagement />} />
+        <Route path="/financial/orders" element={<OrderFinanceManagement />} />
+        <Route path="/financial/hr" element={<HRFinanceManagement />} />
       </Routes>
 
 
