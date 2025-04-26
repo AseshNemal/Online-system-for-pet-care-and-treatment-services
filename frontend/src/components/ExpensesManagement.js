@@ -98,26 +98,40 @@ const ExpensesManagement = () => {
     const currentDate = new Date().toLocaleDateString();
     const currentTime = new Date().toLocaleTimeString();
 
+    // Create table header
+    const tableHeader = `
+╔══════════════════╦════════════╦═════════════╦═════════════╗
+║ Item Name        ║ Quantity   ║ Cost/Item   ║ Total Cost  ║
+╠══════════════════╬════════════╬═════════════╬═════════════╣`;
+
+    // Create table rows
+    const tableRows = expenses.map(expense => {
+      const itemName = expense.itemName.padEnd(16);
+      const quantity = expense.quantity.toString().padEnd(10);
+      const costPerItem = `Rs. ${expense.costPerItem}`.padEnd(11);
+      const totalCost = `Rs. ${expense.totalCost}`.padEnd(11);
+      
+      return `
+║ ${itemName} ║ ${quantity} ║ ${costPerItem} ║ ${totalCost} ║`;
+    }).join('');
+
+    // Create table footer
+    const tableFooter = `
+╠══════════════════╬════════════╬═════════════╬═════════════╣
+║ Total Cost: Rs. ${totalCost.toString().padEnd(7)} ║
+╚══════════════════╩════════════╩═════════════╩═════════════╝`;
+
     const reportContent = `EXPENSES REPORT
 Generated on: ${currentDate} at ${currentTime}
-===============================================
+════════════════════════════════════════════════════════════════════════════════
 
-EXPENSE DETAILS:
------------------------------------------------
-${expenses.map((expense, index) => `
-Expense #${index + 1}
------------------------------------------------
-Item Name: ${expense.itemName}
-Quantity: ${expense.quantity}
-Cost per Item: $${expense.costPerItem}
-Total Cost: $${expense.totalCost}
------------------------------------------------`).join('\n')}
+${tableHeader}${tableRows}${tableFooter}
 
 SUMMARY:
------------------------------------------------
+════════════════════════════════════════════════════════════════════════════════
 Total Number of Expenses: ${expenses.length}
-Total Cost: $${totalCost}
-===============================================`;
+Total Cost: Rs. ${totalCost}
+════════════════════════════════════════════════════════════════════════════════`;
 
     const blob = new Blob([reportContent], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
@@ -184,8 +198,8 @@ Total Cost: $${totalCost}
               <tr key={expense._id}>
                 <td>{expense.itemName}</td>
                 <td>{expense.quantity}</td>
-                <td>${expense.costPerItem}</td>
-                <td>${expense.totalCost}</td>
+                <td>Rs. {expense.costPerItem}</td>
+                <td>Rs. {expense.totalCost}</td>
                 <td>
                   <button onClick={() => handleUpdate(expense._id)}>Update</button>
                   <button onClick={() => handleDeleteClick(expense)}>Delete</button>
@@ -196,7 +210,7 @@ Total Cost: $${totalCost}
           <tfoot>
             <tr>
               <td colSpan="3">Total Cost:</td>
-              <td>${totalCost}</td>
+              <td>Rs. {totalCost}</td>
               <td></td>
             </tr>
           </tfoot>
@@ -214,7 +228,7 @@ Total Cost: $${totalCost}
             <p>Are you sure you want to delete this expense?</p>
             <p><strong>Item:</strong> {expenseToDelete.itemName}</p>
             <p><strong>Quantity:</strong> {expenseToDelete.quantity}</p>
-            <p><strong>Cost:</strong> ${expenseToDelete.totalCost}</p>
+            <p><strong>Cost:</strong> Rs. {expenseToDelete.totalCost}</p>
             <div className="delete-confirm-buttons">
               <button onClick={handleDeleteConfirm} className="confirm-delete">Delete</button>
               <button onClick={handleDeleteCancel} className="cancel-delete">Cancel</button>
