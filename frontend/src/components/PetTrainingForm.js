@@ -1,196 +1,781 @@
-// client/src/pages/TrainingForm.jsx
+"use client"
 
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react"
+import axios from "axios"
+import "../petTrainingForm.css"
 
-const TrainingForm = () => {
-  const [activeForm, setActiveForm] = useState('behavioral'); // Switch between forms
+const PetTrainingForm = () => {
+  const [activeTab, setActiveTab] = useState("behavioral")
   const [behavioralData, setBehavioralData] = useState({
-    petType: '',
-    breed: '',
+    petType: "",
+    breed: "",
     behavioralIssues: [],
-    frequency: '',
-    triggers: '',
-    previousAttempts: '',
-    methodsUsed: '',
-    outcome: '',
-    reactionToStrangers: '',
-    reactionToChildren: '',
-    reactionToAnimals: '',
-    biteHistory: '',
-    biteDetails: '',
-    environment: '',
-    otherPets: '',
-    otherPetsDetails: '',
-    otherIssues: ''
-  });
+    frequency: "",
+    triggers: "",
+    previousAttempts: "",
+    methodsUsed: "",
+    outcome: "",
+    reactionToStrangers: "",
+    reactionToChildren: "",
+    reactionToAnimals: "",
+    biteHistory: "",
+    biteDetails: "",
+    environment: "",
+    otherPets: "",
+    otherPetsDetails: "",
+    otherIssues: "",
+  })
 
   const [obedienceData, setObedienceData] = useState({
-    petType: '',
-    breed: '',
-    currentTrainingLevel: '',
-    priorTraining: '',
-    priorTrainingType: '',
-    commandsKnown: '',
+    petType: "",
+    breed: "",
+    currentTrainingLevel: "",
+    priorTraining: "",
+    priorTrainingType: "",
+    commandsKnown: "",
     skillsToLearn: [],
-    commandReliability: '',
-    responseInDistractions: '',
-    trainingMethod: '',
-    sessionFormat: '',
-    trainingGoals: '',
-    trainingDifficulties: '',
-    struggleSituations: ''
-  });
+    commandReliability: "",
+    responseInDistractions: "",
+    trainingMethod: "",
+    sessionFormat: "",
+    trainingGoals: "",
+    trainingDifficulties: "",
+    struggleSituations: "",
+  })
 
-  const [result, setResult] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  // Pet type options
+  const petTypeOptions = [
+    { value: "dog", label: "Dog" },
+    { value: "cat", label: "Cat" },
+    { value: "bird", label: "Bird" },
+    { value: "rabbit", label: "Rabbit" },
+    { value: "hamster", label: "Hamster" },
+    { value: "guinea_pig", label: "Guinea Pig" },
+    { value: "reptile", label: "Reptile" },
+    { value: "other", label: "Other" },
+  ]
+
+  // Behavioral issues options
+  const behavioralIssuesOptions = [
+    { id: "aggression", label: "Aggression (toward people, dogs, other animals)" },
+    { id: "fear", label: "Fear or anxiety (noises, strangers, separation)" },
+    { id: "guarding", label: "Resource guarding (food, toys, space)" },
+    { id: "barking", label: "Excessive barking or vocalization" },
+    { id: "destructive", label: "Destructive behavior (chewing, digging)" },
+    { id: "soiling", label: "House soiling (inappropriate urination/defecation)" },
+    { id: "jumping", label: "Jumping on people" },
+    { id: "chasing", label: "Chasing (cars, animals, people)" },
+    { id: "mounting", label: "Mounting/humping" },
+    { id: "escaping", label: "Escaping/running away" },
+  ]
+
+  // Obedience skills options
+  const obedienceSkillsOptions = [
+    { id: "sit", label: "Sit" },
+    { id: "down", label: "Down" },
+    { id: "stay", label: "Stay" },
+    { id: "come", label: "Come/Recall" },
+    { id: "leave", label: "Leave it/Drop it" },
+    { id: "heel", label: "Heel/Leash walking" },
+    { id: "place", label: "Place/Go to bed" },
+    { id: "wait", label: "Wait at door" },
+    { id: "crate", label: "Crate training" },
+  ]
 
   // Handle behavioral form change
   const handleBehavioralChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target
+    setBehavioralData((prev) => ({ ...prev, [name]: value }))
+  }
 
-    if (type === 'checkbox') {
-      setBehavioralData(prev => {
-        const updatedIssues = checked
-          ? [...prev.behavioralIssues, value]
-          : prev.behavioralIssues.filter(issue => issue !== value);
-        return { ...prev, behavioralIssues: updatedIssues };
-      });
-    } else {
-      setBehavioralData(prev => ({ ...prev, [name]: value }));
-    }
-  };
+  // Handle behavioral checkbox change
+  const handleBehavioralCheckboxChange = (id) => {
+    setBehavioralData((prev) => {
+      const isSelected = prev.behavioralIssues.includes(id)
+      const updatedIssues = isSelected
+        ? prev.behavioralIssues.filter((issue) => issue !== id)
+        : [...prev.behavioralIssues, id]
+      return { ...prev, behavioralIssues: updatedIssues }
+    })
+  }
 
   // Handle obedience form change
   const handleObedienceChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target
+    setObedienceData((prev) => ({ ...prev, [name]: value }))
+  }
 
-    if (type === 'checkbox') {
-      setObedienceData(prev => {
-        const updatedSkills = checked
-          ? [...prev.skillsToLearn, value]
-          : prev.skillsToLearn.filter(skill => skill !== value);
-        return { ...prev, skillsToLearn: updatedSkills };
-      });
-    } else {
-      setObedienceData(prev => ({ ...prev, [name]: value }));
-    }
-  };
+  // Handle obedience checkbox change
+  const handleObedienceCheckboxChange = (id) => {
+    setObedienceData((prev) => {
+      const isSelected = prev.skillsToLearn.includes(id)
+      const updatedSkills = isSelected
+        ? prev.skillsToLearn.filter((skill) => skill !== id)
+        : [...prev.skillsToLearn, id]
+      return { ...prev, skillsToLearn: updatedSkills }
+    })
+  }
 
   // Handle form submit
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
-    const url = activeForm === 'behavioral'
-      ? 'http://localhost:8090/gemini/behavioral'
-      : 'http://localhost:8090/gemini/obedience';
+    const url =
+      activeTab === "behavioral" ? "http://localhost:8090/gemini/behavioral" : "http://localhost:8090/gemini/obedience"
 
-    const dataToSend = activeForm === 'behavioral' ? behavioralData : obedienceData;
+    const dataToSend = activeTab === "behavioral" ? behavioralData : obedienceData
 
     try {
-      const response = await axios.post(url, dataToSend);
-      setResult(response.data);
+      const response = await axios.post(url, dataToSend)
+      setResult(response.data)
     } catch (error) {
-      console.error('Error:', error);
-      alert('Something went wrong.');
+      console.error("Error:", error)
+      alert("Something went wrong.")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Pet Training Form</h1>
+    <div className="training-form-container">
+      <h1 className="form-title">Pet Training Assessment</h1>
 
-      {/* Buttons to switch between Behavioral / Obedience */}
-      <div style={{ marginBottom: '20px' }}>
-        <button onClick={() => setActiveForm('behavioral')}>Behavioral Training</button>
-        <button onClick={() => setActiveForm('obedience')}>Obedience Training</button>
+      {/* Tab Navigation */}
+      <div className="tab-navigation">
+        <button
+          className={`tab-button ${activeTab === "behavioral" ? "active" : ""}`}
+          onClick={() => setActiveTab("behavioral")}
+        >
+          Behavioral Training
+        </button>
+        <button
+          className={`tab-button ${activeTab === "obedience" ? "active" : ""}`}
+          onClick={() => setActiveTab("obedience")}
+        >
+          Obedience Training
+        </button>
       </div>
 
-      {/* Behavioral Form */}
-      {activeForm === 'behavioral' && (
-        <form onSubmit={handleSubmit}>
-          <h2>Behavioral Training Form</h2>
-          <input name="petType" placeholder="Pet Type (Dog, Cat, etc.)" onChange={handleBehavioralChange} />
-          <input name="breed" placeholder="Breed" onChange={handleBehavioralChange} />
+      {/* Behavioral Training Form */}
+      {activeTab === "behavioral" && (
+        <div className="form-card">
+          <div className="card-header">
+            <h2>Behavioral Training Assessment</h2>
+            <p>Help us understand your pet's behavioral issues so we can create a customized training plan.</p>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="card-content">
+              {/* Basic Information */}
+              <div className="form-grid">
+                <div className="form-group">
+                  <label htmlFor="petType">Pet Type</label>
+                  <select
+                    id="petType"
+                    name="petType"
+                    value={behavioralData.petType}
+                    onChange={handleBehavioralChange}
+                    className="form-select"
+                  >
+                    <option value="">Select pet type</option>
+                    {petTypeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="breed">Breed</label>
+                  <input
+                    id="breed"
+                    name="breed"
+                    type="text"
+                    placeholder="Breed"
+                    value={behavioralData.breed}
+                    onChange={handleBehavioralChange}
+                  />
+                </div>
+              </div>
 
-          <h4>Behavioral Issues:</h4>
-          <label><input type="checkbox" value="Aggression" onChange={handleBehavioralChange} /> Aggression</label><br/>
-          <label><input type="checkbox" value="Fear or anxiety" onChange={handleBehavioralChange} /> Fear or anxiety</label><br/>
-          <label><input type="checkbox" value="Resource guarding" onChange={handleBehavioralChange} /> Resource guarding</label><br/>
-          <label><input type="checkbox" value="Excessive barking" onChange={handleBehavioralChange} /> Excessive barking</label><br/>
-          {/* Add other issues similarly */}
-          <input name="otherIssues" placeholder="Other behavioral issues" onChange={handleBehavioralChange} />
+              <div className="form-divider"></div>
 
-          <input name="frequency" placeholder="How often does it occur?" onChange={handleBehavioralChange} />
-          <input name="triggers" placeholder="What triggers the behavior?" onChange={handleBehavioralChange} />
+              {/* Behavioral Issues */}
+              <div className="form-section">
+                <h3>Behavioral Issues to Address</h3>
+                <div className="checkbox-container">
+                  {behavioralIssuesOptions.map((issue) => (
+                    <div key={issue.id} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        id={`behavioral-${issue.id}`}
+                        checked={behavioralData.behavioralIssues.includes(issue.id)}
+                        onChange={() => handleBehavioralCheckboxChange(issue.id)}
+                      />
+                      <label htmlFor={`behavioral-${issue.id}`}>{issue.label}</label>
+                    </div>
+                  ))}
+                </div>
+                <div className="form-group">
+                  <label htmlFor="otherIssues">Other Issues</label>
+                  <input
+                    id="otherIssues"
+                    name="otherIssues"
+                    type="text"
+                    placeholder="Any other behavioral issues"
+                    value={behavioralData.otherIssues}
+                    onChange={handleBehavioralChange}
+                  />
+                </div>
+              </div>
 
-          <h4>Previous Attempts to Correct:</h4>
-          <input name="previousAttempts" placeholder="Have you tried to correct it? (Yes/No)" onChange={handleBehavioralChange} />
-          <input name="methodsUsed" placeholder="Methods used" onChange={handleBehavioralChange} />
-          <input name="outcome" placeholder="Outcome of attempts" onChange={handleBehavioralChange} />
+              <div className="form-divider"></div>
 
-          <h4>Socialization:</h4>
-          <input name="reactionToStrangers" placeholder="Reaction to strangers" onChange={handleBehavioralChange} />
-          <input name="reactionToChildren" placeholder="Reaction to children" onChange={handleBehavioralChange} />
-          <input name="reactionToAnimals" placeholder="Reaction to other animals" onChange={handleBehavioralChange} />
-          <input name="biteHistory" placeholder="Has your pet bitten? (Yes/No)" onChange={handleBehavioralChange} />
-          <input name="biteDetails" placeholder="Bite incident details" onChange={handleBehavioralChange} />
+              {/* Frequency and Triggers */}
+              <div className="form-section">
+                <h3>Frequency and Triggers</h3>
+                <div className="form-group">
+                  <label htmlFor="frequency">How often does this behavior occur?</label>
+                  <select
+                    id="frequency"
+                    name="frequency"
+                    value={behavioralData.frequency}
+                    onChange={handleBehavioralChange}
+                  >
+                    <option value="">Select frequency</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="occasionally">Occasionally</option>
+                    <option value="rarely">Rarely</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="triggers">What triggers this behavior?</label>
+                  <textarea
+                    id="triggers"
+                    name="triggers"
+                    placeholder="Describe what seems to trigger this behavior"
+                    value={behavioralData.triggers}
+                    onChange={handleBehavioralChange}
+                  ></textarea>
+                </div>
+              </div>
 
-          <h4>Environment:</h4>
-          <input name="environment" placeholder="Where does behavior occur?" onChange={handleBehavioralChange} />
-          <input name="otherPets" placeholder="Other pets? (Yes/No)" onChange={handleBehavioralChange} />
-          <input name="otherPetsDetails" placeholder="Details about other pets" onChange={handleBehavioralChange} />
+              <div className="form-divider"></div>
 
-          <button type="submit" style={{ marginTop: '20px' }}>Submit Behavioral Form</button>
-        </form>
+              {/* Previous Attempts */}
+              <div className="form-section">
+                <h3>Previous Attempts to Correct</h3>
+                <div className="form-group">
+                  <label>Have you tried to address this behavior before?</label>
+                  <div className="radio-group">
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="previous-yes"
+                        name="previousAttempts"
+                        value="yes"
+                        checked={behavioralData.previousAttempts === "yes"}
+                        onChange={handleBehavioralChange}
+                      />
+                      <label htmlFor="previous-yes">Yes</label>
+                    </div>
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="previous-no"
+                        name="previousAttempts"
+                        value="no"
+                        checked={behavioralData.previousAttempts === "no"}
+                        onChange={handleBehavioralChange}
+                      />
+                      <label htmlFor="previous-no">No</label>
+                    </div>
+                  </div>
+                </div>
+                {behavioralData.previousAttempts === "yes" && (
+                  <>
+                    <div className="form-group">
+                      <label htmlFor="methodsUsed">Methods Used</label>
+                      <textarea
+                        id="methodsUsed"
+                        name="methodsUsed"
+                        placeholder="What methods have you tried?"
+                        value={behavioralData.methodsUsed}
+                        onChange={handleBehavioralChange}
+                      ></textarea>
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="outcome">Outcome</label>
+                      <textarea
+                        id="outcome"
+                        name="outcome"
+                        placeholder="What was the outcome of these attempts?"
+                        value={behavioralData.outcome}
+                        onChange={handleBehavioralChange}
+                      ></textarea>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="form-divider"></div>
+
+              {/* Socialization */}
+              <div className="form-section">
+                <h3>Socialization</h3>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label htmlFor="reactionToStrangers">Reaction to Strangers</label>
+                    <select
+                      id="reactionToStrangers"
+                      name="reactionToStrangers"
+                      value={behavioralData.reactionToStrangers}
+                      onChange={handleBehavioralChange}
+                    >
+                      <option value="">Select reaction</option>
+                      <option value="friendly">Friendly</option>
+                      <option value="cautious">Cautious</option>
+                      <option value="fearful">Fearful</option>
+                      <option value="aggressive">Aggressive</option>
+                      <option value="indifferent">Indifferent</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="reactionToChildren">Reaction to Children</label>
+                    <select
+                      id="reactionToChildren"
+                      name="reactionToChildren"
+                      value={behavioralData.reactionToChildren}
+                      onChange={handleBehavioralChange}
+                    >
+                      <option value="">Select reaction</option>
+                      <option value="friendly">Friendly</option>
+                      <option value="cautious">Cautious</option>
+                      <option value="fearful">Fearful</option>
+                      <option value="aggressive">Aggressive</option>
+                      <option value="indifferent">Indifferent</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="reactionToAnimals">Reaction to Other Animals</label>
+                    <select
+                      id="reactionToAnimals"
+                      name="reactionToAnimals"
+                      value={behavioralData.reactionToAnimals}
+                      onChange={handleBehavioralChange}
+                    >
+                      <option value="">Select reaction</option>
+                      <option value="friendly">Friendly</option>
+                      <option value="cautious">Cautious</option>
+                      <option value="fearful">Fearful</option>
+                      <option value="aggressive">Aggressive</option>
+                      <option value="indifferent">Indifferent</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Has your pet ever bitten or attempted to bite?</label>
+                  <div className="radio-group">
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="bite-yes"
+                        name="biteHistory"
+                        value="yes"
+                        checked={behavioralData.biteHistory === "yes"}
+                        onChange={handleBehavioralChange}
+                      />
+                      <label htmlFor="bite-yes">Yes</label>
+                    </div>
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="bite-no"
+                        name="biteHistory"
+                        value="no"
+                        checked={behavioralData.biteHistory === "no"}
+                        onChange={handleBehavioralChange}
+                      />
+                      <label htmlFor="bite-no">No</label>
+                    </div>
+                  </div>
+                </div>
+                {behavioralData.biteHistory === "yes" && (
+                  <div className="form-group">
+                    <label htmlFor="biteDetails">Bite Incident Details</label>
+                    <textarea
+                      id="biteDetails"
+                      name="biteDetails"
+                      placeholder="Please describe the incident(s)"
+                      value={behavioralData.biteDetails}
+                      onChange={handleBehavioralChange}
+                    ></textarea>
+                  </div>
+                )}
+              </div>
+
+              <div className="form-divider"></div>
+
+              {/* Environment */}
+              <div className="form-section">
+                <h3>Environment</h3>
+                <div className="form-group">
+                  <label htmlFor="environment">Where does the behavior mostly occur?</label>
+                  <textarea
+                    id="environment"
+                    name="environment"
+                    placeholder="Home, park, walks, etc."
+                    value={behavioralData.environment}
+                    onChange={handleBehavioralChange}
+                  ></textarea>
+                </div>
+                <div className="form-group">
+                  <label>Are there other pets in the household?</label>
+                  <div className="radio-group">
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="pets-yes"
+                        name="otherPets"
+                        value="yes"
+                        checked={behavioralData.otherPets === "yes"}
+                        onChange={handleBehavioralChange}
+                      />
+                      <label htmlFor="pets-yes">Yes</label>
+                    </div>
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="pets-no"
+                        name="otherPets"
+                        value="no"
+                        checked={behavioralData.otherPets === "no"}
+                        onChange={handleBehavioralChange}
+                      />
+                      <label htmlFor="pets-no">No</label>
+                    </div>
+                  </div>
+                </div>
+                {behavioralData.otherPets === "yes" && (
+                  <div className="form-group">
+                    <label htmlFor="otherPetsDetails">Details about other pets</label>
+                    <textarea
+                      id="otherPetsDetails"
+                      name="otherPetsDetails"
+                      placeholder="Species, ages, and how they interact"
+                      value={behavioralData.otherPetsDetails}
+                      onChange={handleBehavioralChange}
+                    ></textarea>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="card-footer">
+              <button type="submit" className="submit-button" disabled={loading}>
+                {loading ? "Generating..." : "Submit Behavioral Assessment"}
+              </button>
+            </div>
+          </form>
+        </div>
       )}
 
-      {/* Obedience Form */}
-      {activeForm === 'obedience' && (
-        <form onSubmit={handleSubmit}>
-          <h2>Obedience Training Form</h2>
-          <input name="petType" placeholder="Pet Type (Dog, Cat, etc.)" onChange={handleObedienceChange} />
-          <input name="breed" placeholder="Breed" onChange={handleObedienceChange} />
-          <input name="currentTrainingLevel" placeholder="Current Training Level" onChange={handleObedienceChange} />
-          <input name="priorTraining" placeholder="Prior Training (Yes/No)" onChange={handleObedienceChange} />
-          <input name="priorTrainingType" placeholder="Type of Prior Training" onChange={handleObedienceChange} />
-          <input name="commandsKnown" placeholder="Commands Known (Sit, Stay...)" onChange={handleObedienceChange} />
+      {/* Obedience Training Form */}
+      {activeTab === "obedience" && (
+        <div className="form-card">
+          <div className="card-header">
+            <h2>Obedience Training Assessment</h2>
+            <p>Help us understand your pet's current training level and goals.</p>
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="card-content">
+              {/* Basic Information */}
+              <div className="form-grid">
+                <div className="form-group">
+                  <label htmlFor="obedience-petType">Pet Type</label>
+                  <select
+                    id="obedience-petType"
+                    name="petType"
+                    value={obedienceData.petType}
+                    onChange={handleObedienceChange}
+                    className="form-select"
+                  >
+                    <option value="">Select pet type</option>
+                    {petTypeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="obedience-breed">Breed</label>
+                  <input
+                    id="obedience-breed"
+                    name="breed"
+                    type="text"
+                    placeholder="Breed"
+                    value={obedienceData.breed}
+                    onChange={handleObedienceChange}
+                  />
+                </div>
+              </div>
 
-          <h4>Skills to Learn/Improve:</h4>
-          <label><input type="checkbox" value="Sit" onChange={handleObedienceChange} /> Sit</label><br/>
-          <label><input type="checkbox" value="Down" onChange={handleObedienceChange} /> Down</label><br/>
-          <label><input type="checkbox" value="Stay" onChange={handleObedienceChange} /> Stay</label><br/>
-          {/* Add other skills similarly */}
+              <div className="form-divider"></div>
 
-          <input name="commandReliability" placeholder="Command Reliability (Always, Sometimes, Rarely)" onChange={handleObedienceChange} />
-          <input name="responseInDistractions" placeholder="Response in Distracting Environments (Yes/No)" onChange={handleObedienceChange} />
-          <input name="trainingMethod" placeholder="Preferred Training Method" onChange={handleObedienceChange} />
-          <input name="sessionFormat" placeholder="Session Format (Group, Private, Online)" onChange={handleObedienceChange} />
-          <input name="trainingGoals" placeholder="Training Goals" onChange={handleObedienceChange} />
-          <input name="trainingDifficulties" placeholder="Training Difficulties" onChange={handleObedienceChange} />
-          <input name="struggleSituations" placeholder="Situations where struggles happen" onChange={handleObedienceChange} />
+              {/* Current Training Level */}
+              <div className="form-section">
+                <h3>Current Training Level</h3>
+                <div className="form-group">
+                  <label htmlFor="currentTrainingLevel">Current Training Level</label>
+                  <select
+                    id="currentTrainingLevel"
+                    name="currentTrainingLevel"
+                    value={obedienceData.currentTrainingLevel}
+                    onChange={handleObedienceChange}
+                  >
+                    <option value="">Select level</option>
+                    <option value="none">No training</option>
+                    <option value="basic">Basic training</option>
+                    <option value="intermediate">Intermediate training</option>
+                    <option value="advanced">Advanced training</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Has your pet received any prior obedience training?</label>
+                  <div className="radio-group">
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="training-yes"
+                        name="priorTraining"
+                        value="yes"
+                        checked={obedienceData.priorTraining === "yes"}
+                        onChange={handleObedienceChange}
+                      />
+                      <label htmlFor="training-yes">Yes</label>
+                    </div>
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="training-no"
+                        name="priorTraining"
+                        value="no"
+                        checked={obedienceData.priorTraining === "no"}
+                        onChange={handleObedienceChange}
+                      />
+                      <label htmlFor="training-no">No</label>
+                    </div>
+                  </div>
+                </div>
+                {obedienceData.priorTraining === "yes" && (
+                  <div className="form-group">
+                    <label htmlFor="priorTrainingType">Type of Prior Training</label>
+                    <select
+                      id="priorTrainingType"
+                      name="priorTrainingType"
+                      value={obedienceData.priorTrainingType}
+                      onChange={handleObedienceChange}
+                    >
+                      <option value="">Select type</option>
+                      <option value="puppy">Puppy class</option>
+                      <option value="group">Group lessons</option>
+                      <option value="private">Private lessons</option>
+                      <option value="self">Self-taught</option>
+                      <option value="online">Online training</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                )}
+                <div className="form-group">
+                  <label htmlFor="commandsKnown">Commands Already Known</label>
+                  <textarea
+                    id="commandsKnown"
+                    name="commandsKnown"
+                    placeholder="Sit, stay, come, etc."
+                    value={obedienceData.commandsKnown}
+                    onChange={handleObedienceChange}
+                  ></textarea>
+                </div>
+              </div>
 
-          <button type="submit" style={{ marginTop: '20px' }}>Submit Obedience Form</button>
-        </form>
+              <div className="form-divider"></div>
+
+              {/* Skills to Learn */}
+              <div className="form-section">
+                <h3>Skills to Learn/Improve</h3>
+                <div className="checkbox-container">
+                  {obedienceSkillsOptions.map((skill) => (
+                    <div key={skill.id} className="checkbox-item">
+                      <input
+                        type="checkbox"
+                        id={`obedience-${skill.id}`}
+                        checked={obedienceData.skillsToLearn.includes(skill.id)}
+                        onChange={() => handleObedienceCheckboxChange(skill.id)}
+                      />
+                      <label htmlFor={`obedience-${skill.id}`}>{skill.label}</label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="form-divider"></div>
+
+              {/* Response to Commands */}
+              <div className="form-section">
+                <h3>Response to Commands</h3>
+                <div className="form-group">
+                  <label htmlFor="commandReliability">How reliably does your pet respond to known commands?</label>
+                  <select
+                    id="commandReliability"
+                    name="commandReliability"
+                    value={obedienceData.commandReliability}
+                    onChange={handleObedienceChange}
+                  >
+                    <option value="">Select reliability</option>
+                    <option value="always">Always</option>
+                    <option value="usually">Usually</option>
+                    <option value="sometimes">Sometimes</option>
+                    <option value="rarely">Rarely</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Does your pet respond to commands in distracting environments?</label>
+                  <div className="radio-group">
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="distraction-yes"
+                        name="responseInDistractions"
+                        value="yes"
+                        checked={obedienceData.responseInDistractions === "yes"}
+                        onChange={handleObedienceChange}
+                      />
+                      <label htmlFor="distraction-yes">Yes</label>
+                    </div>
+                    <div className="radio-item">
+                      <input
+                        type="radio"
+                        id="distraction-no"
+                        name="responseInDistractions"
+                        value="no"
+                        checked={obedienceData.responseInDistractions === "no"}
+                        onChange={handleObedienceChange}
+                      />
+                      <label htmlFor="distraction-no">No</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-divider"></div>
+
+              {/* Training Preferences */}
+              <div className="form-section">
+                <h3>Training Preferences</h3>
+                <div className="form-group">
+                  <label htmlFor="trainingMethod">Preferred Training Method</label>
+                  <select
+                    id="trainingMethod"
+                    name="trainingMethod"
+                    value={obedienceData.trainingMethod}
+                    onChange={handleObedienceChange}
+                  >
+                    <option value="">Select method</option>
+                    <option value="positive">Positive reinforcement</option>
+                    <option value="clicker">Clicker training</option>
+                    <option value="balanced">Balanced training</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="sessionFormat">Preferred Session Format</label>
+                  <select
+                    id="sessionFormat"
+                    name="sessionFormat"
+                    value={obedienceData.sessionFormat}
+                    onChange={handleObedienceChange}
+                  >
+                    <option value="">Select format</option>
+                    <option value="group">Group classes</option>
+                    <option value="private">Private lessons</option>
+                    <option value="online">Online training</option>
+                    <option value="board">Board and train</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="trainingGoals">Training Goals</label>
+                  <textarea
+                    id="trainingGoals"
+                    name="trainingGoals"
+                    placeholder="What do you hope to achieve with training?"
+                    value={obedienceData.trainingGoals}
+                    onChange={handleObedienceChange}
+                  ></textarea>
+                </div>
+              </div>
+
+              <div className="form-divider"></div>
+
+              {/* Challenges with Training */}
+              <div className="form-section">
+                <h3>Challenges with Training</h3>
+                <div className="form-group">
+                  <label htmlFor="trainingDifficulties">Any specific difficulties during training?</label>
+                  <textarea
+                    id="trainingDifficulties"
+                    name="trainingDifficulties"
+                    placeholder="Easily distracted, stubborn, fearful, etc."
+                    value={obedienceData.trainingDifficulties}
+                    onChange={handleObedienceChange}
+                  ></textarea>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="struggleSituations">Particular situations where your pet struggles to obey</label>
+                  <textarea
+                    id="struggleSituations"
+                    name="struggleSituations"
+                    placeholder="Around other dogs, in public, at home, etc."
+                    value={obedienceData.struggleSituations}
+                    onChange={handleObedienceChange}
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            <div className="card-footer">
+              <button type="submit" className="submit-button" disabled={loading}>
+                {loading ? "Generating..." : "Submit Obedience Assessment"}
+              </button>
+            </div>
+          </form>
+        </div>
       )}
 
-      {/* Loading or Result Section */}
-      {loading && <p>Loading...</p>}
-
+      {/* Results Section */}
       {result && (
-        <div style={{ marginTop: '30px' }}>
-          <h2>Result from Gemini AI</h2>
-          <h3>Cause of Issue:</h3>
-          <p>{result.cause_of_issue}</p>
-          <h3>Training Plan:</h3>
-          <p>{result.training_plan}</p>
+        <div className="result-card">
+          <div className="card-header">
+            <h2>Training Assessment Results</h2>
+            <p>Based on your input, here's our AI-generated training assessment</p>
+          </div>
+          <div className="card-content">
+            <div className="result-section">
+              <h3>Cause of Issue:</h3>
+              <p>{result.cause_of_issue}</p>
+            </div>
+            <div className="form-divider"></div>
+            <div className="result-section">
+              <h3>Training Plan:</h3>
+              <p>{result.training_plan}</p>
+            </div>
+          </div>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TrainingForm;
+export default PetTrainingForm
