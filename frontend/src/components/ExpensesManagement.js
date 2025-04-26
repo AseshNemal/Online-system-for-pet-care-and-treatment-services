@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './ExpensesManagement.css';
 
 const ExpensesManagement = () => {
@@ -9,10 +10,25 @@ const ExpensesManagement = () => {
     costPerItem: ''
   });
   const [totalCost, setTotalCost] = useState(0);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [expenseToDelete, setExpenseToDelete] = useState(null);
 
   useEffect(() => {
-    calculateTotalCost();
+    fetchExpenses();
+  }, []);
+
+  useEffect(() => {
+    calculateTotalCost(expenses);
   }, [expenses]);
+
+  const fetchExpenses = async () => {
+    try {
+      const response = await axios.get('http://localhost:8090/api/expenses');
+      setExpenses(response.data);
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -22,55 +38,92 @@ const ExpensesManagement = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newExpense = {
-      id: Date.now(),
-      ...formData,
-      totalCost: formData.quantity * formData.costPerItem
-    };
-    setExpenses(prev => [...prev, newExpense]);
-    setFormData({
-      itemName: '',
-      quantity: '',
-      costPerItem: ''
-    });
+    try {
+      const response = await axios.post('http://localhost:8090/api/expenses', formData);
+      setExpenses(prev => [...prev, response.data]);
+      setFormData({
+        itemName: '',
+        quantity: '',
+        costPerItem: ''
+      });
+    } catch (error) {
+      console.error('Error adding expense:', error);
+    }
   };
 
-  const calculateTotalCost = () => {
-    const total = expenses.reduce((sum, expense) => sum + expense.totalCost, 0);
+  const calculateTotalCost = (expenseData) => {
+    const total = expenseData.reduce((sum, expense) => sum + expense.totalCost, 0);
     setTotalCost(total);
   };
 
-  const handleUpdate = (id) => {
-    const expenseToUpdate = expenses.find(expense => expense.id === id);
+  const handleUpdate = async (id) => {
+    const expenseToUpdate = expenses.find(expense => expense._id === id);
     setFormData({
       itemName: expenseToUpdate.itemName,
       quantity: expenseToUpdate.quantity,
       costPerItem: expenseToUpdate.costPerItem
     });
-    setExpenses(prev => prev.filter(expense => expense.id !== id));
+    try {
+      await axios.delete(`http://localhost:8090/api/expenses/${id}`);
+      setExpenses(prev => prev.filter(expense => expense._id !== id));
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+    }
   };
 
-  const handleDelete = (id) => {
-    setExpenses(prev => prev.filter(expense => expense.id !== id));
+  const handleDeleteClick = (expense) => {
+    setExpenseToDelete(expense);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await axios.delete(`http://localhost:8090/api/expenses/${expenseToDelete._id}`);
+      setExpenses(prev => prev.filter(expense => expense._id !== expenseToDelete._id));
+      setShowDeleteConfirm(false);
+      setExpenseToDelete(null);
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+    setExpenseToDelete(null);
   };
 
   const generateReport = () => {
-    const reportContent = expenses.map(expense => 
-      `Item Name: ${expense.itemName}
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+
+    const reportContent = `EXPENSES REPORT
+Generated on: ${currentDate} at ${currentTime}
+===============================================
+
+EXPENSE DETAILS:
+-----------------------------------------------
+${expenses.map((expense, index) => `
+Expense #${index + 1}
+-----------------------------------------------
+Item Name: ${expense.itemName}
 Quantity: ${expense.quantity}
 Cost per Item: $${expense.costPerItem}
 Total Cost: $${expense.totalCost}
+-----------------------------------------------`).join('\n')}
 
-`
-    ).join('') + `\nTotal Expenses: $${totalCost}`;
+SUMMARY:
+-----------------------------------------------
+Total Number of Expenses: ${expenses.length}
+Total Cost: $${totalCost}
+===============================================`;
 
     const blob = new Blob([reportContent], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'expenses_report.txt';
+    a.download = `expenses_report_${currentDate.replace(/\//g, '-')}.txt`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
@@ -128,14 +181,14 @@ Total Cost: $${expense.totalCost}
           </thead>
           <tbody>
             {expenses.map(expense => (
-              <tr key={expense.id}>
+              <tr key={expense._id}>
                 <td>{expense.itemName}</td>
                 <td>{expense.quantity}</td>
                 <td>${expense.costPerItem}</td>
                 <td>${expense.totalCost}</td>
                 <td>
-                  <button onClick={() => handleUpdate(expense.id)}>Update</button>
-                  <button onClick={() => handleDelete(expense.id)}>Delete</button>
+                  <button onClick={() => handleUpdate(expense._id)}>Update</button>
+                  <button onClick={() => handleDeleteClick(expense)}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -153,6 +206,22 @@ Total Cost: $${expense.totalCost}
       <button onClick={generateReport} className="generate-report-btn">
         Generate Report
       </button>
+
+      {showDeleteConfirm && (
+        <div className="delete-confirm-overlay">
+          <div className="delete-confirm-dialog">
+            <h3>Confirm Delete</h3>
+            <p>Are you sure you want to delete this expense?</p>
+            <p><strong>Item:</strong> {expenseToDelete.itemName}</p>
+            <p><strong>Quantity:</strong> {expenseToDelete.quantity}</p>
+            <p><strong>Cost:</strong> ${expenseToDelete.totalCost}</p>
+            <div className="delete-confirm-buttons">
+              <button onClick={handleDeleteConfirm} className="confirm-delete">Delete</button>
+              <button onClick={handleDeleteCancel} className="cancel-delete">Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -104,6 +104,9 @@ app.use("/employee",employeeRoutes)
 const PetAdRoutes = require("./API/routes/PetAdRoutes.js")
 app.use("/pet-ad", PetAdRoutes);
 
+// Expense routes
+const expenseRoutes = require("./API/routes/expenseRoutes.js");
+app.use("/api/expenses", expenseRoutes);
 
 app.listen(PORT, () => {
     logger.info(`Server is running on PORT ${PORT}`);
