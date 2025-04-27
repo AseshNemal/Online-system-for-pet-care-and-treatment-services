@@ -1,18 +1,43 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './HRFinanceManagement.css';
 
 const HRFinanceManagement = () => {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
-    // This would typically come from your API
-    const mockEmployeeData = [
-      { id: 1, name: 'John Doe', role: 'Veterinarian', appointmentsCount: 20 },
-      { id: 2, name: 'Jane Smith', role: 'Nurse', appointmentsCount: 15 },
-      { id: 3, name: 'Mike Johnson', role: 'Receptionist', appointmentsCount: 10 }
-    ];
-    setEmployees(mockEmployeeData);
+    fetchEmployeeData();
   }, []);
+
+  const fetchEmployeeData = async () => {
+    try {
+      const response = await axios.get('http://localhost:8090/api/appointments/all');
+      const appointments = response.data;
+      
+      // Group appointments by employee and calculate counts
+      const employeeMap = new Map();
+      
+      appointments.forEach(appointment => {
+        const { employeeId, employeeFirstName, employeeRole } = appointment;
+        
+        if (!employeeMap.has(employeeId)) {
+          employeeMap.set(employeeId, {
+            id: employeeId,
+            name: employeeFirstName,
+            role: employeeRole,
+            appointmentsCount: 0
+          });
+        }
+        
+        const employee = employeeMap.get(employeeId);
+        employee.appointmentsCount++;
+      });
+      
+      setEmployees(Array.from(employeeMap.values()));
+    } catch (error) {
+      console.error('Error fetching employee data:', error);
+    }
+  };
 
   const calculateSalary = (appointmentsCount) => {
     return appointmentsCount * 4000;
@@ -39,33 +64,50 @@ const HRFinanceManagement = () => {
   };
 
   const generateReport = () => {
-    const reportContent = employees.map(employee => {
+    const currentDate = new Date().toLocaleDateString();
+    const currentTime = new Date().toLocaleTimeString();
+
+    // Create table header
+    const tableHeader = `
+┌──────────────────┬────────────┬────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┐
+│ Employee ID      │ Name       │ Role       │ Appointments│ Total Salary│ EPF (8%)    │ EPF (12%)   │ Total EPF   │ Net Salary  │
+├──────────────────┼────────────┼────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤`;
+
+    // Create table rows
+    const tableRows = employees.map(employee => {
       const totalSalary = calculateSalary(employee.appointmentsCount);
       const epf8 = calculateEPF8(totalSalary);
       const epf12 = calculateEPF12(totalSalary);
       const totalEPF = calculateTotalEPF(epf8, epf12);
       const etf = calculateETF(totalSalary);
-      const monthlySalary = calculateMonthlySalary(totalSalary, totalEPF);
+      const netSalary = calculateMonthlySalary(totalSalary, totalEPF);
 
-      return `Employee ID: ${employee.id}
-Name: ${employee.name}
-Role: ${employee.role}
-Appointments Count: ${employee.appointmentsCount}
-Total Salary: $${totalSalary}
-EPF (8%): $${epf8}
-EPF (12%): $${epf12}
-Total EPF: $${totalEPF}
-ETF: $${etf}
-Monthly Salary: $${monthlySalary}
-
-`;
+      const employeeId = employee.id ? employee.id.toString().slice(-8) : 'N/A';
+      
+      return `
+│ ${employeeId.padEnd(16)} │ ${(employee.name || 'N/A').padEnd(10)} │ ${(employee.role || 'N/A').padEnd(10)} │ ${employee.appointmentsCount.toString().padEnd(11)} │ Rs. ${totalSalary.toFixed(2).padEnd(9)} │ Rs. ${epf8.toFixed(2).padEnd(9)} │ Rs. ${epf12.toFixed(2).padEnd(9)} │ Rs. ${totalEPF.toFixed(2).padEnd(9)} │ Rs. ${netSalary.toFixed(2).padEnd(9)} │`;
     }).join('');
+
+    // Create table footer
+    const tableFooter = `
+└──────────────────┴────────────┴────────────┴─────────────┴─────────────┴─────────────┴─────────────┴─────────────┴─────────────┘`;
+
+    const reportContent = `HR FINANCE REPORT
+════════════════════════════════════════════════════════════════════════════════
+Generated on: ${currentDate} at ${currentTime}
+
+${tableHeader}${tableRows}${tableFooter}
+
+SUMMARY:
+════════════════════════════════════════════════════════════════════════════════
+Total Number of Employees: ${employees.length}
+════════════════════════════════════════════════════════════════════════════════`;
 
     const blob = new Blob([reportContent], { type: 'text/plain' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'hr_finance_report.txt';
+    a.download = `hr_finance_report_${currentDate.replace(/\//g, '-')}.txt`;
     document.body.appendChild(a);
     a.click();
     window.URL.revokeObjectURL(url);
@@ -83,12 +125,12 @@ Monthly Salary: $${monthlySalary}
               <th>Employee ID</th>
               <th>Name</th>
               <th>Role</th>
-              <th>Appointments Count</th>
+              <th>Appointments</th>
               <th>EPF (8%)</th>
               <th>EPF (12%)</th>
               <th>Total EPF</th>
               <th>ETF</th>
-              <th>Monthly Salary</th>
+              <th>Net Salary</th>
             </tr>
           </thead>
           <tbody>
@@ -98,7 +140,7 @@ Monthly Salary: $${monthlySalary}
               const epf12 = calculateEPF12(totalSalary);
               const totalEPF = calculateTotalEPF(epf8, epf12);
               const etf = calculateETF(totalSalary);
-              const monthlySalary = calculateMonthlySalary(totalSalary, totalEPF);
+              const netSalary = calculateMonthlySalary(totalSalary, totalEPF);
 
               return (
                 <tr key={employee.id}>
@@ -106,11 +148,11 @@ Monthly Salary: $${monthlySalary}
                   <td>{employee.name}</td>
                   <td>{employee.role}</td>
                   <td>{employee.appointmentsCount}</td>
-                  <td>${epf8}</td>
-                  <td>${epf12}</td>
-                  <td>${totalEPF}</td>
-                  <td>${etf}</td>
-                  <td>${monthlySalary}</td>
+                  <td>Rs. {epf8.toFixed(2)}</td>
+                  <td>Rs. {epf12.toFixed(2)}</td>
+                  <td>Rs. {totalEPF.toFixed(2)}</td>
+                  <td>Rs. {etf.toFixed(2)}</td>
+                  <td>Rs. {netSalary.toFixed(2)}</td>
                 </tr>
               );
             })}
@@ -125,4 +167,4 @@ Monthly Salary: $${monthlySalary}
   );
 };
 
-export default HRFinanceManagement; 
+export default HRFinanceManagement;
