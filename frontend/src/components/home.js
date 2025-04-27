@@ -61,7 +61,9 @@ function Home() {
       borderRadius: '15px',
       padding: '30px',
       boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
-      transition: 'all 0.3s ease'
+      transition: 'all 0.3s ease',
+      display: 'flex',
+      flexDirection: 'column'
     },
     featureIcon: {
       fontSize: '3rem',
@@ -75,7 +77,22 @@ function Home() {
     },
     featureText: {
       color: '#666',
-      lineHeight: '1.6'
+      lineHeight: '1.6',
+      flexGrow: '1'
+    },
+    featureButton: {
+      marginTop: '20px',
+      padding: '10px 20px',
+      backgroundColor: '#6e8efb',
+      color: 'white',
+      border: 'none',
+      borderRadius: '30px',
+      cursor: 'pointer',
+      fontWeight: '600',
+      transition: 'all 0.3s ease',
+      textDecoration: 'none',
+      display: 'inline-block',
+      textAlign: 'center'
     },
     statsSection: {
       background: '#f9f9f9',
@@ -189,7 +206,16 @@ function Home() {
                 Get instant notifications if your pet's health metrics go outside normal ranges.
               </p>
             </div>
+            
           </div>
+          <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>🤖</div>
+              <h3 style={styles.featureTitle}>AI Pet Training</h3>
+              <p style={styles.featureText}>
+                Our AI-powered training system helps teach your pet commands and track progress with personalized lessons.
+              </p>
+              <Link to="/trainer" style={styles.featureButton}>Try Pet Trainer</Link>
+            </div>
         </div>
       </section>
 
@@ -239,9 +265,9 @@ function Home() {
             <div style={styles.step}>
               <div style={styles.stepNumber}>3</div>
               <div style={styles.stepContent}>
-                <h3 style={styles.stepTitle}>Monitor Remotely</h3>
+                <h3 style={styles.stepTitle}>Monitor & Train</h3>
                 <p style={styles.stepText}>
-                  View all your pet's health metrics and location from anywhere in the world.
+                  View all your pet's health metrics and use our AI trainer to teach new commands.
                 </p>
               </div>
             </div>
@@ -265,7 +291,7 @@ function Home() {
               <div style={styles.featureIcon}>🧠</div>
               <h3 style={styles.featureTitle}>AI Powered Insights</h3>
               <p style={styles.featureText}>
-                Get personalized suggestions based on your pet’s health trends.
+                Get personalized suggestions based on your pet's health trends and behavior patterns.
               </p>
             </div>
             <div style={styles.featureCard}>
@@ -273,6 +299,13 @@ function Home() {
               <h3 style={styles.featureTitle}>Easy Setup</h3>
               <p style={styles.featureText}>
                 Plug and play. No complex configurations. Works out of the box.
+              </p>
+            </div>
+            <div style={styles.featureCard} >
+              <div style={styles.featureIcon}>🎓</div>
+              <h3 style={styles.featureTitle}>Smart Training</h3>
+              <p style={styles.featureText}>
+                Our AI adapts to your pet's learning style for faster, more effective training.
               </p>
             </div>
           </div>
@@ -292,9 +325,9 @@ function Home() {
             </div>
             <div style={styles.featureCard}>
               <p style={{ ...styles.featureText, fontStyle: 'italic' }}>
-                "I love being able to check my cat's location and see how active she is during the day."
+                "The AI trainer taught my stubborn terrier to sit in just 3 days - something I couldn't do in months!"
               </p>
-              <h4 style={{ marginTop: '15px', color: '#333' }}>– Alex, Cat Owner</h4>
+              <h4 style={{ marginTop: '15px', color: '#333' }}>– Michael, Dog Owner</h4>
             </div>
           </div>
         </div>
@@ -305,7 +338,7 @@ function Home() {
         <div style={styles.container}>
           <h2 style={styles.headerTitle}>Join Thousands of Pet Owners Today!</h2>
           <p style={styles.headerSubtitle}>
-            Experience smart, stress-free pet care. Get started with our AI-powered monitoring system.
+            Experience smart, stress-free pet care and training. Get started with our AI-powered monitoring system.
           </p>
           <Link to="/pet" style={styles.ctaButton}>Start Monitoring</Link>
         </div>

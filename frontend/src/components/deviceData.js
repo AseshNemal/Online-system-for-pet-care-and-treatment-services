@@ -54,7 +54,7 @@ const DeviceData = () => {
           BatteryLevel: rawData[key].Battery ? Number(rawData[key].Battery) : -1,
           En_Temperature: rawData[key].En_temperature ? Number(rawData[key].En_temperature) : 0,
           En_Humidity: rawData[key].en_humidity ? Number(rawData[key].en_humidity) : 0,
-          AirQuality: rawData[key].Air_quality ? Number(rawData[key].Air_quality/4) : 0,
+          AirQuality: rawData[key].AirQuality ? Number(rawData[key].AirQuality/4) : 0,
           Temperature: rawData[key].Temperature ? Number(rawData[key].Temperature) : 0,
           HeartRate: rawData[key].hartrate ? Number(rawData[key].hartrate/5) : 0,
           Steps: rawData[key].step ? Number(rawData[key].step) : 0,
