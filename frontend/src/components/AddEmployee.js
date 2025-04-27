@@ -26,7 +26,7 @@ function AddEmployee() {
         try {
             setLoading(true);
             setError(""); // Clear previous errors
-            const response = await axios.get("http://localhost:8090/employee/", {
+            const response = await axios.get("http://localhost:8090/employee/get", {
                 timeout: 5000 // Add timeout to prevent hanging
             });
             console.log("Fetched employees:", response.data); // Debug log
