@@ -188,6 +188,10 @@ function AddEmployee() {
                             <span>Submit Ad</span>
                         </Link>
                     </li>
+                    <Link to="/financial">
+              <i className="fas fa-plus-circle"></i>
+              <span>Financial Management</span>
+            </Link>
                 </ul>
             </div>
             <div className={`main-content ${isSidebarCollapsed ? 'collapsed' : ''}`}>
