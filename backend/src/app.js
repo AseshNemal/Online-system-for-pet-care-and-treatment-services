@@ -112,6 +112,8 @@ app.use("/api/expenses", expenseRoutes);
 const geminiRoutes = require("./API/routes/gemini.js")
 app.use("/gemini", geminiRoutes);
 
+const feedbackRoutes = require("./API/routes/feedbackRoutes.js")
+app.use("/feedback", feedbackRoutes);
 
 
 app.listen(PORT, () => {

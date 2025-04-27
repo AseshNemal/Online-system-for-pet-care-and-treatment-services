@@ -33,6 +33,7 @@ import OrderFinanceManagement from './components/OrderFinanceManagement';
 import HRFinanceManagement from './components/HRFinanceManagement';
 import AppointmentList from './components/Appointment/AppointmentList';
 import PetTrainingForm from './components/PetTrainingForm';
+import FeedBackForm from './components/FeedBackForm';
 
 
 function AppContent() {
@@ -81,6 +82,7 @@ function AppContent() {
         <Route path="/appointments/manage" element={<AppointmentList />} />
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
         <Route path="/petTrainingForm" element={<PetTrainingForm />} />
+        <Route path="/feedbackform" element={<FeedBackForm />} />
         
         
         <Route path="/financial" element={<FinancialManagement />} />
