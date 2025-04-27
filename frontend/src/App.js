@@ -28,6 +28,8 @@ import PaymentPage from './components/PaymentPage';
 import MyOrdersPage from './components/MyOrdersPage';
 import ServicesLanding from './components/Appointment/ServicesLanding';
 import AppointmentList from './components/Appointment/AppointmentList';
+import PetTrainingForm from './components/PetTrainingForm';
+
 
 function AppContent() {
   const location = useLocation();
@@ -69,6 +71,7 @@ function AppContent() {
         <Route path="/appointments" element={<ServicesLanding />} />
         <Route path="/appointments/manage" element={<AppointmentList />} />
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
+        <Route path="/petTrainingForm" element={<PetTrainingForm />} />
         
         
 
