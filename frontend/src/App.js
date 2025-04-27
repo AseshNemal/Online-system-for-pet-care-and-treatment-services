@@ -27,6 +27,7 @@ import AboutUs from './components/AboutUs';
 import PaymentPage from './components/PaymentPage';
 import MyOrdersPage from './components/MyOrdersPage';
 import ServicesLanding from './components/Appointment/ServicesLanding';
+import AppointmentList from './components/Appointment/AppointmentList';
 import PetTrainingForm from './components/PetTrainingForm';
 
 
@@ -68,9 +69,10 @@ function AppContent() {
         <Route path="/product/all" element={<StorePage />} />
         <Route path="/adminDashboard" element={<AdminDashboard />} />
         <Route path="/appointments" element={<ServicesLanding />} />
-        
+        <Route path="/appointments/manage" element={<AppointmentList />} />
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
         <Route path="/petTrainingForm" element={<PetTrainingForm />} />
+        
         
 
       </Routes>
@@ -81,6 +83,7 @@ function AppContent() {
     </>
   );
 }
+
 
 function App() {
   return (
