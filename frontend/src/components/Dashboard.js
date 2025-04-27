@@ -750,7 +750,7 @@ function Dashboard() {
           <li>
             <Link to="/adoption-portal">
               <i className="fas fa-paw"></i>
-              <span>Adoption Portal</span>financial
+              <span>Adoption Portal</span>
             </Link>
           </li>
           <li>

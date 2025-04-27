@@ -660,32 +660,30 @@ const DeviceData = () => {
 
       {/* Table */}
       <h2>Device Data {selectedDeviceId ? `(Filtered: ${selectedDeviceId})` : ''}</h2>
-      <table border="1" style={{ width: "100%", textAlign: "center", marginBottom: "20px" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
         <thead>
           <tr>
-            <th>Device ID</th>
-            <th>Battery</th>
-            <th>Steps</th>
-            <th>Heart Rate (BPM)</th>
-            <th>Temperature (°C)</th>
-            <th>Environment Temperature (°C)</th>
-            <th>Environment Humidity (%)</th>
-            <th>Air Quality (PPM)</th>
-            <th>Timestamp</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>Device ID</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>Latitude</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>Longitude</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>Battery Level</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>Temperature (°C)</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>Heart Rate (BPM)</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>Steps</th>
+            <th style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>Timestamp</th>
           </tr>
         </thead>
         <tbody>
-          {last30Records.map((data) => (
-            <tr key={data.id}>
-              <td>{data.DeviceID}</td>
-              <td>{data.BatteryLevel >= 0 ? `${data.BatteryLevel}%` : 'N/A'}</td>
-              <td>{data.Steps}</td>
-              <td>{data.HeartRate} BPM</td>
-              <td>{data.Temperature}°C</td>
-              <td>{data.En_Temperature}°C</td>
-              <td>{data.En_Humidity}%</td>
-              <td>{data.AirQuality} PPM</td>
-              <td>{data.Timestamp}</td>
+          {last20Records.map((data, index) => (
+            <tr key={index}>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{data.DeviceID}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{data.Latitude}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{data.Longitude}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{data.BatteryLevel}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{data.Temperature}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{data.HeartRate}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{data.Steps}</td>
+              <td style={{ border: "1px solid #ddd", padding: "8px", textAlign: "center" }}>{data.Timestamp}</td>
             </tr>
           ))}
         </tbody>

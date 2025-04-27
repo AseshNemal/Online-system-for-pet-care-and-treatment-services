@@ -125,6 +125,33 @@
     margin-bottom: 1rem;
     animation: fadeIn 0.8s ease-in-out;
   }
+
+  .container {
+    display: flex;
+    justify-content: center; /* Centers the button horizontally */
+    align-items: center; /* Centers the button vertically */
+    height: 100vh; /* Full viewport height */
+  }
+  
+  .appointment-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 15px 32px; /* Padding for size */
+    text-align: center; /* Center text */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* To adjust with other elements */
+    font-size: 16px; /* Text size */
+    margin: 4px 2px; /* Space around button */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 4px; /* Rounded corners */
+    border: none; /* Remove border */
+  }
+  
+  .appointment-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  
   
   /* Responsive spacing */
   @media (max-width: 500px) {
