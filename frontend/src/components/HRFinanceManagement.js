@@ -69,9 +69,9 @@ const HRFinanceManagement = () => {
 
     // Create table header
     const tableHeader = `
-┌──────────────────┬────────────┬────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┐
-│ Employee ID      │ Name       │ Role       │ Appointments│ Total Salary│ EPF (8%)    │ EPF (12%)   │ Total EPF   │ Net Salary  │
-├──────────────────┼────────────┼────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤`;
+┌────────────┬────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┐
+│ Name       │ Role       │ Appointments│ Total Salary│ EPF (8%)    │ EPF (12%)   │ Total EPF   │ Monthly Salary│
+├────────────┼────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤`;
 
     // Create table rows
     const tableRows = employees.map(employee => {
@@ -81,16 +81,14 @@ const HRFinanceManagement = () => {
       const totalEPF = calculateTotalEPF(epf8, epf12);
       const etf = calculateETF(totalSalary);
       const netSalary = calculateMonthlySalary(totalSalary, totalEPF);
-
-      const employeeId = employee.id ? employee.id.toString().slice(-8) : 'N/A';
       
       return `
-│ ${employeeId.padEnd(16)} │ ${(employee.name || 'N/A').padEnd(10)} │ ${(employee.role || 'N/A').padEnd(10)} │ ${employee.appointmentsCount.toString().padEnd(11)} │ Rs. ${totalSalary.toFixed(2).padEnd(9)} │ Rs. ${epf8.toFixed(2).padEnd(9)} │ Rs. ${epf12.toFixed(2).padEnd(9)} │ Rs. ${totalEPF.toFixed(2).padEnd(9)} │ Rs. ${netSalary.toFixed(2).padEnd(9)} │`;
+│ ${(employee.name || 'N/A').padEnd(10)} │ ${(employee.role || 'N/A').padEnd(10)} │ ${employee.appointmentsCount.toString().padEnd(11)} │ Rs. ${totalSalary.toFixed(2).padEnd(9)} │ Rs. ${epf8.toFixed(2).padEnd(9)} │ Rs. ${epf12.toFixed(2).padEnd(9)} │ Rs. ${totalEPF.toFixed(2).padEnd(9)} │ Rs. ${netSalary.toFixed(2).padEnd(9)} │`;
     }).join('');
 
     // Create table footer
     const tableFooter = `
-└──────────────────┴────────────┴────────────┴─────────────┴─────────────┴─────────────┴─────────────┴─────────────┴─────────────┘`;
+└────────────┴────────────┴─────────────┴─────────────┴─────────────┴─────────────┴─────────────┴─────────────┘`;
 
     const reportContent = `HR FINANCE REPORT
 ════════════════════════════════════════════════════════════════════════════════
@@ -122,7 +120,6 @@ Total Number of Employees: ${employees.length}
         <table>
           <thead>
             <tr>
-              <th>Employee ID</th>
               <th>Name</th>
               <th>Role</th>
               <th>Appointments</th>
@@ -130,7 +127,7 @@ Total Number of Employees: ${employees.length}
               <th>EPF (12%)</th>
               <th>Total EPF</th>
               <th>ETF</th>
-              <th>Net Salary</th>
+              <th>Monthly Salary</th>
             </tr>
           </thead>
           <tbody>
@@ -144,7 +141,6 @@ Total Number of Employees: ${employees.length}
 
               return (
                 <tr key={employee.id}>
-                  <td>{employee.id}</td>
                   <td>{employee.name}</td>
                   <td>{employee.role}</td>
                   <td>{employee.appointmentsCount}</td>
