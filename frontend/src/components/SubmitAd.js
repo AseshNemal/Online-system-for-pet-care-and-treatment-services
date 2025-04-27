@@ -90,7 +90,23 @@ function SubmitAd() {
           userId,
         };
 
-        await axios.post("http://localhost:8090/pet-ad/submit", adData);
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setError("You must be logged in to submit an ad.");
+          setLoading(false);
+          return;
+        }
+
+        await axios.post(
+          "http://localhost:8090/pet-ad/submit",
+          adData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
         setSuccess("Ad submitted successfully, awaiting approval!");
         setImage(null);
         setImagePreview("");
@@ -102,7 +118,6 @@ function SubmitAd() {
       };
     } catch (error) {
       setError(error.response?.data?.error || "Failed to submit ad.");
-    } finally {
       setLoading(false);
     }
   };

@@ -8,6 +8,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 function Dashboard() {
     const [receivedData, setReceivedData] = useState([]);
+    const [employeeCount, setEmployeeCount] = useState(0); // New state for live employee count
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
@@ -16,6 +17,24 @@ function Dashboard() {
     const [filterRole, setFilterRole] = useState('');
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const location = useLocation();
+
+    // Fetch employee count initially and every 5 seconds
+    useEffect(() => {
+        async function fetchEmployeeCount() {
+            try {
+                const response = await axios.get("http://localhost:8090/employee/count");
+                setEmployeeCount(response.data.count);
+            } catch (error) {
+                console.error("Error fetching employee count:", error);
+                setError(`Failed to fetch employee count: ${error.message}`);
+            }
+        }
+
+        fetchEmployeeCount(); // Initial fetch
+        const interval = setInterval(fetchEmployeeCount, 5000); // Poll every 5 seconds
+
+        return () => clearInterval(interval); // Clean up interval on unmount
+    }, []);
 
     useEffect(() => {
         fetchReceivedData();
@@ -183,7 +202,7 @@ function Dashboard() {
                     <div className="kpi-card">
                         <i className="fas fa-users kpi-icon"></i>
                         <h4>Employees</h4>
-                        <p>{receivedData.length}</p>
+                        <p>{employeeCount}</p>
                     </div>
                 </div>
 

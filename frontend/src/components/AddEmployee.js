@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 
 function AddEmployee() {
-    const [employeeId, setEmployeeId] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [username, setUsername] = useState("");
@@ -42,7 +41,7 @@ function AddEmployee() {
         setSuccess("");
         setLoading(true);
 
-        if (!employeeId || !firstName || !lastName || !username || !email || !password || !role) {
+        if (!firstName || !lastName || !username || !email || !password || !role) {
             setError("All fields are required.");
             setLoading(false);
             return;
@@ -56,7 +55,6 @@ function AddEmployee() {
         }
 
         const employeeData = {
-            employeeId,
             firstName,
             lastName,
             username,
@@ -64,6 +62,11 @@ function AddEmployee() {
             password,
             role,
         };
+
+        // Include employeeId only when editing
+        if (editingEmployee) {
+            employeeData.employeeId = editingEmployee.employeeId;
+        }
 
         try {
             if (editingEmployee) {
@@ -73,7 +76,6 @@ function AddEmployee() {
                 await axios.post("http://localhost:8090/employee/create", employeeData);
                 setSuccess("Employee added successfully!");
             }
-            setEmployeeId("");
             setFirstName("");
             setLastName("");
             setUsername("");
@@ -106,7 +108,6 @@ function AddEmployee() {
 
     function handleEdit(employee) {
         setEditingEmployee(employee);
-        setEmployeeId(employee.employeeId);
         setFirstName(employee.firstName);
         setLastName(employee.lastName);
         setUsername(employee.username);
@@ -117,7 +118,6 @@ function AddEmployee() {
 
     function handleCancelEdit() {
         setEditingEmployee(null);
-        setEmployeeId("");
         setFirstName("");
         setLastName("");
         setUsername("");
@@ -167,19 +167,6 @@ function AddEmployee() {
                     <form onSubmit={handleSubmit}>
                         <div className="row">
                             <div className="col-md-6 mb-3">
-                                <label className="form-label">Employee ID</label>
-                                <div className="input-group">
-                                    <span className="input-group-text"><i className="fas fa-id-badge"></i></span>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={employeeId}
-                                        onChange={(e) => setEmployeeId(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div className="col-md-6 mb-3">
                                 <label className="form-label">First Name</label>
                                 <div className="input-group">
                                     <span className="input-group-text"><i className="fas fa-user"></i></span>
@@ -192,8 +179,6 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">Last Name</label>
                                 <div className="input-group">
@@ -207,6 +192,8 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">Username</label>
                                 <div className="input-group">
@@ -220,8 +207,6 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">Email</label>
                                 <div className="input-group">
@@ -235,6 +220,8 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">Password</label>
                                 <div className="input-group">
@@ -248,21 +235,21 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                        <div className="mb-3">
-                            <label className="form-label">Role</label>
-                            <div className="input-group">
-                                <span className="input-group-text"><i className="fas fa-briefcase"></i></span>
-                                <select
-                                    className="form-control"
-                                    value={role}
-                                    onChange={(e) => setRole(e.target.value)}
-                                    required
-                                >
-                                    <option value="">Select Role</option>
-                                    <option value="Vet">Vet</option>
-                                    <option value="Groomer">Groomer</option>
-                                </select>
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Role</label>
+                                <div className="input-group">
+                                    <span className="input-group-text"><i className="fas fa-briefcase"></i></span>
+                                    <select
+                                        className="form-control"
+                                        value={role}
+                                        onChange={(e) => setRole(e.target.value)}
+                                        required
+                                    >
+                                        <option value="">Select Role</option>
+                                        <option value="Vet">Vet</option>
+                                        <option value="Groomer">Groomer</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div className="d-flex gap-2">

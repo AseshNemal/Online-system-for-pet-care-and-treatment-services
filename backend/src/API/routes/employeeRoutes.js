@@ -3,10 +3,24 @@ const router = express.Router();
 const Employee = require('../model/Employee');
 const AppointmentData = require('../model/AppointmentData');
 
+// Generate unique employeeId
+async function generateEmployeeId() {
+    const prefix = 'EMP';
+    const count = await Employee.countDocuments();
+    return `${prefix}${count + 1}`; // e.g., EMP1, EMP2, etc.
+}
+
 // Create Employee
 router.post('/create', async (req, res) => {
     try {
-        const { employeeId, firstName, lastName, username, email, password, role } = req.body;
+        const { firstName, lastName, username, email, password, role } = req.body;
+
+        // Validate required fields
+        if (!firstName || !lastName || !username || !email || !password || !role) {
+            return res.status(400).send({ error: 'All fields are required' });
+        }
+
+        const employeeId = await generateEmployeeId();
 
         const employee = new Employee({
             employeeId,
@@ -14,7 +28,7 @@ router.post('/create', async (req, res) => {
             lastName,
             username,
             email,
-            password, // Plain text as per your request (April 22, 2025)
+            password, // Plain text as per your request
             role,
             availability: []
         });
@@ -34,6 +48,17 @@ router.get('/', async (req, res) => {
         res.status(200).json(employees);
     } catch (error) {
         console.error('Error fetching employees:', error);
+        res.status(400).send({ error: error.message });
+    }
+});
+
+// Get Employee Count
+router.get('/count', async (req, res) => {
+    try {
+        const count = await Employee.countDocuments();
+        res.status(200).json({ count });
+    } catch (error) {
+        console.error('Error fetching employee count:', error);
         res.status(400).send({ error: error.message });
     }
 });
@@ -147,26 +172,20 @@ router.get('/appointment-counts', async (req, res) => {
     }
 });
 
-// SECTION 1: RECEIVING APPOINTMENT DATA FROM APPOINTMENT SCHEDULING STUDENT
-// This endpoint is called by the appointment scheduling student to send appointment data
-// (employeeId, name, role, appointmentCount). The data is stored in the AppointmentData
-// collection in MongoDB. Uses findOneAndUpdate to update existing records or create new ones
-// to avoid duplicate key errors.
+// SECTION 1: Receiving Appointment Data from Scheduling Student
 router.post('/receive-appointment-data', async (req, res) => {
     try {
-        console.log('Received data:', req.body); // Log incoming data for debugging
+        console.log('Received data:', req.body);
         const { employeeId, name, role, appointmentCount } = req.body;
 
-        // Validate required fields
         if (!employeeId || !name || !role || appointmentCount === undefined) {
             return res.status(400).send({ error: "employeeId, name, role, and appointmentCount are required" });
         }
 
-        // Update existing record or create new one
         const appointmentData = await AppointmentData.findOneAndUpdate(
-            { employeeId }, // Find by employeeId
-            { name, role, appointmentCount, createdAt: Date.now() }, // Update fields
-            { upsert: true, new: true } // Create if not exists, return updated document
+            { employeeId },
+            { name, role, appointmentCount, createdAt: Date.now() },
+            { upsert: true, new: true }
         );
 
         res.status(201).send({ message: "Appointment data received successfully", appointmentData });
@@ -176,10 +195,7 @@ router.post('/receive-appointment-data', async (req, res) => {
     }
 });
 
-// SECTION 2: PROVIDING SORTED APPOINTMENT DATA FOR FINANCE MANAGEMENT STUDENT
-// This endpoint allows the finance management student to retrieve the sorted appointment
-// data (by appointmentCount, descending) after you sort and upload it via the Dashboard.
-// Returns all records from the AppointmentData collection, sorted by appointmentCount.
+// SECTION 2: Provide Sorted Appointment Data
 router.get('/sorted-appointment-data', async (req, res) => {
     try {
         const appointmentData = await AppointmentData.find().sort({ appointmentCount: -1 });
@@ -190,12 +206,10 @@ router.get('/sorted-appointment-data', async (req, res) => {
     }
 });
 
-// SECTION 3: CLEARING APPOINTMENT DATA BEFORE UPLOADING SORTED DATA
-// This endpoint clears the AppointmentData collection before uploading sorted data
-// to ensure a clean, sorted dataset for the finance management student.
+// SECTION 3: Clear Appointment Data Before Uploading
 router.delete('/sorted-appointment-data', async (req, res) => {
     try {
-        console.log('Clearing AppointmentData collection'); // Log for debugging
+        console.log('Clearing AppointmentData collection');
         await AppointmentData.deleteMany({});
         res.status(200).send({ message: "Appointment data cleared successfully" });
     } catch (error) {
