@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 
 const appointmentSchema = new mongoose.Schema({
   petOwnerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  staffId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // groomer or veterinarian
+  employeeId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // groomer or veterinarian
+  employeeFirstName: { type: String, required: true },
+  employeeRole: { type: String, required: true },
   petName: { type: String, required: true },
   serviceCategory: {
     type: String,
@@ -24,4 +26,3 @@ appointmentSchema.pre("save", function (next) {
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 export default Appointment;
-

@@ -27,8 +27,7 @@ import AboutUs from './components/AboutUs';
 import PaymentPage from './components/PaymentPage';
 import MyOrdersPage from './components/MyOrdersPage';
 import ServicesLanding from './components/Appointment/ServicesLanding';
-
-
+import AppointmentList from './components/Appointment/AppointmentList';
 
 function AppContent() {
   const location = useLocation();
@@ -68,8 +67,9 @@ function AppContent() {
         <Route path="/product/all" element={<StorePage />} />
         <Route path="/adminDashboard" element={<AdminDashboard />} />
         <Route path="/appointments" element={<ServicesLanding />} />
-        
+        <Route path="/appointments/manage" element={<AppointmentList />} />
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
+        
         
 
       </Routes>
@@ -80,6 +80,7 @@ function AppContent() {
     </>
   );
 }
+
 
 function App() {
   return (

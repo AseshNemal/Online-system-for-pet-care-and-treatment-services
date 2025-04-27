@@ -16,11 +16,11 @@ const isValidAppointmentDate = (date) => {
 // 📌 Create Appointment
 router.post("/", authenticate, async (req, res) => {
   try {
-    console.log("🔥 Incoming appointment request");
-    console.log("🔐 User from session:", req.user);
-    console.log("📦 Request body:", req.body);
+    // console.log("🔥 Incoming appointment request");
+    // console.log("🔐 User from session:", req.user);
+    // console.log("📦 Request body:", req.body);
 
-    const { staffId, petName, serviceCategory, appointmentDate, appointmentTime } = req.body;
+    const { employeeId, employeeFirstName, employeeRole, petName, serviceCategory, appointmentDate, appointmentTime } = req.body;
 
     if (!req.user || !req.user._id) {
       console.error("❌ Authentication error: No user in session");
@@ -29,7 +29,7 @@ router.post("/", authenticate, async (req, res) => {
 
     const petOwnerId = req.user._id;
 
-    if (!staffId || !petName || !serviceCategory || !appointmentDate || !appointmentTime) {
+    if (!employeeId || !employeeFirstName || !employeeRole || !petName || !serviceCategory || !appointmentDate || !appointmentTime) {
       console.error("❌ Validation error: Missing required fields");
       return res.status(400).json({ error: "All fields are required." });
     }
@@ -48,7 +48,9 @@ router.post("/", authenticate, async (req, res) => {
 
     const newAppointment = new Appointment({
       petOwnerId,
-      staffId,
+      employeeId,
+      employeeFirstName,
+      employeeRole,
       petName,
       serviceCategory,
       appointmentDate: apptDate,
@@ -56,7 +58,7 @@ router.post("/", authenticate, async (req, res) => {
     });
 
     await newAppointment.save();
-    console.log("✅ Appointment saved:", newAppointment);
+    // console.log("✅ Appointment saved:", newAppointment);
     res.status(201).json(newAppointment);
   } catch (err) {
     console.error("❌ Appointment creation error:", err); // full stack
@@ -69,7 +71,7 @@ router.get("/user/:userId", authenticate, async (req, res) => {
   try {
     const { userId } = req.params;
     const appointments = await Appointment.find({
-      $or: [{ petOwnerId: userId }, { staffId: userId }]
+      $or: [{ petOwnerId: userId }, { employeeId: userId }]
     }).sort({ appointmentDate: 1 });
     res.json(appointments);
   } catch (err) {
@@ -118,5 +120,55 @@ router.delete("/:id", authenticate, async (req, res) => {
     res.status(500).json({ error: "Failed to delete appointment." });
   }
 });
+
+// 📌 Get available time slots
+router.get("/available-slots", async (req, res) => {
+  try {
+    const { employeeId, date, serviceCategory } = req.query;
+    if (!employeeId || !date || !serviceCategory) {
+      return res.status(400).json({ error: "Missing required query parameters." });
+    }
+
+    const sessionLengthMinutes = (serviceCategory === "Bath + Haircut") ? 45 : 30;
+
+    const openingHour = 8;
+    const closingHour = 22;
+
+    const slots = [];
+    const dateObj = new Date(date);
+    dateObj.setHours(openingHour, 0, 0, 0);
+
+    while (dateObj.getHours() < closingHour) {
+      const timeStr = dateObj.toTimeString().slice(0, 5);
+      slots.push(timeStr);
+      dateObj.setMinutes(dateObj.getMinutes() + sessionLengthMinutes);
+    }
+
+    const appointments = await Appointment.find({
+      employeeId,
+      appointmentDate: new Date(date),
+    });
+
+    const bookedTimes = appointments.map(app => app.appointmentTime);
+    const availableSlots = slots.filter(slot => !bookedTimes.includes(slot));
+
+    res.json({ availableSlots });
+  } catch (err) {
+    console.error("Slot fetching error:", err);
+    res.status(500).json({ error: "Failed to fetch available slots." });
+  }
+});
+
+// 📌 New Route for HR (without authentication)
+router.get("/all", async (req, res) => {
+  try {
+    const appointments = await Appointment.find({}).sort({ appointmentDate: 1 });
+    res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch all appointments." });
+  }
+});
+
+
 
 export default router;

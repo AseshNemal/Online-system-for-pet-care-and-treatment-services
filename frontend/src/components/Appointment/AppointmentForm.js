@@ -5,7 +5,9 @@ import './AppointmentForm.css';
 const AppointmentForm = ({ serviceType, onClose }) => {
   const [form, setForm] = useState({
     petName: '',
-    staffId: '',
+    employeeId: '',
+    employeeFirstName: '',
+    employeeRole: '',
     category: '',
     date: '',
     time: '',
@@ -14,6 +16,8 @@ const AppointmentForm = ({ serviceType, onClose }) => {
   const [userId, setUserId] = useState(null);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const [employees, setEmployees] = useState([]);
+  const [availableSlots, setAvailableSlots] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:8090/get-session", { credentials: "include" })
@@ -26,27 +30,72 @@ const AppointmentForm = ({ serviceType, onClose }) => {
       .catch((err) => console.error("Session fetch failed:", err));
   }, []);
 
-  const groomers = [
-    { _id: '6511e5f9b67e4278f285ac23', name: 'Alex' },
-    { _id: '6511e5f9b67e4278f285ac24', name: 'Jamie' },
-    { _id: '6511e5f9b67e4278f285ac25', name: 'Taylor' },
-  ];
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get("http://localhost:8090/employee/");
+        setEmployees(response.data);
+      } catch (err) {
+        console.error("Failed to fetch employees:", err);
+      }
+    };
+    fetchEmployees();
+  }, []);
 
-  const doctors = [
-    { _id: '6511e5f9b67e4278f285ac26', name: 'Dr. Smith' },
-    { _id: '6511e5f9b67e4278f285ac27', name: 'Dr. Lee' },
-    { _id: '6511e5f9b67e4278f285ac28', name: 'Dr. Patel' },
-  ];
+  const filteredEmployees = employees.filter(emp => {
+    if (serviceType === 'grooming') {
+      return emp.role === 'Groomer';
+    } else if (serviceType === 'veterinary' || serviceType === 'vet') {
+      return emp.role === 'Vet';
+    }
+    return false;
+  });
 
   const categories = {
     grooming: ['Bath', 'Bath + Haircut', 'Nail Trimming', 'Haircut'],
     veterinary: ['Regular Check-up', 'Vaccination', 'Dental'],
   };
 
-  const staffList = serviceType === 'grooming' ? groomers : doctors;
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    if (name === 'employeeId') {
+      const selectedEmployee = employees.find(emp => emp._id === value);
+      if (selectedEmployee) {
+        setForm(prev => ({
+          ...prev,
+          employeeId: value,
+          employeeFirstName: selectedEmployee.firstName,
+          employeeRole: selectedEmployee.role,
+        }));
+      }
+    }
+
+    setForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    const updatedForm = {
+      ...form,
+      [name]: value,
+    };
+
+    if (updatedForm.employeeId && updatedForm.category && updatedForm.date) {
+      try {
+        const response = await axios.get('http://localhost:8090/api/appointments/available-slots', {
+          params: {
+            employeeId: updatedForm.employeeId,
+            date: updatedForm.date,
+            serviceCategory: updatedForm.category,
+          },
+          withCredentials: true,
+        });
+        setAvailableSlots(response.data.availableSlots);
+      } catch (err) {
+        console.error('Failed to fetch slots:', err);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -59,44 +108,42 @@ const AppointmentForm = ({ serviceType, onClose }) => {
       return;
     }
 
-    try {
-      console.log("📤 Sending appointment data:", {
-        userId,
-        staffId: form.staffId,
-        petName: form.petName,
-        serviceCategory: form.category,
-        appointmentDate: form.date,
-        appointmentTime: form.time,
-      });
+    if (!form.employeeId || !form.petName || !form.category || !form.date || !form.time) {
+      setError('Please fill in all required fields.');
+      return;
+    }
 
+    try {
       const response = await axios.post(
         "http://localhost:8090/api/appointments",
         {
           userId,
-          staffId: form.staffId,
+          employeeId: form.employeeId,
+          employeeFirstName: form.employeeFirstName,
+          employeeRole: form.employeeRole,
           petName: form.petName,
           serviceCategory: form.category,
           appointmentDate: form.date,
           appointmentTime: form.time,
         },
         {
-          withCredentials: true, // 🔑 Sends session cookie
+          withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
           }
         }
       );
 
-      console.log("✅ Response from backend:", response.data);
       setSuccess('Appointment booked successfully!');
-      setForm({ petName: '', staffId: '', category: '', date: '', time: '' });
+      setForm({ petName: '', employeeId: '', employeeFirstName: '', employeeRole: '', category: '', date: '', time: '' });
+      setAvailableSlots([]);
     } catch (err) {
       console.error("❌ Booking error:", err);
       const msg = err.response?.data?.error || 'Something went wrong. Try again later.';
       setError(msg);
     }
   };
-  
+
   return (
     <form className="appointment-form" onSubmit={handleSubmit}>
       <h3>{serviceType} Appointment</h3>
@@ -115,15 +162,15 @@ const AppointmentForm = ({ serviceType, onClose }) => {
       <div className="form-group">
         <label>{serviceType === 'grooming' ? 'Groomer' : 'Doctor'} Name</label>
         <select
-          name="staffId"
-          value={form.staffId}
+          name="employeeId"
+          value={form.employeeId}
           onChange={handleChange}
           required
         >
           <option value="">Select</option>
-          {staffList.map((staff) => (
-            <option key={staff._id} value={staff._id}>
-              {staff.name}
+          {filteredEmployees.map((emp) => (
+            <option key={emp._id} value={emp._id}>
+              {emp.firstName} {emp.lastName}
             </option>
           ))}
         </select>
@@ -155,23 +202,24 @@ const AppointmentForm = ({ serviceType, onClose }) => {
           onChange={handleChange}
           required
           min={new Date().toISOString().split('T')[0]}
-          max={new Date(
-            new Date().setMonth(new Date().getMonth() + 60)
-          )
-            .toISOString()
-            .split('T')[0]}
+          max={new Date(new Date().setMonth(new Date().getMonth() + 60)).toISOString().split('T')[0]}
         />
       </div>
 
       <div className="form-group">
-        <label>Time</label>
-        <input
-          type="time"
+        <label>Time Slot</label>
+        <select
           name="time"
           value={form.time}
           onChange={handleChange}
           required
-        />
+          disabled={!availableSlots.length}
+        >
+          <option value="">Select available time</option>
+          {availableSlots.map(slot => (
+            <option key={slot} value={slot}>{slot}</option>
+          ))}
+        </select>
       </div>
 
       {error && <p className="error-message">{error}</p>}
