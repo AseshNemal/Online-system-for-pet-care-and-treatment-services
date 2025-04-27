@@ -39,7 +39,8 @@ function AppContent() {
   const location = useLocation();
   const isAdminRoute = 
   location.pathname === '/adminDashboard' || 
-  location.pathname === '/adminDashboard/product';
+  location.pathname === '/adminDashboard/product' ||
+  location.pathname ==='/employee';
 
 
   return (
