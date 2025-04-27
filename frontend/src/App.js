@@ -40,6 +40,10 @@ function AppContent() {
   const isAdminRoute = 
   location.pathname === '/adminDashboard' || 
   location.pathname === '/adminDashboard/product' ||
+  location.pathname === '/financial' ||
+  location.pathname === '/financial/expenses' ||
+  location.pathname === '/financial/orders' ||
+  location.pathname === '/financial/hr' ||
   location.pathname ==='/employee';
 
 
@@ -79,11 +83,27 @@ function AppContent() {
         <Route path="/petTrainingForm" element={<PetTrainingForm />} />
         
         
-        {/* Financial Management Routes */}
         <Route path="/financial" element={<FinancialManagement />} />
-        <Route path="/financial/expenses" element={<ExpensesManagement />} />
-        <Route path="/financial/orders" element={<OrderFinanceManagement />} />
-        <Route path="/financial/hr" element={<HRFinanceManagement />} />
+        <Route path="/financial/expenses" element={
+          <>
+          <FinancialManagement />
+          <ExpensesManagement />
+          </> } />
+          <Route path="/financial/orders" element={
+          <>
+          <FinancialManagement />
+          <OrderFinanceManagement />
+          </> } />
+          <Route path="/financial/hr" element={
+          <>
+          <FinancialManagement />
+          <HRFinanceManagement />
+          </> } />
+
+
+
+        
+
       </Routes>
 
 
