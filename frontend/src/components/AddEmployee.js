@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 function AddEmployee() {
-    const [employeeId, setEmployeeId] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [username, setUsername] = useState("");
@@ -11,13 +10,13 @@ function AddEmployee() {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("");
     const [employees, setEmployees] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
     const [loading, setLoading] = useState(false);
     const [actionLoading, setActionLoading] = useState({});
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [editingEmployee, setEditingEmployee] = useState(null);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
 
     useEffect(() => {
         fetchEmployees();
@@ -26,11 +25,16 @@ function AddEmployee() {
     async function fetchEmployees() {
         try {
             setLoading(true);
-            const response = await axios.get("http://localhost:8090/employee/");
-            setEmployees(response.data);
+            setError(""); // Clear previous errors
+            const response = await axios.get("http://localhost:8090/employee/", {
+                timeout: 5000 // Add timeout to prevent hanging
+            });
+            console.log("Fetched employees:", response.data); // Debug log
+            setEmployees(response.data.employees || []);
+            setTotalCount(response.data.totalCount || 0);
         } catch (error) {
-            console.error("Error fetching employees:", error);
-            setError("Failed to fetch employees.");
+            console.error("Error fetching employees:", error); // Detailed error logging
+            setError(`Failed to fetch employees: ${error.message}${error.response ? ` (Status: ${error.response.status})` : ''}`);
         } finally {
             setLoading(false);
         }
@@ -42,7 +46,7 @@ function AddEmployee() {
         setSuccess("");
         setLoading(true);
 
-        if (!employeeId || !firstName || !lastName || !username || !email || !password || !role) {
+        if (!firstName || !lastName || !username || !email || !password || !role) {
             setError("All fields are required.");
             setLoading(false);
             return;
@@ -56,7 +60,6 @@ function AddEmployee() {
         }
 
         const employeeData = {
-            employeeId,
             firstName,
             lastName,
             username,
@@ -67,13 +70,18 @@ function AddEmployee() {
 
         try {
             if (editingEmployee) {
-                await axios.put(`http://localhost:8090/employee/${editingEmployee._id}`, employeeData);
+                const response = await axios.put(`http://localhost:8090/employee/${editingEmployee._id}`, employeeData);
+                console.log("Updated employee:", response.data); // Debug log
+                setEmployees(employees.map(emp => emp._id === editingEmployee._id ? response.data.employee : emp));
+                setTotalCount(response.data.totalCount);
                 setSuccess("Employee updated successfully!");
             } else {
-                await axios.post("http://localhost:8090/employee/create", employeeData);
+                const response = await axios.post("http://localhost:8090/employee/create", employeeData);
+                console.log("Created employee:", response.data); // Debug log
+                setEmployees([...employees, response.data.employee]);
+                setTotalCount(response.data.totalCount);
                 setSuccess("Employee added successfully!");
             }
-            setEmployeeId("");
             setFirstName("");
             setLastName("");
             setUsername("");
@@ -81,8 +89,8 @@ function AddEmployee() {
             setPassword("");
             setRole("");
             setEditingEmployee(null);
-            fetchEmployees();
         } catch (error) {
+            console.error("Error in handleSubmit:", error); // Detailed error logging
             setError(error.response?.data?.error || (editingEmployee ? "Failed to update employee." : "Failed to add employee."));
         } finally {
             setLoading(false);
@@ -93,11 +101,14 @@ function AddEmployee() {
         if (window.confirm("Are you sure you want to delete this employee?")) {
             try {
                 setActionLoading((prev) => ({ ...prev, [id]: "delete" }));
-                await axios.delete(`http://localhost:8090/employee/${id}`);
+                const response = await axios.delete(`http://localhost:8090/employee/${id}`);
+                console.log("Deleted employee:", response.data); // Debug log
+                setEmployees(employees.filter((emp) => emp._id !== id));
+                setTotalCount(response.data.totalCount);
                 setSuccess("Employee deleted successfully!");
-                fetchEmployees();
             } catch (error) {
-                setError("Failed to delete employee.");
+                console.error("Error deleting employee:", error); // Detailed error logging
+                setError(`Failed to delete employee: ${error.message}${error.response ? ` (Status: ${error.response.status})` : ''}`);
             } finally {
                 setActionLoading((prev) => ({ ...prev, [id]: null }));
             }
@@ -106,7 +117,6 @@ function AddEmployee() {
 
     function handleEdit(employee) {
         setEditingEmployee(employee);
-        setEmployeeId(employee.employeeId);
         setFirstName(employee.firstName);
         setLastName(employee.lastName);
         setUsername(employee.username);
@@ -117,7 +127,6 @@ function AddEmployee() {
 
     function handleCancelEdit() {
         setEditingEmployee(null);
-        setEmployeeId("");
         setFirstName("");
         setLastName("");
         setUsername("");
@@ -144,68 +153,52 @@ function AddEmployee() {
                 <h3 className="sidebar-title">Menu</h3>
                 <ul>
                     <li>
-                                            <Link to="/adminDashboard">
-                                                <i className="fas fa-tachometer-alt"></i>
-                                                <span>Dashboard</span>
-                                            </Link>
-                                        </li>
-                                        <li className="active">
-                                            <Link to="/employee">
-                                                <i className="fas fa-users"></i>
-                                                <span>Employee Management</span>
-                                            </Link>
-                                        </li>
-                                        
-                                        <li>
-                                            <Link to="/admin-dashboard">
-                                                <i className="fas fa-shield-alt"></i>
-                                                <span>Admin Dashboard (Ads)</span>
-                                            </Link>
-                                        </li>
-                                       
-                                        <li>
-                                            <Link to="/adminDashboard/product">
-                                                <i className="fas fa-shopping-cart"></i>
-                                                <span>Products</span>
-                                            </Link>
-                                        </li>
-
-                                        <li>
-                                            <Link to="/adoption-portal">
-                                                <i className="fas fa-paw"></i>
-                                                <span>Adoption Portal</span>
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <Link to="/submit-ad">
-                                                <i className="fas fa-plus-circle"></i>
-                                                <span>Submit Ad</span>
-                                            </Link>
-                                        </li>
+                        <Link to="/adminDashboard">
+                            <i className="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </Link>
+                    </li>
+                    <li className="active">
+                        <Link to="/employee">
+                            <i className="fas fa-users"></i>
+                            <span>Employee Management</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/admin-dashboard">
+                            <i className="fas fa-shield-alt"></i>
+                            <span>Admin Dashboard (Ads)</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/adminDashboard/product">
+                            <i className="fas fa-shopping-cart"></i>
+                            <span>Products</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/adoption-portal">
+                            <i className="fas fa-paw"></i>
+                            <span>Adoption Portal</span>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/submit-ad">
+                            <i className="fas fa-plus-circle"></i>
+                            <span>Submit Ad</span>
+                        </Link>
+                    </li>
                 </ul>
             </div>
             <div className={`main-content ${isSidebarCollapsed ? 'collapsed' : ''}`}>
                 <h2 className="page-title">{editingEmployee ? "Edit Employee" : "Add New Employee"}</h2>
 
-                {success && <div className="alert alert-success">{success}</div>}
                 {error && <div className="alert alert-danger">{error}</div>}
+                {success && <div className="alert alert-success">{success}</div>}
 
                 <div className="card form-container">
                     <form onSubmit={handleSubmit}>
                         <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label">Employee ID</label>
-                                <div className="input-group">
-                                    <span className="input-group-text"><i className="fas fa-id-badge"></i></span>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={employeeId}
-                                        onChange={(e) => setEmployeeId(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            </div>
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">First Name</label>
                                 <div className="input-group">
@@ -219,8 +212,6 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">Last Name</label>
                                 <div className="input-group">
@@ -234,6 +225,8 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">Username</label>
                                 <div className="input-group">
@@ -247,8 +240,6 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                        <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">Email</label>
                                 <div className="input-group">
@@ -262,6 +253,8 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
+                        </div>
+                        <div className="row">
                             <div className="col-md-6 mb-3">
                                 <label className="form-label">Password</label>
                                 <div className="input-group">
@@ -275,21 +268,21 @@ function AddEmployee() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                        <div className="mb-3">
-                            <label className="form-label">Role</label>
-                            <div className="input-group">
-                                <span className="input-group-text"><i className="fas fa-briefcase"></i></span>
-                                <select
-                                    className="form-control"
-                                    value={role}
-                                    onChange={(e) => setRole(e.target.value)}
-                                    required
-                                >
-                                    <option value="">Select Role</option>
-                                    <option value="Vet">Vet</option>
-                                    <option value="Groomer">Groomer</option>
-                                </select>
+                            <div className="col-md-6 mb-3">
+                                <label className="form-label">Role</label>
+                                <div className="input-group">
+                                    <span className="input-group-text"><i className="fas fa-briefcase"></i></span>
+                                    <select
+                                        className="form-control"
+                                        value={role}
+                                        onChange={(e) => setRole(e.target.value)}
+                                        required
+                                    >
+                                        <option value="">Select Role</option>
+                                        <option value="Vet">Vet</option>
+                                        <option value="Groomer">Groomer</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div className="d-flex gap-2">
@@ -306,7 +299,7 @@ function AddEmployee() {
                 </div>
 
                 <div className="card table-container">
-                    <h3>Employee List</h3>
+                    <h3>Employee List (Total: {totalCount})</h3>
                     {loading ? (
                         <div className="loading">
                             <div className="spinner-border" role="status">
