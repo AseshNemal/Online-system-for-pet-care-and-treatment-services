@@ -51,6 +51,7 @@ const DeviceData = () => {
           Latitude: rawData[key].Latitude ? Number(rawData[key].Latitude) : null,
           Longitude: rawData[key].Longitude ? Number(rawData[key].Longitude) : null,
           Altitude: rawData[key].Altitude || "N/A",
+          BatteryLevel: rawData[key].Battery ? Number(rawData[key].Battery) : -1,
           En_Temperature: rawData[key].En_temperature ? Number(rawData[key].En_temperature) : 0,
           En_Humidity: rawData[key].en_humidity ? Number(rawData[key].en_humidity) : 0,
           AirQuality: rawData[key].Air_quality ? Number(rawData[key].Air_quality/4) : 0,
@@ -149,6 +150,21 @@ const DeviceData = () => {
     ],
   };
 
+  // Battery Level Chart Data
+  const batteryChartData = {
+    labels: last20Records.map((data) => data.Timestamp),
+    datasets: [
+      {
+        label: "Battery Level (%)",
+        data: last20Records.map((data) => data.BatteryLevel),
+        fill: false,
+        borderColor: "rgb(54, 162, 235)",
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
+        tension: 0.4,
+      },
+    ],
+  };
+
   // Environment Temperature Chart Data
   const envTemperatureChartData = {
     labels: last20Records.map((data) => data.Timestamp),
@@ -238,6 +254,21 @@ const DeviceData = () => {
     },
   };
 
+  const batteryChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        ticks: {
+          stepSize: 10,
+          callback: (value) => `${value}%`,
+        },
+      },
+    },
+  };
+
   const envTemperatureChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -273,7 +304,6 @@ const DeviceData = () => {
     maintainAspectRatio: false,
     scales: {
       y: {
-
         ticks: {
           stepSize: 50,
           callback: (value) => `${value} PPM`,
@@ -326,7 +356,6 @@ const DeviceData = () => {
     },
   };
 
-
   const generateHealthSuggestions = () => {
     if (!latestData) return [];
     
@@ -344,6 +373,21 @@ const DeviceData = () => {
         type: 'warning',
         message: 'Device has not sent data in over 4 hours. Check device connectivity and battery.'
       });
+    }
+
+    // Battery level check
+    if (latestData.BatteryLevel >= 0) { // Only show if battery data is available
+      if (latestData.BatteryLevel < 20) {
+        suggestions.push({
+          type: 'danger',
+          message: `Low battery level (${latestData.BatteryLevel}%). Please charge the device soon.`
+        });
+      } else if (latestData.BatteryLevel < 40) {
+        suggestions.push({
+          type: 'warning',
+          message: `Battery level is getting low (${latestData.BatteryLevel}%). Consider charging the device.`
+        });
+      }
     }
 
     // Temperature suggestions
@@ -425,20 +469,24 @@ const DeviceData = () => {
       });
     }
 
-
-    
-
     return suggestions;
   };
 
-  
-
-  
-
   const healthSuggestions = generateHealthSuggestions();
 
+  const getBatteryColor = (level) => {
+    if (level < 0) return "#cccccc"; // No data
+    if (level < 20) return "#ff4444"; // Critical
+    if (level < 40) return "#ffbb33"; // Warning
+    return "#00C851"; // Good
+  };
 
-  
+  const getBatteryIcon = (level) => {
+    if (level < 0) return "❓"; // No data
+    if (level < 20) return "🪫"; // Critical
+    if (level < 40) return "🔋"; // Warning
+    return "🔋"; // Good
+  };
 
   return (
     <div style={{ padding: "20px" }}>
@@ -452,6 +500,22 @@ const DeviceData = () => {
             (isDeviceConnected ? "Device Connected" : "Device Not Connected") : 
             "No Data Available"}
         </h6>
+        {latestData && latestData.BatteryLevel >= 0 && (
+          <div style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: "5px",
+            padding: "5px 10px",
+            borderRadius: "20px",
+            backgroundColor: "#f8f9fa",
+            border: `2px solid ${getBatteryColor(latestData.BatteryLevel)}`
+          }}>
+            <span>{getBatteryIcon(latestData.BatteryLevel)}</span>
+            <span style={{ fontWeight: "bold", color: getBatteryColor(latestData.BatteryLevel) }}>
+              {latestData.BatteryLevel}%
+            </span>
+          </div>
+        )}
         <button onClick={handleRefresh} style={{ padding: "10px 20px", borderRadius: "20px", fontSize: "16px", border: "none", backgroundColor: "#007bff", color: "white", cursor: "pointer" }}>
           🔄 Reconnect
         </button>
@@ -485,8 +549,9 @@ const DeviceData = () => {
               <p>Air Quality: {latestData.AirQuality} PPM</p>
             </div>
             <div>
-              <p><strong>Last Update:</strong></p>
-              <p>{latestData.Timestamp}</p>
+              <p><strong>Device Status:</strong></p>
+              <p>Battery: {latestData.BatteryLevel >= 0 ? `${latestData.BatteryLevel}%` : 'N/A'}</p>
+              <p>Last Update: {latestData.Timestamp}</p>
             </div>
           </div>
         </div>
@@ -506,18 +571,25 @@ const DeviceData = () => {
       </div>
       <br/><br/>
 
-      {/* Steps Charts */}
+      {/* Battery and Steps Charts */}
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
-        <div style={{ width: "45%", height: "300px", marginTop: "50px" }}>
+        <div style={{ width: "45%", height: "300px" }}>
+          <h3>Battery Level</h3>
+          <Line data={batteryChartData} options={batteryChartOptions} />
+        </div>
+
+        <div style={{ width: "45%", height: "300px" }}>
           <h3>Step Chart</h3>
           <Line data={stepRateChartData} options={stepchartOptions} />
         </div>
+      </div>
+      <br/><br/>
 
-        <div style={{ padding: "20px", width: "45%", height: "300px", marginTop: "50px" }}>
-          <h3>Step Count Today</h3>
-          <Pie data={pieChartData} options={pieChartOptions} />
-          <h6>Steps for Today: {getStepsForToday()}</h6>
-        </div>
+      {/* Steps Pie Chart */}
+      <div style={{ width: "90%", height: "300px", margin: "0 auto 50px" }}>
+        <h3>Step Count Today</h3>
+        <Pie data={pieChartData} options={pieChartOptions} />
+        <h6>Steps for Today: {getStepsForToday()}</h6>
       </div>
 
       {/* Environment Data Charts */}
@@ -592,6 +664,7 @@ const DeviceData = () => {
         <thead>
           <tr>
             <th>Device ID</th>
+            <th>Battery</th>
             <th>Steps</th>
             <th>Heart Rate (BPM)</th>
             <th>Temperature (°C)</th>
@@ -605,6 +678,7 @@ const DeviceData = () => {
           {last30Records.map((data) => (
             <tr key={data.id}>
               <td>{data.DeviceID}</td>
+              <td>{data.BatteryLevel >= 0 ? `${data.BatteryLevel}%` : 'N/A'}</td>
               <td>{data.Steps}</td>
               <td>{data.HeartRate} BPM</td>
               <td>{data.Temperature}°C</td>
