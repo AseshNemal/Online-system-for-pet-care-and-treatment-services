@@ -27,7 +27,7 @@ import AboutUs from './components/AboutUs';
 import PaymentPage from './components/PaymentPage';
 import MyOrdersPage from './components/MyOrdersPage';
 import ServicesLanding from './components/Appointment/ServicesLanding';
-
+import PetTrainingForm from './components/PetTrainingForm';
 
 
 function AppContent() {
@@ -70,6 +70,7 @@ function AppContent() {
         <Route path="/appointments" element={<ServicesLanding />} />
         
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
+        <Route path="/petTrainingForm" element={<PetTrainingForm />} />
         
 
       </Routes>
