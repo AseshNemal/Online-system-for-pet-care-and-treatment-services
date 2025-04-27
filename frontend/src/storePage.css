@@ -436,6 +436,7 @@
 
 .cart-table-td {
   padding: 10px;
+  text-align: center;
   border-bottom: 1px solid #eee;
   transition: all 0.2s ease;
 }
