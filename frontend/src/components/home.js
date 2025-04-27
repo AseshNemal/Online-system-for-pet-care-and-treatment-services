@@ -214,7 +214,7 @@ function Home() {
               <p style={styles.featureText}>
                 Our AI-powered training system helps teach your pet commands and track progress with personalized lessons.
               </p>
-              <Link to="/trainer" style={styles.featureButton}>Try Pet Trainer</Link>
+              <Link to="/petTrainingForm" style={styles.featureButton}>Try Pet Trainer</Link>
             </div>
         </div>
       </section>

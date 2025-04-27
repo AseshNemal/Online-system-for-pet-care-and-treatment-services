@@ -42,14 +42,15 @@ const AppointmentForm = ({ serviceType, onClose }) => {
     fetchEmployees();
   }, []);
 
-  const filteredEmployees = employees.filter(emp => {
-    if (serviceType === 'grooming') {
-      return emp.role === 'Groomer';
-    } else if (serviceType === 'veterinary' || serviceType === 'vet') {
-      return emp.role === 'Vet';
-    }
-    return false;
-  });
+  const filteredEmployees = Array.isArray(employees) ? employees.filter(emp => {
+  if (serviceType === 'grooming') {
+    return emp.role === 'Groomer';
+  } else if (serviceType === 'veterinary' || serviceType === 'vet') {
+    return emp.role === 'Vet';
+  }
+  return false;
+}) : [];
+
 
   const categories = {
     grooming: ['Bath', 'Bath + Haircut', 'Nail Trimming', 'Haircut'],
