@@ -107,6 +107,7 @@
 
 /* Form sections */
 .form-section {
+  margin-top: 1.25rem;
   margin-bottom: 1.5rem;
 }
 
@@ -146,6 +147,13 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
+}
+
+/* Add styles for required fields */
+.form-group label.required::after {
+  content: " *";
+  color: #e11d48;
+  font-weight: bold;
 }
 
 .form-group input[type="text"],
@@ -198,6 +206,21 @@
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+/* Style for invalid inputs */
+.form-group input:invalid,
+.form-group select:invalid,
+.form-group textarea:invalid {
+  border-color: #e11d48;
+}
+
+/* Only apply the invalid style when the user has interacted with the field */
+.form-group input:not(:focus):not(:placeholder-shown):invalid,
+.form-group select:not(:focus):invalid,
+.form-group textarea:not(:focus):not(:placeholder-shown):invalid {
+  border-color: #e11d48;
+  background-color: rgba(225, 29, 72, 0.05);
 }
 
 .form-group input[type="text"]::placeholder,
@@ -288,7 +311,7 @@
 }
 
 .submit-button:hover {
-  background-color: var(--secondary-hover);
+  background-color: #059669;
 }
 
 .submit-button:disabled {
