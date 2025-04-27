@@ -31,7 +31,8 @@ import FinancialManagement from './components/FinancialManagement';
 import ExpensesManagement from './components/ExpensesManagement';
 import OrderFinanceManagement from './components/OrderFinanceManagement';
 import HRFinanceManagement from './components/HRFinanceManagement';
-
+import AppointmentList from './components/Appointment/AppointmentList';
+import PetTrainingForm from './components/PetTrainingForm';
 
 
 function AppContent() {
@@ -72,8 +73,10 @@ function AppContent() {
         <Route path="/product/all" element={<StorePage />} />
         <Route path="/adminDashboard" element={<AdminDashboard />} />
         <Route path="/appointments" element={<ServicesLanding />} />
-        
+        <Route path="/appointments/manage" element={<AppointmentList />} />
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
+        <Route path="/petTrainingForm" element={<PetTrainingForm />} />
+        
         
         {/* Financial Management Routes */}
         <Route path="/financial" element={<FinancialManagement />} />
@@ -88,6 +91,7 @@ function AppContent() {
     </>
   );
 }
+
 
 function App() {
   return (

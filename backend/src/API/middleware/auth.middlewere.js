@@ -1,9 +1,9 @@
 const authenticate = (req, res, next) => {
     console.log("🔒 Checking authentication status:", {
-        isAuthenticated: req.isAuthenticated(),
-        hasUser: !!req.user,
-        sessionID: req.sessionID
-    });
+         isAuthenticated: req.isAuthenticated(),
+         hasUser: !!req.user,
+         sessionID: req.sessionID
+     });
     
     if (req.isAuthenticated()) {
         next();

@@ -61,30 +61,40 @@ function UserPets() {
     <div className="user-pets-container">
       <h2 className="user-pets-title">{user?.displayName || 'User'}'s Pets</h2>
       <ul className="pets-list">
-        {pets.map((pet) => (
-          <li 
-            key={pet._id}
-            onClick={() => handlePetClick(pet._id)}
-            className="pet-item"
-          >
-            <div className="pet-info">
-              <span className="pet-name">{pet.petName}</span>
-              <span className="pet-details">
-                {pet.species} | {pet.breed}
-              </span>
-            </div>
-            <div className="pet-actions">
-              <button 
-                className="delete-button"
-                onClick={(e) => handleDeletePet(pet._id, e)}
-              >
-                Delete
-              </button>
-              <div className="pet-arrow">→</div>
-            </div>
-          </li>
-        ))}
-      </ul>
+  {pets.map((pet) => (
+    <li 
+      key={pet._id}
+      onClick={() => handlePetClick(pet._id)}
+      className="pet-item"
+    >
+      <div className="pet-info">
+        <span className="pet-name">{pet.petName}</span>
+        <span className="pet-details">
+          {pet.species} | {pet.breed}
+        </span>
+      </div>
+      <div className="pet-actions">
+        <button 
+          className="edit-button"
+          onClick={(e) => {
+            e.stopPropagation(); // prevent triggering the pet click event
+            navigate(`/pet/edit/${pet._id}`);
+          }}
+        >
+          Edit
+        </button>
+        <button 
+          className="delete-button"
+          onClick={(e) => handleDeletePet(pet._id, e)}
+        >
+          Delete
+        </button>
+        <div className="pet-arrow">→</div>
+      </div>
+    </li>
+  ))}
+</ul>
+
 
       <button 
         onClick={() => navigate(`/pet/add`)}
@@ -200,6 +210,22 @@ const styles = `
     font-size: 1.2rem;
     color: #7f8c8d;
   }
+
+  .edit-button {
+  background-color: #f1c40f;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.2s;
+}
+
+.edit-button:hover {
+  background-color: #d4ac0d;
+}
+
 
   .error {
     color: #e74c3c;

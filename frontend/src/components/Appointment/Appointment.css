@@ -1,0 +1,96 @@
+.appointment-list-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .appointment-list-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .appointment-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .appointment-table th,
+  .appointment-table td {
+    border: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
+  
+  .appointment-table th {
+    background-color: #4a90e2;
+    color: white;
+    font-weight: 600;
+  }
+  
+  .appointment-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .appointment-table tr:hover {
+    background-color: #e6f0ff;
+  }
+  
+  .editing-row input[type="text"],
+  .editing-row input[type="date"],
+  .editing-row input[type="time"] {
+    width: 100%;
+    padding: 0.4rem;
+    box-sizing: border-box;
+    border: 1px solid #4a90e2;
+    border-radius: 4px;
+  }
+  
+  .edit-btn,
+  .delete-btn,
+  .save-btn,
+  .cancel-btn {
+    background-color: #4a90e2;
+    border: none;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    margin-right: 0.3rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .delete-btn {
+    background-color: #e04e4e;
+  }
+  
+  .edit-btn:hover,
+  .delete-btn:hover,
+  .save-btn:hover,
+  .cancel-btn:hover {
+    background-color: #357abd;
+  }
+  
+  .delete-btn:hover {
+    background-color: #b73737;
+  }
+  
+  .success-message {
+    color: green;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  

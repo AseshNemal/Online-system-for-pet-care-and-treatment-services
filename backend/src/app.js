@@ -104,9 +104,14 @@ app.use("/employee",employeeRoutes)
 const PetAdRoutes = require("./API/routes/PetAdRoutes.js")
 app.use("/pet-ad", PetAdRoutes);
 
-// Expense routes
+
 const expenseRoutes = require("./API/routes/expenseRoutes.js");
 app.use("/api/expenses", expenseRoutes);
+
+const geminiRoutes = require("./API/routes/gemini.js")
+app.use("/gemini", geminiRoutes);
+
+
 
 app.listen(PORT, () => {
     logger.info(`Server is running on PORT ${PORT}`);
