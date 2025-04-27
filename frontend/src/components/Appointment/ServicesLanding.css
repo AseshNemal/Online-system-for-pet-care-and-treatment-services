@@ -126,11 +126,11 @@
     animation: fadeIn 0.8s ease-in-out;
   }
 
-  .container {
+  .container-ap {
     display: flex;
     justify-content: center; /* Centers the button horizontally */
     align-items: center; /* Centers the button vertically */
-    height: 100vh; /* Full viewport height */
+     /* Full viewport height */
   }
   
   .appointment-button {
