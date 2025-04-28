@@ -112,6 +112,9 @@ app.use("/api/expenses", expenseRoutes);
 const geminiRoutes = require("./API/routes/gemini.js")
 app.use("/gemini", geminiRoutes);
 
+// Notification routes
+import notificationRoutes from "./API/routes/notificationRoutes.js";
+app.use("/api/notifications", notificationRoutes);
 
 
 app.listen(PORT, () => {

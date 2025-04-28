@@ -220,6 +220,7 @@ function Header() {
                   </button>
                   <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <Link to="/profile" className="dropdown-item">Profile</Link>
+                    <Link to="/notifications" className="dropdown-item">Notifications</Link>
                     <a href="http://localhost:8090/logout" className="dropdown-item">Logout</a>
                   </div>
                 </div>
