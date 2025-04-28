@@ -33,9 +33,13 @@ import OrderFinanceManagement from './components/OrderFinanceManagement';
 import HRFinanceManagement from './components/HRFinanceManagement';
 import AppointmentList from './components/Appointment/AppointmentList';
 import PetTrainingForm from './components/PetTrainingForm';
+
+import FeedBackForm from './components/FeedBackForm';
+
 import EmployeeLogin from './components/EmployeeLogin';
 import EmployeeDashboard from './components/EmployeeDashboard';
 import Notifications from './components/Notifications';
+
 
 
 function AppContent() {
@@ -89,9 +93,13 @@ function AppContent() {
         <Route path="/appointments/manage" element={<AppointmentList />} />
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
         <Route path="/petTrainingForm" element={<PetTrainingForm />} />
+
+        <Route path="/feedbackform" element={<FeedBackForm />} />
+        
+
         <Route path="/employee-login" element={<EmployeeLogin />} />
         <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
-        
+
         <Route path="/financial" element={<FinancialManagement />} />
         <Route path="/financial/expenses" element={
           <>
