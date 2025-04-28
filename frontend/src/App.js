@@ -33,6 +33,9 @@ import OrderFinanceManagement from './components/OrderFinanceManagement';
 import HRFinanceManagement from './components/HRFinanceManagement';
 import AppointmentList from './components/Appointment/AppointmentList';
 import PetTrainingForm from './components/PetTrainingForm';
+import EmployeeLogin from './components/EmployeeLogin';
+import EmployeeDashboard from './components/EmployeeDashboard';
+import Notifications from './components/Notifications';
 
 
 function AppContent() {
@@ -44,13 +47,17 @@ function AppContent() {
   location.pathname === '/financial/expenses' ||
   location.pathname === '/financial/orders' ||
   location.pathname === '/financial/hr' ||
-  location.pathname ==='/employee';
+  location.pathname === '/employee';
+
+  const isEmployeeRoute =
+  location.pathname === '/employee-login' ||
+  location.pathname === '/employee-dashboard';
 
 
   return (
     <>
-      {!isAdminRoute && <Header />}
-      {!isAdminRoute && <Chatbot />}
+      {!isAdminRoute && !isEmployeeRoute && <Header />}
+      {!isAdminRoute && !isEmployeeRoute && <Chatbot />}
       
       <Routes>
         <Route path="/" element={<Home />} />
@@ -64,6 +71,7 @@ function AppContent() {
         <Route path="/pets" element={<UserPets />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/notifications" element={<Notifications />} />
         <Route path="/pets/:petId" element={<PetRecord />} />
         <Route path="/pets/:petId/medical" element={<AddMedicalRecord />} />
         <Route path="/adminProducts" element={<AdminDashboard />}/>
@@ -81,7 +89,8 @@ function AppContent() {
         <Route path="/appointments/manage" element={<AppointmentList />} />
         <Route path="/adminDashboard/product" element={<AdminDashboard />} />
         <Route path="/petTrainingForm" element={<PetTrainingForm />} />
-        
+        <Route path="/employee-login" element={<EmployeeLogin />} />
+        <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
         
         <Route path="/financial" element={<FinancialManagement />} />
         <Route path="/financial/expenses" element={
@@ -99,16 +108,9 @@ function AppContent() {
           <FinancialManagement />
           <HRFinanceManagement />
           </> } />
-
-
-
-        
-
       </Routes>
 
-
-
-      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && !isEmployeeRoute && <Footer />}
     </>
   );
 }

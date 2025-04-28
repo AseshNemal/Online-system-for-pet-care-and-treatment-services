@@ -1,0 +1,121 @@
+.employee-login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 20px;
+}
+
+.employee-login-card {
+  width: 100%;
+  max-width: 450px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  transition: transform 0.3s ease;
+}
+
+.employee-login-card:hover {
+  transform: translateY(-5px);
+}
+
+.employee-login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.employee-login-header h2 {
+  color: #343a40;
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.employee-login-header p {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.employee-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.employee-login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.employee-login-field label {
+  color: #495057;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.employee-login-field input {
+  padding: 12px 16px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.employee-login-field input:focus {
+  border-color: #4263eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(66, 99, 235, 0.1);
+}
+
+.employee-login-button {
+  background-color: #4263eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.employee-login-button:hover {
+  background-color: #3b5bdb;
+}
+
+.employee-login-button:disabled {
+  background-color: #748ffc;
+  cursor: not-allowed;
+}
+
+.employee-login-error {
+  background-color: #fff5f5;
+  color: #e03131;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  border-left: 4px solid #e03131;
+}
+
+.employee-login-footer {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.employee-login-footer a {
+  color: #4263eb;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.employee-login-footer a:hover {
+  color: #3b5bdb;
+  text-decoration: underline;
+} 
