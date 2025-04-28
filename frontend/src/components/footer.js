@@ -114,7 +114,7 @@ function Footer() {
                   <Link to="/about" style={styles.menuLink}>About</Link>
                   <Link to="/features" style={styles.menuLink}>Features</Link>
                   <Link to="/blog" style={styles.menuLink}>Blog</Link>
-                  <Link to="/contact" style={styles.menuLink}>Contact</Link>
+                  <Link to="/feedbackform" style={styles.menuLink}>Feedback</Link>
                 </div>
                 <ul style={styles.socialList}>
                   <li style={styles.socialItem}>
