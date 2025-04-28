@@ -184,7 +184,7 @@ const PetRecord = () => {
                   )}
                 </div>
                 
-                <div className="record-actions">/pets/:petId/medical/edit/:medicalId
+                <div className="record-actions">
                   <button 
                     onClick={() => navigate(`/pets/${petId}/medical/edit/${record._id}`)}
                     className="edit-button"

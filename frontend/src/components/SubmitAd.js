@@ -65,7 +65,7 @@ function SubmitAd() {
       setLoading(false)
       return
     }
-
+    
     const phoneRegex = /^\d{10,12}$/
     if (!phoneRegex.test(contactNumber)) {
       setError("Contact number must be 10-12 digits and contain only numbers.")
@@ -85,6 +85,7 @@ function SubmitAd() {
           weight: weightValue,
           description,
           contactNumber,
+          
         }
 
         await axios.post("http://localhost:8090/pet-ad/submit", adData)

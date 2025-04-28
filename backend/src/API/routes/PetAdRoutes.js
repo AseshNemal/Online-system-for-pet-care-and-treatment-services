@@ -21,7 +21,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 // User: Submit a new pet ad
-router.post("/submit", authMiddleware, async (req, res) => {
+router.post("/submit", async (req, res) => {
   try {
     const { image, type, breed, weight, description, contactNumber } = req.body;
 
@@ -50,8 +50,9 @@ router.post("/submit", authMiddleware, async (req, res) => {
       weight,
       description,
       contactNumber,
-      userId: req.user._id, // Associate ad with authenticated user
+      // Associate ad with authenticated user
     });
+ 
 
     await petAd.save();
     res.status(201).send({ message: "Ad submitted successfully, awaiting approval" });
