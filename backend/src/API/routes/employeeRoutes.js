@@ -67,21 +67,35 @@ router.get('/count', async (req, res) => {
 });
 
 // Employee Login
-router.post('/login', (req, res, next) => {
-    const { username, password } = req.body;
-    Employee.findOne({ username }, (err, employee) => {
-        if (err) return next(err);
+router.post('/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).send({ error: "Username and password are required" });
+        }
+        
+        const employee = await Employee.findOne({ username });
+        
         if (!employee) {
-            return res.status(404).send("User not found");
+            return res.status(404).send({ error: "Employee not found" });
         }
+        
         if (employee.password !== password) {
-            return res.status(400).send("Invalid credentials");
+            return res.status(401).send({ error: "Invalid credentials" });
         }
-        req.login(employee, (err) => {
-            if (err) return next(err);
-            res.status(200).json({ message: "Login successful", user: employee });
+        
+        // Return employee data without password
+        const { password: _, ...employeeData } = employee.toObject();
+        
+        res.status(200).json({ 
+            message: "Login successful", 
+            user: employeeData 
         });
-    });
+    } catch (error) {
+        console.error('Error during employee login:', error);
+        res.status(500).send({ error: error.message });
+    }
 });
 
 // Delete Employee

@@ -27,32 +27,37 @@ const OrderFinanceManagement = () => {
     setOrderCount(orderData.length);
   };
 
+  const formatOrderId = (id) => {
+    // Take the last 6 characters of the ID for a cleaner display
+    return id.slice(-6).toUpperCase();
+  };
+
   const generateReport = () => {
     const currentDate = new Date().toLocaleDateString();
     const currentTime = new Date().toLocaleTimeString();
 
     // Create table header
     const tableHeader = `
-╔══════════════════╦════════════╦═══════╦═════════════╗
-║ Order ID         ║ Date       ║ Items ║ Total Amount║
-╠══════════════════╬════════════╬═══════╬═════════════╣`;
+╔══════════╦════════════╦═══════╦═════════════╗
+║ Order ID ║ Date       ║ Items ║ Total Amount║
+╠══════════╬════════════╬═══════╬═════════════╣`;
 
     // Create table rows
     const tableRows = orders.map(order => {
-      const orderId = order._id.slice(-8); // Get last 8 characters of ID
+      const orderId = formatOrderId(order._id);
       const date = new Date(order.createdAt).toLocaleDateString();
       const items = order.items.length.toString();
       const amount = `Rs. ${order.totalAmount}`;
       
       return `
-║ ${orderId.padEnd(16)} ║ ${date.padEnd(10)} ║ ${items.padEnd(5)} ║ ${amount.padEnd(11)} ║`;
+║ ${orderId.padEnd(8)} ║ ${date.padEnd(10)} ║ ${items.padEnd(5)} ║ ${amount.padEnd(11)} ║`;
     }).join('');
 
     // Create table footer
     const tableFooter = `
-╠══════════════════╬════════════╬═══════╬═════════════╣
+╠══════════╬════════════╬═══════╬═════════════╣
 ║ Total Orders: ${orderCount.toString().padEnd(3)} ║ Total Amount: Rs. ${totalAmount.toString().padEnd(7)} ║
-╚══════════════════╩════════════╩═══════╩═════════════╝`;
+╚══════════╩════════════╩═══════╩═════════════╝`;
 
     const reportContent = `ORDER FINANCE REPORT
 Generated on: ${currentDate} at ${currentTime}
@@ -94,7 +99,7 @@ Total Revenue: Rs. ${totalAmount}
           <tbody>
             {orders.map(order => (
               <tr key={order._id}>
-                <td>{order._id}</td>
+                <td>#{formatOrderId(order._id)}</td>
                 <td>{new Date(order.createdAt).toLocaleDateString()}</td>
                 <td>{order.items.length}</td>
                 <td>Rs. {order.totalAmount}</td>

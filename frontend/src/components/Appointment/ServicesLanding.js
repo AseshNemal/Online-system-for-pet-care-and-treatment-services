@@ -34,6 +34,12 @@ const ServicesLanding = () => {
           </ul>
           <button onClick={() => setServiceType('veterinary')}>Book Appointment</button>
         </div>
+
+        <div className="container-ap">
+      <button className="appointment-button" onClick={() => window.location.href = '/appointments/manage'}>
+        MY Appointment
+      </button>
+    </div>
       </div>
 
       {serviceType && (

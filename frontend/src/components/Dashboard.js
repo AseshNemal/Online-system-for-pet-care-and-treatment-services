@@ -27,12 +27,32 @@ function Dashboard() {
   async function fetchReceivedData() {
     try {
       setLoading(true)
-      console.log("Fetching sorted appointment data")
-      const response = await axios.get("http://localhost:8090/employee/sorted-appointment-data", {
+      console.log("Fetching appointment data")
+      const response = await axios.get("http://localhost:8090/api/appointments/all", {
         timeout: 5000,
       })
       console.log("Fetched appointment data:", response.data)
-      setReceivedData(response.data || [])
+      
+      // Group appointments by employee and calculate counts
+      const employeeMap = new Map()
+      
+      response.data.forEach(appointment => {
+        const { employeeId, employeeFirstName, employeeRole } = appointment
+        
+        if (!employeeMap.has(employeeId)) {
+          employeeMap.set(employeeId, {
+            employeeId,
+            name: employeeFirstName,
+            role: employeeRole,
+            appointmentCount: 0
+          })
+        }
+        
+        const employee = employeeMap.get(employeeId)
+        employee.appointmentCount++
+      })
+      
+      setReceivedData(Array.from(employeeMap.values()))
     } catch (error) {
       console.error("Error fetching received data:", error)
       setError(
@@ -58,46 +78,14 @@ function Dashboard() {
     }
   }
 
-  async function sortAndUploadData() {
-    try {
-      setLoading(true)
-      setError("")
-      setSuccess("")
-      console.log("Fetching data to sort")
-      const response = await axios.get("http://localhost:8090/employee/sorted-appointment-data")
-      const dataToSort = response.data
-      const sortedData = [...dataToSort].sort((a, b) => b.appointmentCount - a.appointmentCount)
-      console.log("Clearing existing data")
-      await axios.delete("http://localhost:8090/employee/sorted-appointment-data")
-      console.log("Uploading sorted data")
-      for (const data of sortedData) {
-        await axios.post("http://localhost:8090/employee/receive-appointment-data", {
-          employeeId: data.employeeId,
-          name: data.name,
-          role: data.role,
-          appointmentCount: data.appointmentCount,
-        })
-      }
-      setSuccess("Data sorted and uploaded successfully!")
-      fetchReceivedData()
-    } catch (error) {
-      console.error("Error sorting and uploading data:", error)
-      setError(
-        `Failed to sort and upload data: ${error.message}${error.response ? ` (Status: ${error.response.status})` : ""}`,
-      )
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handleSort = (field) => {
     const newOrder = sortField === field && sortOrder === "asc" ? "desc" : "asc"
     setSortField(field)
     setSortOrder(newOrder)
     setReceivedData(
       [...receivedData].sort((a, b) => {
-        const aValue = field === "appointmentCount" ? a[field] : a[field].toLowerCase()
-        const bValue = field === "appointmentCount" ? b[field] : b[field].toLowerCase()
+        const aValue = field === "appointmentCount" ? a[field] : (a[field] || '').toLowerCase()
+        const bValue = field === "appointmentCount" ? b[field] : (b[field] || '').toLowerCase()
         if (newOrder === "asc") {
           return aValue > bValue ? 1 : -1
         }
@@ -106,14 +94,14 @@ function Dashboard() {
     )
   }
 
-  const filteredData = filterRole ? receivedData.filter((data) => data.role === filterRole) : receivedData
+  const filteredData = filterRole ? receivedData.filter((data) => (data.role || '').toLowerCase() === filterRole.toLowerCase()) : receivedData
 
   const chartData = {
-    labels: filteredData.map((data) => data.name),
+    labels: filteredData.map((data) => data.name || 'Unknown'),
     datasets: [
       {
         label: "Total Appointments",
-        data: filteredData.map((data) => data.appointmentCount),
+        data: filteredData.map((data) => data.appointmentCount || 0),
         backgroundColor: "rgba(53, 162, 235, 0.7)",
         borderColor: "rgba(53, 162, 235, 1)",
         borderWidth: 1,
@@ -759,6 +747,12 @@ function Dashboard() {
               <span>Submit Ad</span>
             </Link>
           </li>
+          <li>
+            <Link to="/financial">
+              <i className="fas fa-plus-circle"></i>
+              <span>Financial Management</span>
+            </Link>
+          </li>
         </ul>
       </div>
       <div className={`main-content ${isSidebarCollapsed ? "collapsed" : ""}`}>
@@ -845,14 +839,16 @@ function Dashboard() {
                   <tbody>
                     {filteredData.length > 0 ? (
                       filteredData.map((data) => (
-                        <tr key={data.employeeId}>
-                          <td>{data.employeeId}</td>
-                          <td>{data.name}</td>
+                        <tr key={data.employeeId || Math.random()}>
+                          <td>{data.employeeId || 'N/A'}</td>
+                          <td>{data.name || 'N/A'}</td>
                           <td>
-                            <span className={`role-badge ${data.role.toLowerCase()}`}>{data.role}</span>
+                            <span className={`role-badge ${(data.role || '').toLowerCase()}`}>
+                              {data.role || 'N/A'}
+                            </span>
                           </td>
                           <td>
-                            <span className="appointment-count">{data.appointmentCount}</span>
+                            <span className="appointment-count">{data.appointmentCount || 0}</span>
                           </td>
                         </tr>
                       ))
@@ -865,21 +861,6 @@ function Dashboard() {
                     )}
                   </tbody>
                 </table>
-              </div>
-              <div className="table-actions">
-                <button className="btn btn-primary" onClick={sortAndUploadData} disabled={loading}>
-                  {loading ? (
-                    <>
-                      <span className="spinner-border-sm" role="status" aria-hidden="true"></span>
-                      <span className="ms-2">Processing...</span>
-                    </>
-                  ) : (
-                    <>
-                      <i className="fas fa-sort-amount-down me-2"></i>
-                      Sort and Upload Data
-                    </>
-                  )}
-                </button>
               </div>
             </>
           )}

@@ -617,6 +617,12 @@ function PetAdAdminDashboard() {
                 <span>Submit Ad</span>
               </Link>
             </li>
+            <li>
+            <Link to="/financial">
+              <i className="fas fa-plus-circle"></i>
+              <span>Financial Management</span>
+            </Link>
+            </li>
           </ul>
         </div>
         <div className={`main-content ${isSidebarCollapsed ? "collapsed" : ""}`}>

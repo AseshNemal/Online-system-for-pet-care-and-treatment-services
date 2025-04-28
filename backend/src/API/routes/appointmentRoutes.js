@@ -2,6 +2,7 @@
 import express from "express";
 import Appointment from "../model/Appointment.js";
 import { authenticate } from "../middleware/auth.middlewere.js";
+import axios from "axios"; // Add axios for notification API call
 
 const router = express.Router();
 
@@ -11,6 +12,16 @@ const isValidAppointmentDate = (date) => {
   const maxDate = new Date();
   maxDate.setMonth(now.getMonth() + 60);
   return date >= now && date <= maxDate;
+};
+
+// Helper function to format date and time for notification
+const formatDateForNotification = (date) => {
+  return date.toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
 };
 
 // 📌 Create Appointment
@@ -58,6 +69,29 @@ router.post("/", authenticate, async (req, res) => {
     });
 
     await newAppointment.save();
+    
+    // Create notification for the pet owner
+    try {
+      const formattedDate = formatDateForNotification(apptDate);
+      
+      // Create notification data
+      const notificationData = {
+        userId: petOwnerId,
+        appointmentId: newAppointment._id,
+        title: 'Appointment Booked Successfully',
+        message: `Your appointment for ${petName} with ${employeeFirstName} (${employeeRole}) has been scheduled for ${formattedDate} at ${appointmentTime}. Service: ${serviceCategory}.`,
+        type: 'appointment'
+      };
+      
+      // Send notification to notification service
+      await axios.post('http://localhost:8090/api/notifications/appointment', notificationData);
+      
+      console.log("✅ Appointment notification created");
+    } catch (notificationError) {
+      console.error("❌ Failed to create notification:", notificationError);
+      // Don't fail the appointment creation if notification fails
+    }
+    
     // console.log("✅ Appointment saved:", newAppointment);
     res.status(201).json(newAppointment);
   } catch (err) {
