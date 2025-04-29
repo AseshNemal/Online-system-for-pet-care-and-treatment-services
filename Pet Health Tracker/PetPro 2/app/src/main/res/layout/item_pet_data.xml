@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/txtTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="Time"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/txtTemp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Temp"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/txtHeart"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Heart"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/txtStep"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Steps"
+        android:textSize="14sp" />
+</LinearLayout>
+

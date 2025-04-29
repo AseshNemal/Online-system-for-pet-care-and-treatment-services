@@ -1,0 +1,55 @@
+Pet Health Tracker 
+
+
+Equipment
+* Microbit v2
+* Microbit expansion board
+* DHT 11
+* Sim800L GMS/GPRS module
+* Pulse sensors
+* On/Off torch switch
+* 1000uF electric capacitor
+* USB-C charging module
+* 3.7V 1000mAh Li-Polymer Battery (Lipo)
+* Jumper wire
+* Circuit wire (copper)
+
+How it Works
+
+* Microbit —> SIM800L data -> Cloudflare -> Firebase
+* Cloudflare (adds time and converts HTTP to HTTPS)
+
+
+* Transmits data to our database every minute.
+* Sends text messages to your mobile device every minute.
+* Sends location updates to your mobile device every minute.
+* Displays data in web app and Android application.
+
+What is a Pet Health Tracker?
+
+A pet health tracker measures various environmental factors, including:
+
+* Temperature
+* Humidity
+* Air quality
+* Body temperature
+* Step count
+* Heart rate
+* Location
+* Device battery percentage    
+
+
+
+text -
+
+Health Update:
+Signal: Fair signal
+Body Temp: 33 C
+Heart Rate: 80
+Steps: 7
+Env Temp: 30.2 C
+Humidity: 49.7%
+Air Quality: 904
+Battery: 68%
+Location: https://www.google.com/maps?q={latitude},${longitude}
+

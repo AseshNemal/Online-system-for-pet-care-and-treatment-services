@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">PetPro</string>
+    <string name="name">Name</string>
+
+
+    <string name="reminders">Reminders</string>
+
+    <string name="asesh_nemal">Asesh Nemal</string>
+    <string name="aseshnemal_gmail_com">aseshnemal@gmail.com</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="profile_image">profile_image</string>
+
+    <string name="_30_discount_offer">30% Discount Offer</string>
+    <string name="gift_your_pet_good_health">Gift Your Pet Good Health</string>
+    <string name="limited_time_special_offer">Limited Time Special Offer</string>
+    <string name="invest_in_your_pet_s_health_get_out_pet_tacker_today">Invest in Your Pet\'s Health - Get out pet tacker Today!</string>
+    <string name="calendar_view">Calendar View</string>
+    <string name="day_logs">Day Logs</string>
+    <string name="smart_summary">Smart Summary</string>
+    <string name="_2025">2025</string>
+    <string name="_22">22</string>
+    <string name="mar">Mar</string>
+    <string name="pet_live_location">Pet Live Location</string>
+
+
+    <string name="weight_kg">Weight (kg)</string>
+    <string name="time">Time</string>
+    <string name="activity">Activity</string>
+
+
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="login_">Login</string>
+    <string name="password">Password</string>
+
+    <string name="pet_logs">Pet Logs</string>
+    <string name="records">Records</string>
+    <string name="stats">Stats</string>
+    <string name="account">Account</string>
+
+    <string name="welcome_to">Welcome to</string>
+    <string name="get_start">Get Start</string>
+    <string name="skip">Skip</string>
+    <string name="petpro">PetPro</string>
+
+    <string name="steps_trend">Steps Trend</string>
+    <string name="pet_health_tracker">Pet Health Tracker</string>
+    <string name="temperature_trend">Temperature Trend</string>
+    <string name="heart_rate_trend">Heart Rate Trend</string>
+
+    <string name="medicine_and_supplements">Medicine and Supplements</string>
+    <string name="vaccine">Vaccine</string>
+    <string name="water">Water</string>
+    <string name="dry_food">Dry Food</string>
+    <string name="_12_0_oz">12.0 oz</string>
+    <string name="_12_0_oz1">12.0 oz</string>
+
+    <string name="full_name">Full Name</string>
+    <string name="email_">Email</string>
+    <string name="password_">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
+    <string name="signup">Signup</string>
+
+    <string name="medicine_and_supplements_">Medicine and Supplements</string>
+    <string name="vaccine_">Vaccine</string>
+    <string name="rabies_vaccine">Rabies Vaccine</string>
+    <string name="_2023_03_22">2023-03-22</string>
+    <string name="completed">Completed</string>
+    <string name="distemper_vaccine">Distemper Vaccine</string>
+    <string name="_2023_06_15">2023-06-15</string>
+    <string name="pending">Pending</string>
+    <string name="parvovirus_vaccine">Parvovirus Vaccine</string>
+    <string name="_2023_09_10">2023-09-10</string>
+
+    <string name="scheduled">Scheduled</string>
+    <string name="pet_health_summary">Pet Health Summary</string>
+    <string name="location_park">Location: Park</string>
+    <string name="alert_pet_needs_rest">Alert: Pet needs rest!</string>
+    <string name="temperature_38_c">Temperature: 38°C</string>
+    <string name="steps_1200">Steps: 1200</string>
+    <string name="heart_rate_85_bpm">Heart Rate: 85 BPM</string>
+    <string name="selected_date">Selected Date:</string>
+
+
+</resources>

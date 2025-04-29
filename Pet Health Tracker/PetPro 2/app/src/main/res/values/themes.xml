@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.PetPro" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#FFEB3B</item> <!-- Light Yellow -->
+        <item name="colorPrimaryVariant">#FFF59D</item> <!-- Lighter Yellow -->
+        <item name="colorOnPrimary">#000000</item> <!-- Black text on yellow -->
+        <item name="android:windowBackground">#FFFDE7</item>
+    </style>
+
+    <style name="Theme.PetPro" parent="Base.Theme.PetPro" />
+</resources>

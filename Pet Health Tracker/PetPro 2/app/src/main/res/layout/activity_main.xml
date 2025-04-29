@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity">
+
+
+    <View
+        android:id="@+id/header_background"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/light_yellow"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/profile_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_profile"
+        android:background="@drawable/circle_background"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp" />
+
+
+    <LinearLayout
+        android:id="@+id/date_section"
+        android:layout_width="330dp"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="47dp">
+
+        <Button
+            android:id="@+id/month_button"
+            android:layout_width="115dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_bg"
+            android:text="@string/mar"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/day_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/button_bg"
+            android:text="@string/_22"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/year_button"
+            android:layout_width="111dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/button_bg"
+            android:text="@string/_2025"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/tab_section"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/date_section">
+
+        <TextView
+            android:id="@+id/smart_summary"
+            android:layout_width="137dp"
+            android:layout_height="wrap_content"
+            android:text="@string/smart_summary"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/day_logs"
+            android:layout_width="96dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/day_logs"
+            android:textColor="@color/gray"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/calendar_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/pet_live_location"
+            android:textColor="@color/gray"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/offer_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/invest_in_your_pet_s_health_get_out_pet_tacker_today"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tab_section"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Special Offer Banner -->
+    <View
+        android:id="@+id/special_offer_banner"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/yellow"
+        app:layout_constraintTop_toBottomOf="@id/offer_title" />
+
+    <TextView
+        android:id="@+id/special_offer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/limited_time_special_offer"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="@id/special_offer_banner"
+        app:layout_constraintStart_toStartOf="parent"
+        android:padding="8dp" />
+
+
+    <ImageView
+        android:id="@+id/ad_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ad_image"
+        app:layout_constraintTop_toBottomOf="@id/special_offer_banner" />
+
+
+    <Button
+        android:id="@+id/offer_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/red"
+        android:padding="12dp"
+        android:text="@string/gift_your_pet_good_health"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/ad_image" />
+
+
+    <TextView
+        android:id="@+id/discount_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_30_discount_offer"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/red"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/offer_button"
+        android:padding="8dp" />
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
+</androidx.constraintlayout.widget.ConstraintLayout>
