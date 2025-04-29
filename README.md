@@ -37,7 +37,7 @@ Step 11:<br/>
 
 ### After setup whole project, before change anything, create a branch.
 ### Please don't make changes in the main branch.
-### Before start coding commit all the changes to the created branch (including node_modules).
+
 
 
 
