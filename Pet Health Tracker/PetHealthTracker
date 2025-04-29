@@ -35,12 +35,12 @@ A pet health tracker measures various environmental factors, including:
 * Body temperature
 * Step count
 * Heart rate
-* Location
+* Location (based on cell tower)
 * Device battery percentage    
 
 
 
-text -
+text massage sample -
 
 Health Update:
 Signal: Fair signal
