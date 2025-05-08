@@ -1,5 +1,14 @@
 # Online system for pet care and treatment services
 
+Group project developed by a team of five using the MERN stack, AI, and IoT technologies.<br/>
+	•	Developed a smart pet collar to track live location, heart rate, step count, body temperature, humidity, and air quality.<br/>
+	•	Used Firebase Realtime Database for real-time IoT data storage and synchronization.<br/>
+	•	Built an AI-powered pet trainer using Gemini API to deliver personalized obedience and behavioral training advice.<br/>
+	•	Implemented an AI chatbot using the ChatGPT API for symptom checking and pet care guidance.<br/>
+	•	Enabled secure user authentication with Google OAuth.<br/>
+	•	Developed modules for appointment scheduling, HR and finance management, and a secure pet adoption portal.<br/>
+	•	Integrated a feedback form to gather user insights and improve system usability.<br/>
+
 ## --------Installation Guide--------
 
 Step 1:<br/>
