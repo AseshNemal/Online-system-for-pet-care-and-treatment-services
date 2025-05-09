@@ -97,23 +97,97 @@ function AddPet() {
 
           .wrapper .form .row {
               padding: 0.6rem 0;
+              display: flex;
+              flex-wrap: wrap;
+              gap: 1rem;
+          }
+
+          .wrapper .form .row > div {
+              flex: 1 1 45%;
+              min-width: 200px;
           }
 
           .wrapper .form .row .form-control {
               box-shadow: none;
+              width: 100%;
+              padding: 8px 10px;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              font-size: 1rem;
           }
 
-          #sub {
-              display: block;
-              width: 100%;
-              border: 1px solid #ddd;
-              padding: 10px;
+          .btn-primary {
+              display: inline-block;
+              background-color: #3498db;
+              color: white;
+              border: none;
+              padding: 10px 20px;
               border-radius: 5px;
+              cursor: pointer;
+              font-size: 1rem;
+              transition: background-color 0.3s ease;
+          }
+
+          .btn-primary:hover {
+              background-color: #2980b9;
+          }
+
+          /* Gender radio buttons */
+          .option {
+              position: relative;
+              padding-left: 25px;
+              cursor: pointer;
+              user-select: none;
+              font-size: 1rem;
               color: #333;
           }
 
-          #sub:focus {
-              outline: none;
+          .option input {
+              position: absolute;
+              opacity: 0;
+              cursor: pointer;
+              height: 0;
+              width: 0;
+          }
+
+          .checkmark {
+              position: absolute;
+              top: 50%;
+              left: 0;
+              transform: translateY(-50%);
+              height: 16px;
+              width: 16px;
+              background-color: #eee;
+              border-radius: 50%;
+              border: 1px solid #ccc;
+          }
+
+          .option:hover input ~ .checkmark {
+              background-color: #ccc;
+          }
+
+          .option input:checked ~ .checkmark {
+              background-color: #3498db;
+              border-color: #3498db;
+          }
+
+          .checkmark:after {
+              content: "";
+              position: absolute;
+              display: none;
+          }
+
+          .option input:checked ~ .checkmark:after {
+              display: block;
+          }
+
+          .option .checkmark:after {
+              top: 4px;
+              left: 4px;
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: white;
           }
 
           @media(max-width: 768.5px) {
@@ -145,7 +219,8 @@ function AddPet() {
                   onChange={(e) => setPetName(e.target.value)}
                 />
               </div>
-              <div className="col-md-6 mt-md-0 mt-3">
+              {/* Hide User ID field */}
+              {/* <div className="col-md-6 mt-md-0 mt-3">
                 <label>User ID</label>
                 <input
                   type="text"
@@ -154,7 +229,7 @@ function AddPet() {
                   disabled
                   value={UID} // Use UID since it's updated
                 />
-              </div>
+              </div> */}
             </div>
 
             <div className="row">
