@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import './App.css';
 import './styles/responsive.css';
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom"; 
@@ -15,7 +15,6 @@ import AddMedicalRecord from './components/AddMedicalRecord';
 import Footer from './components/footer';
 import Home from './components/home';
 import EditPet from './components/editPet';
-import EditMedicalRecord from './components/editMediRecode';
 import StorePage from './components/storePage';
 import AdminDashboard from './components/adminProducts';
 import AddEmployee from './components/AddEmployee';
@@ -60,64 +59,70 @@ function AppContent() {
 
 
   return (
-    <>
+      <>
       {!isAdminRoute && !isEmployeeRoute && <Header />}
       {!isAdminRoute && !isEmployeeRoute && <Chatbot />}
       
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/AboutUs" element={<AboutUs />} />
-        <Route path="/search" element={<SearchResults />} />
-        <Route path="/pet/add" element={<AddPet />} />
-        <Route path="/pet/:deviceId" element={<DeviceData />} />
-        <Route path="/pet/view" element={<AllPets />} />
-        <Route path="/pet" element={<UserPets />} />
-        <Route path="/pet/edit/:petId" element={<EditPet />} />
-        <Route path="/pets" element={<UserPets />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/pets/:petId" element={<PetRecord />} />
-        <Route path="/pets/:petId/medical" element={<AddMedicalRecord />} />
-        <Route path="/adminProducts" element={<AdminDashboard />}/>
-        <Route path="/employee" element={<AddEmployee />} />
-        <Route path="/adminDashboard" element={<Dashboard />} />
-        <Route path="/adoption-portal" element={<AdoptionPortal />} />
-        <Route path="/admin-dashboard" element={<PetAdAdminDashboard />} /> 
-        <Route path="/submit-ad" element={<SubmitAd />} />
-        <Route path="/payment" element={<PaymentPage />}/>
-        <Route path="/my-orders" element={<MyOrdersPage />}/>
-        <Route path="/pets/:petId/medical/edit/:medicalId" element={<EditMedicalRecord />} />
-        <Route path="/product/all" element={<StorePage />} />
-        <Route path="/adminDashboard" element={<AdminDashboard />} />
-        <Route path="/appointments" element={<ServicesLanding />} />
-        <Route path="/appointments/manage" element={<AppointmentList />} />
-        <Route path="/adminDashboard/product" element={<AdminDashboard />} />
-        <Route path="/petTrainingForm" element={<PetTrainingForm />} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/AboutUs" element={<AboutUs />} />
+          <Route path="/search" element={<SearchResults />} />
+          <Route path="/pet/add" element={<AddPet />} />
+          <Route path="/pet/:deviceId" element={<DeviceData />} />
+          <Route path="/pet/view" element={<AllPets />} />
+          <Route path="/pet" element={<UserPets />} />
+          <Route path="/pet/edit/:petId" element={<EditPet />} />
+          <Route path="/pets" element={<UserPets />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/pets/:petId" element={<PetRecord />} />
+          <Route path="/pets/:petId/medical" element={<AddMedicalRecord />} />
+          <Route path="/adminProducts" element={<AdminDashboard />}/>
+          <Route path="/employee" element={<AddEmployee />} />
+          <Route path="/adminDashboard" element={<Dashboard />} />
+          <Route path="/adoption-portal" element={<AdoptionPortal />} />
+          <Route path="/admin-dashboard" element={<PetAdAdminDashboard />} /> 
+          <Route path="/submit-ad" element={<SubmitAd />} />
+          <Route path="/payment" element={<PaymentPage />}/>
+          <Route path="/my-orders" element={<MyOrdersPage />}/>
+          <Route path="/pets/:petId/medical/edit/:recordId" element={
+            <React.Suspense fallback={<div>Loading...</div>}>
+              {React.createElement(React.lazy(() => import('./components/editMediRecode')), { key: window.location.pathname })}
+            </React.Suspense>
+          } />
+          <Route path="/product/all" element={<StorePage />} />
+          <Route path="/adminDashboard" element={<AdminDashboard />} />
+          <Route path="/appointments" element={<ServicesLanding />} />
+          <Route path="/appointments/manage" element={<AppointmentList />} />
+          <Route path="/adminDashboard/product" element={<AdminDashboard />} />
+          <Route path="/petTrainingForm" element={<PetTrainingForm />} />
 
-        <Route path="/feedbackform" element={<FeedBackForm />} />
-        
+          <Route path="/feedbackform" element={<FeedBackForm />} />
+          
 
-        <Route path="/employee-login" element={<EmployeeLogin />} />
-        <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+          <Route path="/employee-login" element={<EmployeeLogin />} />
+          <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
 
-        <Route path="/financial" element={<FinancialManagement />} />
-        <Route path="/financial/expenses" element={
-          <>
-          <FinancialManagement />
-          <ExpensesManagement />
-          </> } />
-          <Route path="/financial/orders" element={
-          <>
-          <FinancialManagement />
-          <OrderFinanceManagement />
-          </> } />
-          <Route path="/financial/hr" element={
-          <>
-          <FinancialManagement />
-          <HRFinanceManagement />
-          </> } />
-      </Routes>
+          <Route path="/financial" element={<FinancialManagement />} />
+          <Route path="/financial/expenses" element={
+            <>
+            <FinancialManagement />
+            <ExpensesManagement />
+            </> } />
+            <Route path="/financial/orders" element={
+            <>
+            <FinancialManagement />
+            <OrderFinanceManagement />
+            </> } />
+            <Route path="/financial/hr" element={
+            <>
+            <FinancialManagement />
+            <HRFinanceManagement />
+            </> } />
+        </Routes>
+      </Suspense>
 
       {!isAdminRoute && !isEmployeeRoute && <Footer />}
     </>
