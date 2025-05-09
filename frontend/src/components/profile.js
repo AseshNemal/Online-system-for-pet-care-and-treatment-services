@@ -2,33 +2,34 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const Profile = () => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8090/get-session", {
-          withCredentials: true
-        });
-        if (response.data.user) {
-          setUser(response.data.user);
-        } else {
-          setError("No user session found");
+    useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.get("http://localhost:8090/get-session", {
+            withCredentials: true
+          });
+          if (response.data.user) {
+            console.log("User image URL:", response.data.user.image);
+            setUser(response.data.user);
+          } else {
+            setError("No user session found");
+          }
+        } catch (err) {
+          setError(err.response?.data?.message || "Error fetching profile");
+          console.error("Profile fetch error:", err);
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        setError(err.response?.data?.message || "Error fetching profile");
-        console.error("Profile fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    fetchUserData();
-  }, []);
+      fetchUserData();
+    }, []);
 
   const handleLogout = async () => {
     try {
@@ -73,9 +74,13 @@ const Profile = () => {
       <div className="profile-header">
         <div className="profile-image-container">
           <img
-            src={user.image?.replace('=s96-c', '=s200-c') || "https://via.placeholder.com/200"}
+            src={user.image ? user.image.replace('=s96-c', '=s200-c') : "https://dummyimage.com/200x200/cccccc/ffffff&text=No+Image"}
             alt="Profile"
             className="profile-image"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://dummyimage.com/200x200/cccccc/ffffff&text=No+Image";
+            }}
           />
         </div>
         <h1 className="profile-name">{user.displayName || "User"}</h1>

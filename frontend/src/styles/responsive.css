@@ -1,0 +1,50 @@
+/* Responsive styles for mobile and desktop */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    max-width: 90%;
+    padding: 0 0.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  /* Adjust font sizes for smaller screens */
+  body, button, input, select, textarea {
+    font-size: 1rem;
+  }
+
+  /* Stack flex items vertically */
+  .d-flex {
+    flex-direction: column !important;
+  }
+
+  /* Make buttons full width */
+  button, .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Adjust nav links for mobile */
+  .navbar-nav {
+    flex-direction: column;
+  }
+
+  .navbar-nav .nav-item {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  /* Desktop specific styles if needed */
+}
