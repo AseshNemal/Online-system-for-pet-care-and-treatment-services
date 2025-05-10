@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/pets(?:/(.*))?",
+      "dest": "/api/pets.js"
+    },
+    {
+      "src": "/api/appointment(?:/(.*))?",
+      "dest": "/api/appointment.js"
+    },
+    {
+      "src": "/api/data(?:/(.*))?",
+      "dest": "/api/data.js"
+    },
+    {
+      "src": "/api/employee(?:/(.*))?",
+      "dest": "/api/employee.js"
+    },
+    {
+      "src": "/api/expense(?:/(.*))?",
+      "dest": "/api/expense.js"
+    },
+    {
+      "src": "/api/feedback(?:/(.*))?",
+      "dest": "/api/feedback.js"
+    },
+    {
+      "src": "/api/gemini(?:/(.*))?",
+      "dest": "/api/gemini.js"
+    },
+    {
+      "src": "/api/image-proxy(?:/(.*))?",
+      "dest": "/api/imageProxy.js"
+    },
+    {
+      "src": "/api/medicalRecords(?:/(.*))?",
+      "dest": "/api/medicalRecords.js"
+    },
+    {
+      "src": "/api/notification(?:/(.*))?",
+      "dest": "/api/notification.js"
+    },
+    {
+      "src": "/api/order(?:/(.*))?",
+      "dest": "/api/order.js"
+    },
+    {
+      "src": "/api/pet-tracker(?:/(.*))?",
+      "dest": "/api/pet_tracker.js"
+    }
+  ]
+}

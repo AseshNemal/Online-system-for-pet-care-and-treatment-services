@@ -1,0 +1,64 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "frontend/build" }
+    },
+    {
+      "src": "backend/api/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/pets(?:/(.*))?",
+      "dest": "/backend/api/pets.js"
+    },
+    {
+      "src": "/api/appointment(?:/(.*))?",
+      "dest": "/backend/api/appointment.js"
+    },
+    {
+      "src": "/api/data(?:/(.*))?",
+      "dest": "/backend/api/data.js"
+    },
+    {
+      "src": "/api/employee(?:/(.*))?",
+      "dest": "/backend/api/employee.js"
+    },
+    {
+      "src": "/api/expense(?:/(.*))?",
+      "dest": "/backend/api/expense.js"
+    },
+    {
+      "src": "/api/feedback(?:/(.*))?",
+      "dest": "/backend/api/feedback.js"
+    },
+    {
+      "src": "/api/gemini(?:/(.*))?",
+      "dest": "/backend/api/gemini.js"
+    },
+    {
+      "src": "/api/image-proxy(?:/(.*))?",
+      "dest": "/backend/api/imageProxy.js"
+    },
+    {
+      "src": "/api/medicalRecords(?:/(.*))?",
+      "dest": "/backend/api/medicalRecords.js"
+    },
+    {
+      "src": "/api/notification(?:/(.*))?",
+      "dest": "/backend/api/notification.js"
+    },
+    {
+      "src": "/api/order(?:/(.*))?",
+      "dest": "/backend/api/order.js"
+    },
+    {
+      "src": "/api/pet-tracker(?:/(.*))?",
+      "dest": "/backend/api/pet_tracker.js"
+    }
+  ]
+}
