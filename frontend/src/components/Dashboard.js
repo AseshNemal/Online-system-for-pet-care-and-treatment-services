@@ -11,7 +11,6 @@ function Dashboard() {
   const [totalEmployeeCount, setTotalEmployeeCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
   const [sortField, setSortField] = useState("appointmentCount")
   const [sortOrder, setSortOrder] = useState("desc")
   const [filterRole, setFilterRole] = useState("")
@@ -759,7 +758,6 @@ function Dashboard() {
         <h2 className="page-title">Employee Dashboard</h2>
 
         {error && <div className="alert alert-danger">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
 
         <div className="kpi-container">
           <div className="kpi-card">

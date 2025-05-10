@@ -115,7 +115,7 @@ const AppointmentForm = ({ serviceType, onClose }) => {
     }
 
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:8090/api/appointments",
         {
           userId,

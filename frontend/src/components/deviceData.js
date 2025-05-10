@@ -85,7 +85,7 @@ const DeviceData = () => {
         setDeviceData([]);
       }
     });
-  },[selectedDeviceId]);
+  },[selectedDeviceId, deviceId]);
 
   const fetchLocation = (latitude, longitude) => {
     console.log(`Attempting to update location with Latitude: ${latitude}, Longitude: ${longitude}`);
@@ -100,10 +100,6 @@ const DeviceData = () => {
   const last20Records = selectedDeviceId 
     ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-20)
     : deviceData.slice(count - 21, count - 1);
-
-  const last30Records = selectedDeviceId
-    ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-30)
-    : deviceData.slice(count - 30, count - 1);
 
   // Temperature Chart Data
   const temperatureChartData = {

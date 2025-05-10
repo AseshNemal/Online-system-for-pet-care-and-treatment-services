@@ -157,7 +157,7 @@ const PetRecord = () => {
                 return;
               }
               try {
-                const response = await axios.put(`http://localhost:8090/pet/update/${pet._id}`, {
+                await axios.put(`http://localhost:8090/pet/update/${pet._id}`, {
                   deviceId: pet.deviceIdInput
                 });
                 setPet(prev => ({ ...prev, deviceId: pet.deviceIdInput, deviceIdInput: '' }));

@@ -9,7 +9,7 @@ const OrderFinanceManagement = () => {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [fetchOrders]);
 
   const fetchOrders = async () => {
     try {
