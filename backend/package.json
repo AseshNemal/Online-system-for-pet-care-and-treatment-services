@@ -9,7 +9,8 @@
   "private": false,
   "scripts": {
     "dev": "nodemon --exec babel-node src/app.js",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "build": "echo 'No build step required'"
   },
   "devDependencies": {
     "@babel/core": "^7.26.7",
