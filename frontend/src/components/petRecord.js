@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Table, Button, Modal, Form } from 'react-bootstrap';
-import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
 const PetRecord = () => {
   const { petId } = useParams();
@@ -132,7 +131,7 @@ const PetRecord = () => {
         <Card.Header className="d-flex justify-content-between align-items-center">
           <h2>Medical Records</h2>
           <Button variant="primary" onClick={() => setShowModal(true)}>
-            <FaPlus /> Add Record
+            + Add Record
           </Button>
         </Card.Header>
         <Card.Body>
@@ -164,7 +163,7 @@ const PetRecord = () => {
                       size="sm"
                       onClick={() => handleDeleteRecord(record._id)}
                     >
-                      <FaTrash />
+                      Delete
                     </Button>
                   </td>
                 </tr>
