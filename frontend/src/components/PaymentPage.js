@@ -8,7 +8,6 @@ const PaymentPage = () => {
   const navigate = useNavigate()
   const { cart: cartItems, totalValue: totalAmount } = location.state || { cart: [], totalValue: 0 }
   const [userId, setUserId] = useState("")
-  const [success, setSuccess] = useState("")
 
   // Form validation states
   const [cardName, setCardName] = useState("")
@@ -46,7 +45,7 @@ const PaymentPage = () => {
       }
 
       await axios.post(`${process.env.REACT_APP_API_URL}/order/create`, orderData)
-      setSuccess('Payment successful!')
+      alert('Payment successful!')
       navigate('/orders')
     } catch (error) {
       console.error("Error processing payment:", error.response?.data || error.message)
