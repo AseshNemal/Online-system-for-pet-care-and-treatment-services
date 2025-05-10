@@ -20,7 +20,9 @@ const PORT = process.env.PORT || "8090";
 
 
 app.use(cors({
-    origin: ["http://localhost:3000", "https://online-system-for-pet-care-and-treatment-services-y8-39folvnxa.vercel.app"],
+    origin: process.env.NODE_ENV === 'production' 
+        ? ["https://online-system-for-pet-care-and-treatment-services.vercel.app"]
+        : ["http://localhost:3000"],
     credentials: true 
 }));
 
@@ -30,14 +32,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // ✅ Set up session middleware
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: config.SESSION_SECRET,
     resave: false,
-    saveUninitialized: false, // Prevent empty sessions
+    saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: config.DB_CONNECTION_STRING}),
     cookie: { 
-        secure: false,  // Change to `true` in production (HTTPS required)
+        secure: process.env.NODE_ENV === 'production',  // true in production
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 1 day session expiration
+        maxAge: 24 * 60 * 60 * 1000, // 1 day session expiration
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }));
 
@@ -69,8 +72,10 @@ app.get("/logout", (req, res) => {
           return res.status(500).json({ message: "Error logging out" });
       }
       req.session.destroy(() => {
-          res.clearCookie("connect.sid"); // ✅ Clear session cookie
-          res.redirect("http://localhost:3000"); // ✅ Redirect to React home page
+          res.clearCookie("connect.sid");
+          res.redirect(process.env.NODE_ENV === 'production' 
+              ? 'https://online-system-for-pet-care-and-treatment-services.vercel.app'
+              : 'http://localhost:3000');
       });
   });
 });
