@@ -143,6 +143,17 @@ const PaymentPage = () => {
     )
   }
 
+  const handlePayment = async () => {
+    try {
+      await axios.post(`${API_ENDPOINTS.order}/payment`, paymentData);
+      setSuccess(true);
+      setError(null);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Payment failed');
+      setSuccess(false);
+    }
+  };
+
   return (
     <div className="payment-container">
       <div className="payment-summary">

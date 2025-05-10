@@ -11,6 +11,7 @@ const PetRecord = () => {
   const [error, setError] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(null);
+  const [success, setSuccess] = useState(null);
 
 
   useEffect(() => {
@@ -67,6 +68,17 @@ const PetRecord = () => {
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        await axios.post(`${API_ENDPOINTS.pets}/record`, formData);
+        setSuccess(true);
+        setError(null);
+    } catch (err) {
+        setError(err.response?.data?.message || 'Failed to create pet record');
+        setSuccess(false);
+    }
+  };
 
   if (loading) return <div className="loading">Loading pet details...</div>;
   if (error) return <div className="error">Error: {error}</div>;

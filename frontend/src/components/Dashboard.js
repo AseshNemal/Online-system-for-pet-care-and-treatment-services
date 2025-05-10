@@ -11,7 +11,7 @@ function Dashboard() {
   const [totalEmployeeCount, setTotalEmployeeCount] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
+  const [success] = useState("")
   const [sortField, setSortField] = useState("appointmentCount")
   const [sortOrder, setSortOrder] = useState("desc")
   const [filterRole, setFilterRole] = useState("")

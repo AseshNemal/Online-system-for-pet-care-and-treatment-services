@@ -63,6 +63,10 @@ const HRFinanceManagement = () => {
     return totalSalary - totalEPF;
   };
 
+  const calculateTotal = (data) => {
+    return data.reduce((sum, item) => sum + item.amount, 0);
+  };
+
   const generateReport = () => {
     const currentDate = new Date().toLocaleDateString();
     const currentTime = new Date().toLocaleTimeString();

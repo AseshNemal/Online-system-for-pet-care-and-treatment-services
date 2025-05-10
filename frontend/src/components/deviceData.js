@@ -38,6 +38,12 @@ const DeviceData = () => {
   const { deviceId } = useParams();
 
   useEffect(() => {
+    if (deviceId) {
+        fetchDeviceData();
+    }
+  }, [deviceId, fetchDeviceData]);
+
+  const fetchDeviceData = () => {
     const dataRef = ref(realtimeDB, "petcare");
 
     onValue(dataRef, (snapshot) => {
@@ -85,7 +91,7 @@ const DeviceData = () => {
         setDeviceData([]);
       }
     });
-  },[selectedDeviceId]);
+  };
 
   const fetchLocation = (latitude, longitude) => {
     console.log(`Attempting to update location with Latitude: ${latitude}, Longitude: ${longitude}`);
@@ -100,10 +106,6 @@ const DeviceData = () => {
   const last20Records = selectedDeviceId 
     ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-20)
     : deviceData.slice(count - 21, count - 1);
-
-  const last30Records = selectedDeviceId
-    ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-30)
-    : deviceData.slice(count - 30, count - 1);
 
   // Temperature Chart Data
   const temperatureChartData = {
@@ -488,6 +490,22 @@ const DeviceData = () => {
     return "🔋"; // Good
   };
 
+  const renderChart = (data) => {
+    return (
+        <Line
+            data={{
+                labels: data.map(record => new Date(record.timestamp).toLocaleString()),
+                datasets: [{
+                    label: 'Temperature',
+                    data: data.map(record => record.temperature),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            }}
+        />
+    );
+  };
+
   return (
     <div style={{ padding: "20px" }}>
       <div style={{ padding: "20px", display: "flex", alignItems: "center", gap: "10px" }}>
@@ -561,7 +579,7 @@ const DeviceData = () => {
       <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap" }}>
         <div style={{ width: "45%", height: "300px" }}>
           <h3>Body Temperature Chart</h3>
-          <Line data={temperatureChartData} options={chartOptions} />
+          {renderChart(last20Records)}
         </div>
 
         <div style={{ width: "45%", height: "300px" }}>

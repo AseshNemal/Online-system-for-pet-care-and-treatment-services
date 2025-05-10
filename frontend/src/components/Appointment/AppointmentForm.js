@@ -101,47 +101,13 @@ const AppointmentForm = ({ serviceType, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    if (!userId) {
-      setError('You must be logged in to book an appointment.');
-      return;
-    }
-
-    if (!form.employeeId || !form.petName || !form.category || !form.date || !form.time) {
-      setError('Please fill in all required fields.');
-      return;
-    }
-
     try {
-      const response = await axios.post(
-        "http://localhost:8090/api/appointments",
-        {
-          userId,
-          employeeId: form.employeeId,
-          employeeFirstName: form.employeeFirstName,
-          employeeRole: form.employeeRole,
-          petName: form.petName,
-          serviceCategory: form.category,
-          appointmentDate: form.date,
-          appointmentTime: form.time,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-
-      setSuccess('Appointment booked successfully!');
-      setForm({ petName: '', employeeId: '', employeeFirstName: '', employeeRole: '', category: '', date: '', time: '' });
-      setAvailableSlots([]);
+        await axios.post(`${API_ENDPOINTS.appointments}/create`, formData);
+        setSuccess(true);
+        setError(null);
     } catch (err) {
-      console.error("❌ Booking error:", err);
-      const msg = err.response?.data?.error || 'Something went wrong. Try again later.';
-      setError(msg);
+        setError(err.response?.data?.message || 'Failed to create appointment');
+        setSuccess(false);
     }
   };
 
