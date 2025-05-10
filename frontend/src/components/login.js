@@ -153,7 +153,7 @@ function Login() {
                 <div className="col-12 col-lg-5 d-flex align-items-center">
                   <div className="d-flex gap-3 flex-column w-100">
                     <a
-                      href="http://localhost:8090/auth/google"
+                      href={`${process.env.REACT_APP_BACKEND_URL || "http://localhost:8090"}/auth/google`}
                       className="btn btn-outline-dark"
                     >
                       Continue with Google
