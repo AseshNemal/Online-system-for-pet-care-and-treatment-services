@@ -11,6 +11,7 @@ const EditMedicalRecord = () => {
     veterinarian: '',
     diagnosis: '',
     treatment: '',
+    medications: [''],
     notes: ''
   });
   const [loading, setLoading] = useState(true);
@@ -20,13 +21,16 @@ const EditMedicalRecord = () => {
   useEffect(() => {
     const fetchRecordData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8090/medical/${petId}/${recordId}`);
-        if (!response.data.record) {
+        const response = await axios.get(`http://localhost:8090/medical/single/${recordId}`);
+        if (!response.data) {
           throw new Error('Medical record not found');
         }
         setRecord({
-          ...response.data.record,
-          visitDate: response.data.record.visitDate?.split('T')[0] || ''
+          ...response.data,
+          medications: Array.isArray(response.data.medications)
+            ? response.data.medications.map(med => typeof med === 'string' ? med : med.name || JSON.stringify(med))
+            : [''],
+          visitDate: response.data.visitDate?.split('T')[0] || ''
         });
         setLoading(false);
       } catch (err) {
@@ -46,13 +50,38 @@ const EditMedicalRecord = () => {
     }));
   };
 
+  const handleMedicationChange = (index, value) => {
+    const newMedications = [...record.medications];
+    newMedications[index] = value;
+    setRecord(prev => ({
+      ...prev,
+      medications: newMedications
+    }));
+  };
+
+  const addMedication = () => {
+    setRecord(prev => ({
+      ...prev,
+      medications: [...prev.medications, '']
+    }));
+  };
+
+  const removeMedication = (index) => {
+    const newMedications = [...record.medications];
+    newMedications.splice(index, 1);
+    setRecord(prev => ({
+      ...prev,
+      medications: newMedications
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
-      await axios.put(`http://localhost:8090/medical/update/${recordId}`, record);
-      navigate(`/pets/${petId}/medical-records`);
+      await axios.put(`http://localhost:8090/medical/${recordId}`, record);
+      navigate(`/pets/${petId}`);
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Error updating record');
     } finally {
@@ -139,6 +168,28 @@ const EditMedicalRecord = () => {
               onChange={handleChange}
               required
             />
+          </div>
+
+          <div className="form-group">
+            <label>Medications</label>
+            {record.medications.map((med, index) => (
+              <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <input
+                  type="text"
+                  value={med}
+                  onChange={(e) => handleMedicationChange(index, e.target.value)}
+                  style={{ flex: 1, marginRight: '0.5rem' }}
+                />
+                {record.medications.length > 1 && (
+                  <button type="button" onClick={() => removeMedication(index)} style={{ padding: '0.3rem 0.6rem' }}>
+                    Remove
+                  </button>
+                )}
+              </div>
+            ))}
+            <button type="button" onClick={addMedication} style={{ marginTop: '0.5rem' }}>
+              + Add Medication
+            </button>
           </div>
 
           <div className="form-group">

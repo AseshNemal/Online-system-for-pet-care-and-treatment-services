@@ -206,7 +206,30 @@ function Home() {
                 Get instant notifications if your pet's health metrics go outside normal ranges.
               </p>
             </div>
-            
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>🐾</div>
+              <h3 style={styles.featureTitle}>Adoption Portal</h3>
+              <p style={styles.featureText}>
+                Find your perfect furry friend through our easy-to-use adoption portal.
+              </p>
+              <Link to="/adoption-portal" style={styles.featureButton}>Explore Adoption</Link>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>✂️</div>
+              <h3 style={styles.featureTitle}>Grooming & Veterinary Appointment</h3>
+              <p style={styles.featureText}>
+                Schedule grooming and veterinary appointments conveniently through our platform.
+              </p>
+              <Link to="/appointments" style={styles.featureButton}>Book Appointment</Link>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>💊</div>
+              <h3 style={styles.featureTitle}>Medicine Records Management</h3>
+              <p style={styles.featureText}>
+                Keep track of your pet's medication and health records all in one place.
+              </p>
+              <Link to="/pet" style={styles.featureButton}>Manage Records</Link>
+            </div>
           </div>
           <div style={styles.featureCard}>
               <div style={styles.featureIcon}>🤖</div>
@@ -306,6 +329,41 @@ function Home() {
               <h3 style={styles.featureTitle}>Smart Training</h3>
               <p style={styles.featureText}>
                 Our AI adapts to your pet's learning style for faster, more effective training.
+              </p>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>🐾</div>
+              <h3 style={styles.featureTitle}>Comprehensive Adoption Portal</h3>
+              <p style={styles.featureText}>
+                Easily find and adopt pets through our integrated adoption platform, connecting loving homes with pets in need.
+              </p>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>✂️</div>
+              <h3 style={styles.featureTitle}>Convenient Grooming & Veterinary Appointments</h3>
+              <p style={styles.featureText}>
+                Schedule and manage grooming and veterinary visits seamlessly to keep your pet healthy and happy.
+              </p>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>💊</div>
+              <h3 style={styles.featureTitle}>Efficient Medicine Records Management</h3>
+              <p style={styles.featureText}>
+                Keep all your pet’s medication and health records organized and accessible in one place.
+              </p>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>🤖</div>
+              <h3 style={styles.featureTitle}>AI Pet Training</h3>
+              <p style={styles.featureText}>
+                Our AI-powered training system helps teach your pet commands and track progress with personalized lessons.
+              </p>
+            </div>
+            <div style={styles.featureCard}>
+              <div style={styles.featureIcon}>🛒</div>
+              <h3 style={styles.featureTitle}>Integrated Pet Shopping</h3>
+              <p style={styles.featureText}>
+                Browse and purchase pet supplies easily through our built-in shopping platform.
               </p>
             </div>
           </div>

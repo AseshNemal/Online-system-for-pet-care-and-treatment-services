@@ -78,6 +78,9 @@ app.get("/logout", (req, res) => {
 const petRouter = require("./API/routes/pets.js")
 app.use("/pet" , petRouter)
 
+import imageProxyRouter from "./API/routes/imageProxy.js";
+app.use("/image-proxy", imageProxyRouter);
+
 const dataRoutes = require("./API/routes/dataRoutes.js")
 app.use('/api', dataRoutes);
 

@@ -26,7 +26,12 @@ function UserPets() {
         setPets(petsRes.data.pets || []);
       } catch (err) {
         console.error("Error:", err);
-        setError(err.message || "Error fetching data");
+        // Check if error is 404 and set friendly message
+        if (err.response && err.response.status === 404) {
+          setError("No pets added, please add your pet");
+        } else {
+          setError(err.message || "Error fetching data");
+        }
       } finally {
         setLoading(false);
       }
@@ -53,50 +58,51 @@ function UserPets() {
     }
   };
 
-  if (loading) return <div className="loading">Loading pets...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
-
   return (
     <div className="user-pets-container">
       <h2 className="user-pets-title">{user?.displayName || 'User'}'s Pets</h2>
-      <ul className="pets-list">
-        {pets.length === 0 ? (
-          <li className="no-pets">No pets found for this user.</li>
-        ) : (
-          pets.map((pet) => (
-            <li 
-              key={pet._id}
-              onClick={() => handlePetClick(pet._id)}
-              className="pet-item"
-            >
-              <div className="pet-info">
-                <span className="pet-name">{pet.petName}</span>
-                <span className="pet-details">
-                  {pet.species} | {pet.breed}
-                </span>
-              </div>
-              <div className="pet-actions">
-                <button 
-                  className="edit-button"
-                  onClick={(e) => {
-                    e.stopPropagation(); // prevent triggering the pet click event
-                    navigate(`/pet/edit/${pet._id}`);
-                  }}
-                >
-                  Edit
-                </button>
-                <button 
-                  className="delete-button"
-                  onClick={(e) => handleDeletePet(pet._id, e)}
-                >
-                  Delete
-                </button>
-                <div className="pet-arrow">→</div>
-              </div>
-            </li>
-          ))
-        )}
-      </ul>
+      {loading && <div className="loading">Loading pets...</div>}
+      {error && <div className="error">Error: {error}</div>}
+      {!loading && !error && (
+        <ul className="pets-list">
+          {pets.length === 0 ? (
+            <li className="no-pets">No pets found for this user.</li>
+          ) : (
+            pets.map((pet) => (
+              <li 
+                key={pet._id}
+                onClick={() => handlePetClick(pet._id)}
+                className="pet-item"
+              >
+                <div className="pet-info">
+                  <span className="pet-name">{pet.petName}</span>
+                  <span className="pet-details">
+                    {pet.species} | {pet.breed}
+                  </span>
+                </div>
+                <div className="pet-actions">
+                  <button 
+                    className="edit-button"
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent triggering the pet click event
+                      navigate(`/pet/edit/${pet._id}`);
+                    }}
+                  >
+                    Edit
+                  </button>
+                  <button 
+                    className="delete-button"
+                    onClick={(e) => handleDeletePet(pet._id, e)}
+                  >
+                    Delete
+                  </button>
+                  <div className="pet-arrow">→</div>
+                </div>
+              </li>
+            ))
+          )}
+        </ul>
+      )}
 
       <button 
         onClick={() => navigate(`/pet/add`)}

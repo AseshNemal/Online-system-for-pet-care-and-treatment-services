@@ -1,4 +1,18 @@
 import React from 'react';
+import NemalPic from './pic/Nemal.jpg';
+import YasiduPic from './pic/Yasidu.JPG';
+import AdrielPic from './pic/Adriel.JPG';
+import SurathPic from './pic/Surath.jpeg';
+import RandimalPic from './pic/Randimal.JPG';
+
+const teamMembers = [
+  { name: 'Asesh Nemal', role: 'Developer / Designer', image: NemalPic, linkedin: 'http://linkedin.com/in/asesh-nemal-a0a520248' },
+  { name: 'Yasindu Rasanga', role: 'Developer / Designer', image: YasiduPic, linkedin: 'http://linkedin.com/in/yasindu-rasanga-karawita-481549247' },
+  { name: 'Adriel Damian', role: 'Developer / Designer', image: AdrielPic, linkedin: 'http://linkedin.com/in/adriel-perera-5a9730362' },
+  { name: 'Surath Gayanatha', role: 'Developer / Designer', image: SurathPic, linkedin: 'http://linkedin.com/in/surath-gayanatha-081362335' },
+  { name: 'Randimal Lamahewa', role: 'Developer / Designer', image: RandimalPic, linkedin: 'http://linkedin.com/in/randimal-lamahewa-153483271' }
+];
+
 
 const AboutUs = () => {
   return (
@@ -44,12 +58,14 @@ const AboutUs = () => {
         <div style={styles.block}>
           <h3 style={styles.subTitle}>Meet the Team</h3>
           <div style={styles.teamGrid}>
-            {["Member 1", "Member 2", "Member 3", "Member 4", "Member 5"].map((member, idx) => (
-              <div key={idx} style={styles.teamCard}>
-                <div style={styles.avatar}></div>
-                <p style={styles.memberName}>{member}</p>
-                <p style={styles.role}>Developer / Designer</p>
-              </div>
+            {teamMembers.map((member, idx) => (
+              <a key={idx} href={member.linkedin} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                <div style={styles.teamCard}>
+                  <img src={member.image} alt={member.name} style={styles.avatar} />
+                  <p style={styles.memberName}>{member.name}</p>
+                  <p style={styles.role}>{member.role}</p>
+                </div>
+              </a>
             ))}
           </div>
         </div>
@@ -122,7 +138,7 @@ const styles = {
     width: '70px',
     height: '70px',
     borderRadius: '50%',
-    backgroundColor: '#d3d3d3',
+    objectFit: 'cover',
     margin: '0 auto 10px'
   },
   memberName: {

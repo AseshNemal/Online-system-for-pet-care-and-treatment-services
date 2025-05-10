@@ -104,6 +104,14 @@ const PetRecord = () => {
             <span className="detail-label">Color:</span>
             <span>{pet.color || 'Unknown'}</span>
           </div>
+          <div className="detail-item">
+            <span className="detail-label">Device ID:</span>
+            <span>
+              {pet.deviceId ? pet.deviceId : (
+                <span style={{color: 'red', fontWeight: 'bold'}}>No device ID added</span>
+              )}
+            </span>
+          </div>
         </div>
 
         <div className="detail-card">
@@ -132,7 +140,42 @@ const PetRecord = () => {
       <button onClick={() => navigate(`/pet/${pet.deviceId|| 'Unknown'}`)}
         className="add-record-button">
         Pet Tracker Dashboad
-        </button>
+      </button>
+      {!pet.deviceId && (
+        <div className="device-id-container">
+          <input
+            type="text"
+            placeholder="Enter Device ID"
+            value={pet.deviceIdInput || ''}
+            onChange={(e) => setPet(prev => ({ ...prev, deviceIdInput: e.target.value }))}
+            className="device-id-input"
+          />
+          <button
+            onClick={async () => {
+              if (!pet.deviceIdInput) {
+                alert('Please enter a device ID');
+                return;
+              }
+              try {
+                const response = await axios.put(`http://localhost:8090/pet/update/${pet._id}`, {
+                  deviceId: pet.deviceIdInput
+                });
+                setPet(prev => ({ ...prev, deviceId: pet.deviceIdInput, deviceIdInput: '' }));
+                alert('Device ID updated successfully');
+              } catch (error) {
+                console.error('Failed to update device ID:', error);
+                alert('Failed to update device ID. Please try again.');
+              }
+            }}
+            className="device-id-save-button"
+          >
+            Save Device ID
+          </button>
+          <div className="device-id-message">
+            If you need to test it, test device id 1001
+          </div>
+        </div>
+      )}
 
        
 
@@ -229,6 +272,42 @@ const PetRecord = () => {
           margin: 2rem auto;
           padding: 1.5rem;
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .device-id-container {
+          margin-top: 1rem;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .device-id-input {
+          padding: 0.5rem;
+          font-size: 1rem;
+          flex: 1;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+
+        .device-id-save-button {
+          padding: 0.5rem 1rem;
+          font-size: 1rem;
+          background-color: #3498db;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+
+        .device-id-save-button:hover {
+          background-color: #2980b9;
+        }
+
+        .device-id-message {
+          margin-top: 0.5rem;
+          color: #555;
+          font-size: 0.9rem;
         }
 
         .back-button {
