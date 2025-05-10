@@ -8,7 +8,12 @@
     },
     {
       "src": "server/src/app.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "server/src/**"
+        ]
+      }
     }
   ],
   "routes": [
@@ -61,7 +66,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/index.html"
     }
   ]
 } 

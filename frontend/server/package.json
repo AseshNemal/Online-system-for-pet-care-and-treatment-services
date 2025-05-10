@@ -1,25 +1,14 @@
 {
-  "name": "Online-system-for-pet-care-and-treatment-services",
+  "name": "pet-care-backend",
   "version": "1.0.0",
   "description": "system API",
-  "main": "app.js",
-  "repository": "https://github.com/AseshNemal/Online-system-for-pet-care-and-treatment-services.git",
-  "author": "Asesh Nemal <aseshnemal@gmail.com>",
-  "license": "MIT",
-  "private": false,
+  "main": "src/app.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon --exec babel-node src/app.js",
     "start": "node src/app.js",
-    "build": "echo 'No build step required'"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.26.7",
-    "@babel/node": "^7.26.0",
-    "@babel/preset-env": "^7.26.7",
-    "nodemon": "^3.1.9"
+    "dev": "nodemon --exec babel-node src/app.js"
   },
   "dependencies": {
-    "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
     "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
@@ -37,5 +26,11 @@
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
     "session": "^0.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.7",
+    "@babel/node": "^7.26.0",
+    "@babel/preset-env": "^7.26.7",
+    "nodemon": "^3.1.9"
   }
 }

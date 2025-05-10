@@ -6,19 +6,13 @@ import passport from "passport";
 import MongoStore from "connect-mongo";
 import logger from "./utils/logger.js";
 import { connect } from "./utils/database.connection.js";
-import { googleAuth } from "../src/configs/google.auth.js";
+import { googleAuth } from "./configs/google.auth.js";
 import { routesInit } from "./API/middleware/routesInit.js";
 import config from "./configs/index.js";
-import router from "./API/routes/pets.js";
-import Employee from "./API/model/Employee.js";
-import PetAd from "./API/model/PetAd.js";
-
-
 
 const app = express();
-const PORT = process.env.PORT || "8090";
 
-
+// CORS configuration
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
         ? ["https://online-system-for-pet-care-and-treatment-services.vercel.app", "https://*.vercel.app"]
@@ -26,37 +20,40 @@ app.use(cors({
     credentials: true 
 }));
 
-// ✅ Ensure Express parses JSON properly
+// Body parsing middleware
 app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ✅ Set up session middleware
+// Session configuration
 app.use(session({
     secret: config.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: config.DB_CONNECTION_STRING}),
+    store: MongoStore.create({ 
+        mongoUrl: config.DB_CONNECTION_STRING,
+        ttl: 24 * 60 * 60 // 1 day
+    }),
     cookie: { 
-        secure: process.env.NODE_ENV === 'production',  // true in production
+        secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000, // 1 day session expiration
+        maxAge: 24 * 60 * 60 * 1000,
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }));
 
-// ✅ Initialize Passport
+// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// ✅ Apply Routes
+// Apply Routes
 routesInit(app, passport);
 
-// ✅ Main Routes
+// Main Routes
 app.get("/", (req, res) => {
-    res.send("<a href='http://localhost:8090/auth/google'>Login with Google</a> <h1>Welcome</h1>");
+    res.send("API is running");
 });
 
-// ✅ Fix: Get session correctly
+// Session route
 app.get("/get-session", (req, res) => {
     if (req.user) {
         res.json({ sessionID: req.sessionID, user: req.user });
@@ -65,75 +62,68 @@ app.get("/get-session", (req, res) => {
     }
 });
 
+// Logout route
 app.get("/logout", (req, res) => {
-  req.logout((err) => {
-      if (err) {
-          console.error("Logout error:", err);
-          return res.status(500).json({ message: "Error logging out" });
-      }
-      req.session.destroy(() => {
-          res.clearCookie("connect.sid");
-          res.redirect(process.env.NODE_ENV === 'production' 
-              ? 'https://online-system-for-pet-care-and-treatment-services.vercel.app'
-              : 'http://localhost:3000');
-      });
-  });
+    req.logout((err) => {
+        if (err) {
+            console.error("Logout error:", err);
+            return res.status(500).json({ message: "Error logging out" });
+        }
+        req.session.destroy(() => {
+            res.clearCookie("connect.sid");
+            res.redirect(process.env.NODE_ENV === 'production' 
+                ? 'https://online-system-for-pet-care-and-treatment-services.vercel.app'
+                : 'http://localhost:3000');
+        });
+    });
 });
 
-const petRouter = require("./API/routes/pets.js")
-app.use("/pet" , petRouter)
+// Import and use routes
+import petRouter from "./API/routes/pets.js";
+app.use("/pet", petRouter);
 
 import imageProxyRouter from "./API/routes/imageProxy.js";
 app.use("/image-proxy", imageProxyRouter);
 
-const dataRoutes = require("./API/routes/dataRoutes.js")
+import dataRoutes from "./API/routes/dataRoutes.js";
 app.use('/api', dataRoutes);
 
-const medicalRecords = require("./API/routes/medicalRecords.js")
+import medicalRecords from "./API/routes/medicalRecords.js";
 app.use('/medical', medicalRecords);
 
-//Route for product
-const productRouter = require("./API/routes/productRoutes.js")
-app.use("/product", productRouter)
+import productRouter from "./API/routes/productRoutes.js";
+app.use("/product", productRouter);
 
-//Route for Order
-const orderRoutes = require("./API/routes/orderRoutes.js")
+import orderRoutes from "./API/routes/orderRoutes.js";
 app.use("/order", orderRoutes);
 
-// Appointment routes
 import appointmentRoutes from "./API/routes/appointmentRoutes.js";
 app.use("/api/appointments", appointmentRoutes);
 
-// Serve static files from the uploads folder
+// Serve static files
 app.use("/uploads", express.static("uploads"));
 
-const employeeRoutes = require("./API/routes/employeeRoutes.js")
-app.use("/employee",employeeRoutes)
+import employeeRoutes from "./API/routes/employeeRoutes.js";
+app.use("/employee", employeeRoutes);
 
-const PetAdRoutes = require("./API/routes/PetAdRoutes.js")
+import PetAdRoutes from "./API/routes/PetAdRoutes.js";
 app.use("/pet-ad", PetAdRoutes);
 
-
-const expenseRoutes = require("./API/routes/expenseRoutes.js");
+import expenseRoutes from "./API/routes/expenseRoutes.js";
 app.use("/api/expenses", expenseRoutes);
 
-const geminiRoutes = require("./API/routes/gemini.js")
+import geminiRoutes from "./API/routes/gemini.js";
 app.use("/gemini", geminiRoutes);
 
-
-const feedbackRoutes = require("./API/routes/feedbackRoutes.js")
+import feedbackRoutes from "./API/routes/feedbackRoutes.js";
 app.use("/feedback", feedbackRoutes);
 
-// Notification routes
 import notificationRoutes from "./API/routes/notificationRoutes.js";
 app.use("/api/notifications", notificationRoutes);
 
+// Connect to database and initialize Google Auth
+connect();
+googleAuth(passport);
 
-
-app.listen(PORT, () => {
-    logger.info(`Server is running on PORT ${PORT}`);
-    connect();
-    googleAuth(passport);
-});
-
+// Export the Express app
 export default app;
