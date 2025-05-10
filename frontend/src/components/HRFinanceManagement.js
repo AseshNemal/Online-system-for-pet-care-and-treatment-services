@@ -55,10 +55,6 @@ const HRFinanceManagement = () => {
     return epf8 + epf12;
   };
 
-  const calculateETF = (totalSalary) => {
-    return (totalSalary * 3) / 100;
-  };
-
   const calculateMonthlySalary = (totalSalary, totalEPF) => {
     return totalSalary - totalEPF;
   };
@@ -69,7 +65,7 @@ const HRFinanceManagement = () => {
 
     // Create table header
     const tableHeader = `
-┌────────────┬────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┐
+┌────────────┬────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────┐
 │ Name       │ Role       │ Appointments│ Total Salary│ EPF (8%)    │ EPF (12%)   │ Total EPF   │ Monthly Salary│
 ├────────────┼────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤`;
 
@@ -79,7 +75,6 @@ const HRFinanceManagement = () => {
       const epf8 = calculateEPF8(totalSalary);
       const epf12 = calculateEPF12(totalSalary);
       const totalEPF = calculateTotalEPF(epf8, epf12);
-      const etf = calculateETF(totalSalary);
       const netSalary = calculateMonthlySalary(totalSalary, totalEPF);
       
       return `
@@ -126,7 +121,6 @@ Total Number of Employees: ${employees.length}
               <th>EPF (8%)</th>
               <th>EPF (12%)</th>
               <th>Total EPF</th>
-              <th>ETF</th>
               <th>Monthly Salary</th>
             </tr>
           </thead>
@@ -136,7 +130,6 @@ Total Number of Employees: ${employees.length}
               const epf8 = calculateEPF8(totalSalary);
               const epf12 = calculateEPF12(totalSalary);
               const totalEPF = calculateTotalEPF(epf8, epf12);
-              const etf = calculateETF(totalSalary);
               const netSalary = calculateMonthlySalary(totalSalary, totalEPF);
 
               return (
@@ -147,7 +140,6 @@ Total Number of Employees: ${employees.length}
                   <td>Rs. {epf8.toFixed(2)}</td>
                   <td>Rs. {epf12.toFixed(2)}</td>
                   <td>Rs. {totalEPF.toFixed(2)}</td>
-                  <td>Rs. {etf.toFixed(2)}</td>
                   <td>Rs. {netSalary.toFixed(2)}</td>
                 </tr>
               );
