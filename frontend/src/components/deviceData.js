@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { realtimeDB } from "../firebase";
 import { ref, onValue } from "firebase/database";
 import { Line, Pie } from "react-chartjs-2";
@@ -37,13 +37,7 @@ const DeviceData = () => {
   const [selectedDeviceData, setSelectedDeviceData] = useState(null);
   const { deviceId } = useParams();
 
-  useEffect(() => {
-    if (deviceId) {
-        fetchDeviceData();
-    }
-  }, [deviceId, fetchDeviceData]);
-
-  const fetchDeviceData = () => {
+  const fetchDeviceData = useCallback(() => {
     const dataRef = ref(realtimeDB, "petcare");
 
     onValue(dataRef, (snapshot) => {
@@ -77,7 +71,7 @@ const DeviceData = () => {
         setLatestData(latestRecord);
         setCount(recordCount);
 
-        setSelectedDeviceId(deviceId)
+        setSelectedDeviceId(deviceId);
         if (selectedDeviceId) {
           const device = sortedData.find(item => item.DeviceID === selectedDeviceId);
           setSelectedDeviceData(device || null);
@@ -91,7 +85,13 @@ const DeviceData = () => {
         setDeviceData([]);
       }
     });
-  };
+  }, [deviceId, selectedDeviceId]);
+
+  useEffect(() => {
+    if (deviceId) {
+      fetchDeviceData();
+    }
+  }, [deviceId, fetchDeviceData]);
 
   const fetchLocation = (latitude, longitude) => {
     console.log(`Attempting to update location with Latitude: ${latitude}, Longitude: ${longitude}`);

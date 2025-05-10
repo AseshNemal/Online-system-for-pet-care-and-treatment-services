@@ -33,7 +33,7 @@ const PaymentPage = () => {
 
   const handlePay = async () => {
     try {
-      const orderResponse = await axios.post("http://localhost:8090/order/create", {
+      await axios.post("http://localhost:8090/order/create", {
         userId,
         items: cartItems.map(({ _id, name, price, quantity }) => ({
           productId: _id,
@@ -42,21 +42,21 @@ const PaymentPage = () => {
           quantity,
         })),
         totalAmount,
-      })
+      });
 
       for (const item of cartItems) {
         await axios.put(`http://localhost:8090/product/reduce-stock/${item._id}`, {
           quantity: item.quantity,
-        })
+        });
       }
 
-      alert("Order placed successfully!")
-      navigate("/product/all")
+      alert("Order placed successfully!");
+      navigate("/product/all");
     } catch (error) {
-      console.error("Error processing payment:", error.response?.data || error.message)
-      alert("Failed to process payment.")
+      console.error("Error processing payment:", error.response?.data || error.message);
+      alert("Failed to process payment.");
     }
-  }
+  };
 
   // Validation functions
   const validateCardName = (value) => {

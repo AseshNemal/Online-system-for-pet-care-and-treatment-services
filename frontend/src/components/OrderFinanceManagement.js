@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './OrderFinanceManagement.css';
 
@@ -7,11 +7,7 @@ const OrderFinanceManagement = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [orderCount, setOrderCount] = useState(0);
 
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       const response = await axios.get('http://localhost:8090/order/all');
       setOrders(response.data);
@@ -19,7 +15,11 @@ const OrderFinanceManagement = () => {
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const calculateTotals = (orderData) => {
     const total = orderData.reduce((sum, order) => sum + order.totalAmount, 0);

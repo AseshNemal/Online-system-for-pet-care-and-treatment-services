@@ -13,7 +13,6 @@ const PetRecord = () => {
   const [recordToDelete, setRecordToDelete] = useState(null);
   const [success, setSuccess] = useState(null);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -28,9 +27,6 @@ const PetRecord = () => {
   
         setPet(petResponse.data.pet);
         setMedicalRecords(recordsResponse.data || []);
-   
-        
-        
       } catch (err) {
         setError(err.response?.data?.message || err.message || 'Error fetching data');
       } finally {
@@ -90,9 +86,6 @@ const PetRecord = () => {
   if (loading) return <div className="loading">Loading pet details...</div>;
   if (error) return <div className="error">Error: {error}</div>;
   if (!pet) return <div className="no-pet">No pet found with this ID.</div>;
-
-
-  
 
   return (
     <div className="pet-details-container">
@@ -195,9 +188,6 @@ const PetRecord = () => {
           </div>
         </div>
       )}
-
-       
-
 
       <div className="medical-records-section">
         <div className="section-header">

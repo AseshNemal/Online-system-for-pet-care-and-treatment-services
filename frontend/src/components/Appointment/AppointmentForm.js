@@ -13,7 +13,6 @@ const AppointmentForm = ({ serviceType, onClose }) => {
     time: '',
   });
 
-  const [userId, setUserId] = useState(null);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [employees, setEmployees] = useState([]);
@@ -24,7 +23,7 @@ const AppointmentForm = ({ serviceType, onClose }) => {
       .then((res) => res.json())
       .then((data) => {
         if (data.user?._id) {
-          setUserId(data.user._id);
+          setForm(prev => ({ ...prev, userId: data.user._id }));
         }
       })
       .catch((err) => console.error("Session fetch failed:", err));
