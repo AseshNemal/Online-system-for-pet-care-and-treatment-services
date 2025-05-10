@@ -107,21 +107,6 @@ const DeviceData = () => {
     ? deviceData.filter(d => d.DeviceID === selectedDeviceId).slice(-20)
     : deviceData.slice(count - 21, count - 1);
 
-  // Temperature Chart Data
-  const temperatureChartData = {
-    labels: last20Records.map((data) => data.Timestamp),
-    datasets: [
-      {
-        label: "Temperature (°C)",
-        data: last20Records.map((data) => data.Temperature),
-        fill: false,
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor: "rgba(75, 192, 192, 0.5)",
-        tension: 0.4,
-      },
-    ],
-  };
-
   // Heart Rate Chart Data
   const heartRateChartData = {
     labels: last20Records.map((data) => data.Timestamp),

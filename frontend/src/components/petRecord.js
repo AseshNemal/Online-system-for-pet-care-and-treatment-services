@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Card, Table, Button, Modal, Form } from 'react-bootstrap';
+import { FaPlus, FaEdit, FaTrash } from 'react-icons/fa';
 
 const PetRecord = () => {
   const { petId } = useParams();
@@ -9,9 +11,15 @@ const PetRecord = () => {
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [recordToDelete, setRecordToDelete] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    visitType: "",
+    visitDate: "",
+    veterinarian: "",
+    diagnosis: "",
+    treatment: "",
+    notes: "",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,22 +45,52 @@ const PetRecord = () => {
     fetchData();
   }, [petId]);
 
-  const handleDeleteRecord = (recordId) => {
-    setRecordToDelete(recordId);
-    setShowConfirm(true);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const confirmDelete = async () => {
+  const handleAddRecord = async (e) => {
+    e.preventDefault();
     try {
-      await axios.delete(`http://localhost:8090/medical/delete/${recordToDelete}`);
-      setMedicalRecords(medicalRecords.filter(record => record._id !== recordToDelete));
+      await axios.post(`http://localhost:8090/medical/${petId}`, {
+        visitType: formData.visitType,
+        visitDate: formData.visitDate,
+        veterinarian: formData.veterinarian,
+        diagnosis: formData.diagnosis,
+        treatment: formData.treatment,
+        notes: formData.notes,
+      });
+
+      const recordsResponse = await axios.get(`http://localhost:8090/medical/${petId}`);
+      setMedicalRecords(recordsResponse.data);
+      setShowModal(false);
+      setFormData({
+        visitType: "",
+        visitDate: "",
+        veterinarian: "",
+        diagnosis: "",
+        treatment: "",
+        notes: "",
+      });
     } catch (err) {
-      setError('Failed to delete record');
-    } finally {
-      setShowConfirm(false);
-      setRecordToDelete(null);
+      setError("Failed to add medical record");
+      console.error("Error adding medical record:", err);
     }
-    
+  };
+
+  const handleDeleteRecord = async (recordId) => {
+    try {
+      await axios.delete(`http://localhost:8090/medical/${recordId}`);
+      const recordsResponse = await axios.get(`http://localhost:8090/medical/${petId}`);
+      setMedicalRecords(recordsResponse.data);
+    } catch (err) {
+      setError("Failed to delete medical record");
+      console.error("Error deleting medical record:", err);
+    }
   };
 
   const formatDate = (dateString) => {
@@ -64,216 +102,149 @@ const PetRecord = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        await axios.post(`http://localhost:8090/medical/${petId}`, {
-          visitType: 'Medical Visit',
-          visitDate: new Date(),
-          veterinarian: '',
-          diagnosis: '',
-          treatment: '',
-          notes: ''
-        });
-        setSuccess(true);
-        setError(null);
-    } catch (err) {
-        setError(err.response?.data?.message || 'Failed to create pet record');
-        setSuccess(false);
-    }
-  };
-
   if (loading) return <div className="loading">Loading pet details...</div>;
   if (error) return <div className="error">Error: {error}</div>;
   if (!pet) return <div className="no-pet">No pet found with this ID.</div>;
 
   return (
-    <div className="pet-details-container">
-      <button onClick={() => navigate(-1)} className="back-button">
-        ← Back to Pets
-      </button>
-      
-      <div className="pet-header">
-        <h1>{pet.petName}</h1>
-        <div className="pet-meta">
-          <span>{pet.species}</span>
-          {pet.breed && <span> • {pet.breed}</span>}
-        </div>
-      </div>
-
-      <div className="pet-details-grid">
-        <div className="detail-card">
-          <h3>Basic Information</h3>
-          <div className="detail-item">
-            <span className="detail-label">Gender:</span>
-            <span>{pet.gender || 'Unknown'}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Birth Date:</span>
-            <span>{formatDate(pet.bDate)}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Color:</span>
-            <span>{pet.color || 'Unknown'}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Device ID:</span>
-            <span>
-              {pet.deviceId ? pet.deviceId : (
-                <span style={{color: 'red', fontWeight: 'bold'}}>No device ID added</span>
-              )}
-            </span>
-          </div>
-        </div>
-
-        <div className="detail-card">
-          <h3>Health Information</h3>
-          <div className="detail-item">
-            <span className="detail-label">Weight:</span>
-            <span>{pet.weight || 'Unknown'}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Last Vet Visit:</span>
-            <span>{formatDate(pet.lastVetVisit)}</span>
-          </div>
-          <div className="detail-item">
-            <span className="detail-label">Medical Notes:</span>
-            <span>{pet.medicalNotes || 'None'}</span>
-          </div>
-        </div>
-
-        {pet.image && (
-          <div className="pet-image-container">
-            <img src={pet.image} alt={pet.petName} className="pet-image" />
-          </div>
-        )}
-      </div><br/><br/>
-
-      <button onClick={() => navigate(`/pet/${pet.deviceId|| 'Unknown'}`)}
-        className="add-record-button">
-        Pet Tracker Dashboad
-      </button>
-      {!pet.deviceId && (
-        <div className="device-id-container">
-          <input
-            type="text"
-            placeholder="Enter Device ID"
-            value={pet.deviceIdInput || ''}
-            onChange={(e) => setPet(prev => ({ ...prev, deviceIdInput: e.target.value }))}
-            className="device-id-input"
-          />
-          <button
-            onClick={async () => {
-              if (!pet.deviceIdInput) {
-                alert('Please enter a device ID');
-                return;
-              }
-              try {
-                const response = await axios.put(`http://localhost:8090/pet/update/${pet._id}`, {
-                  deviceId: pet.deviceIdInput
-                });
-                setPet(prev => ({ ...prev, deviceId: pet.deviceIdInput, deviceIdInput: '' }));
-                alert('Device ID updated successfully');
-              } catch (error) {
-                console.error('Failed to update device ID:', error);
-                alert('Failed to update device ID. Please try again.');
-              }
-            }}
-            className="device-id-save-button"
-          >
-            Save Device ID
-          </button>
-          <div className="device-id-message">
-            If you need to test it, test device id 1001
-          </div>
-        </div>
-      )}
-
-      <div className="medical-records-section">
-        <div className="section-header">
-          <h2>Medical Records</h2>
-          <button onClick={() => navigate(`/pets/${petId}/medical`)}
-        className="add-record-button">
-        + Add New Record
-        </button>
-        </div>
-        
-
-        {medicalRecords.length === 0 ? (
-          <div className="no-records">
-            <p>No medical records found for {pet.petName}.</p>
-          </div>
-        ) : (
-          <div className="records-list">
-            {medicalRecords.map((record) => (
-              <div key={record._id} className="record-card">
-                <div className="record-header">
-                  <h3>{record.visitType || 'Medical Visit'}</h3>
-                  <span className="record-date">{formatDate(record.visitDate)}</span>
-                </div>
-                
-                <div className="record-details">
-                  <div className="detail-row">
-                    <span className="detail-label">Veterinarian:</span>
-                    <span>{record.veterinarian || 'Not specified'}</span>
-                  </div>
-                  
-                  <div className="detail-row">
-                    <span className="detail-label">Diagnosis:</span>
-                    <span>{record.diagnosis || 'No diagnosis recorded'}</span>
-                  </div>
-                  
-                  <div className="detail-row">
-                    <span className="detail-label">Treatment:</span>
-                    <span>{record.treatment || 'No treatment recorded'}</span>
-                  </div>
-                  
-                  {record.notes && (
-                    <div className="detail-row notes">
-                      <span className="detail-label">Notes:</span>
-                      <p>{record.notes}</p>
-                    </div>
-                  )}
-                </div>
-                
-                <div className="record-actions">
-                  <button 
-                    onClick={() => navigate(`/pets/${petId}/medical/edit/${record._id}`)}
-                    className="edit-button"
-                  >
-                    Edit
-                  </button>
-                  <button 
-                    onClick={() => handleDeleteRecord(record._id)}
-                    className="delete-button"
-                  >
-                    Delete
-                  </button>
-
-                </div>
-                
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {showConfirm && (
-        <div className="confirmation-modal">
-          <div className="modal-content">
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this medical record?</p>
-            <div className="modal-actions">
-              <button onClick={() => setShowConfirm(false)} className="cancel-button">
-                Cancel
-              </button>
-              <button onClick={confirmDelete} className="confirm-delete-button">
-                Delete
-              </button>
+    <div className="container mt-4">
+      <Card className="mb-4">
+        <Card.Header>
+          <h2>Pet Information</h2>
+        </Card.Header>
+        <Card.Body>
+          <div className="row">
+            <div className="col-md-6">
+              <p><strong>Name:</strong> {pet.petName}</p>
+              <p><strong>Species:</strong> {pet.species}</p>
+              <p><strong>Breed:</strong> {pet.breed}</p>
+            </div>
+            <div className="col-md-6">
+              <p><strong>Age:</strong> {pet.age}</p>
+              <p><strong>Gender:</strong> {pet.gender}</p>
+              <p><strong>Owner:</strong> {pet.owner}</p>
             </div>
           </div>
-        </div>
-      )}
+        </Card.Body>
+      </Card>
+
+      <Card>
+        <Card.Header className="d-flex justify-content-between align-items-center">
+          <h2>Medical Records</h2>
+          <Button variant="primary" onClick={() => setShowModal(true)}>
+            <FaPlus /> Add Record
+          </Button>
+        </Card.Header>
+        <Card.Body>
+          {error && <div className="alert alert-danger">{error}</div>}
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Veterinarian</th>
+                <th>Diagnosis</th>
+                <th>Treatment</th>
+                <th>Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {medicalRecords.map((record) => (
+                <tr key={record._id}>
+                  <td>{formatDate(record.visitDate)}</td>
+                  <td>{record.visitType}</td>
+                  <td>{record.veterinarian}</td>
+                  <td>{record.diagnosis}</td>
+                  <td>{record.treatment}</td>
+                  <td>{record.notes}</td>
+                  <td>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleDeleteRecord(record._id)}
+                    >
+                      <FaTrash />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Card.Body>
+      </Card>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Medical Record</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleAddRecord}>
+            <Form.Group className="mb-3">
+              <Form.Label>Visit Type</Form.Label>
+              <Form.Control
+                type="text"
+                name="visitType"
+                value={formData.visitType}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Visit Date</Form.Label>
+              <Form.Control
+                type="date"
+                name="visitDate"
+                value={formData.visitDate}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Veterinarian</Form.Label>
+              <Form.Control
+                type="text"
+                name="veterinarian"
+                value={formData.veterinarian}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Diagnosis</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="diagnosis"
+                value={formData.diagnosis}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Treatment</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="treatment"
+                value={formData.treatment}
+                onChange={handleInputChange}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Notes</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              Add Record
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
 
       <style jsx>{`
         .pet-details-container {
