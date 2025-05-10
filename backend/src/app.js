@@ -20,7 +20,7 @@ const PORT = process.env.PORT || "8090";
 
 
 app.use(cors({
-    origin: "http://localhost:3000", // Frontend URL
+    origin: ["http://localhost:3000", "https://online-system-for-pet-care-and-treatment-services-y8-39folvnxa.vercel.app"],
     credentials: true 
 }));
 
