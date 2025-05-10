@@ -8,6 +8,7 @@ const PaymentPage = () => {
   const navigate = useNavigate()
   const { cart: cartItems, totalValue: totalAmount } = location.state || { cart: [], totalValue: 0 }
   const [userId, setUserId] = useState("")
+  const [success, setSuccess] = useState("")
 
   // Form validation states
   const [cardName, setCardName] = useState("")
@@ -23,7 +24,7 @@ const PaymentPage = () => {
 
   useEffect(() => {
     // Fetch the user ID from session
-    fetch("http://localhost:8090/get-session", { credentials: "include" })
+    fetch(`${process.env.REACT_APP_API_URL}/get-session`, { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.user) setUserId(data.user._id)
@@ -44,7 +45,7 @@ const PaymentPage = () => {
         totalAmount,
       }
 
-      await axios.post('http://localhost:8090/order/create', orderData)
+      await axios.post(`${process.env.REACT_APP_API_URL}/order/create`, orderData)
       setSuccess('Payment successful!')
       navigate('/orders')
     } catch (error) {

@@ -33,7 +33,7 @@ const Notifications = () => {
       setLoading(true);
       
       // First get the authenticated user
-      const sessionRes = await fetch('http://localhost:8090/get-session', { 
+      const sessionRes = await fetch(`${process.env.REACT_APP_API_URL}/get-session`, { 
         credentials: 'include' 
       });
       const sessionData = await sessionRes.json();
@@ -45,7 +45,7 @@ const Notifications = () => {
       }
 
       const userId = sessionData.user._id;
-      const response = await axios.get(`http://localhost:8090/api/notifications/user/${userId}`, { 
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/notifications/user/${userId}`, { 
         withCredentials: true 
       });
       
@@ -62,7 +62,7 @@ const Notifications = () => {
 
   const markAsRead = async (notificationId) => {
     try {
-      await axios.put(`http://localhost:8090/api/notifications/${notificationId}/mark-read`, {}, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/notifications/${notificationId}/mark-read`, {}, {
         withCredentials: true
       });
       
@@ -82,7 +82,7 @@ const Notifications = () => {
 
   const markAllAsRead = async () => {
     try {
-      const sessionRes = await fetch('http://localhost:8090/get-session', { 
+      const sessionRes = await fetch(`${process.env.REACT_APP_API_URL}/get-session`, { 
         credentials: 'include' 
       });
       const sessionData = await sessionRes.json();
@@ -92,7 +92,7 @@ const Notifications = () => {
       }
 
       const userId = sessionData.user._id;
-      await axios.put(`http://localhost:8090/api/notifications/user/${userId}/mark-all-read`, {}, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/api/notifications/user/${userId}/mark-all-read`, {}, {
         withCredentials: true
       });
       

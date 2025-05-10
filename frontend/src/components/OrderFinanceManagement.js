@@ -13,7 +13,7 @@ const OrderFinanceManagement = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get('http://localhost:8090/order/all');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/order/all`);
       setOrders(response.data);
       calculateTotals(response.data);
     } catch (error) {
