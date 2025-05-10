@@ -102,7 +102,7 @@ const AppointmentForm = ({ serviceType, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        await axios.post(`${API_ENDPOINTS.appointments}/create`, formData);
+        await axios.post("http://localhost:8090/api/appointments/create", form);
         setSuccess(true);
         setError(null);
     } catch (err) {

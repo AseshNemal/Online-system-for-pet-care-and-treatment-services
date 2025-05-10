@@ -71,7 +71,14 @@ const PetRecord = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        await axios.post(`${API_ENDPOINTS.pets}/record`, formData);
+        await axios.post(`http://localhost:8090/medical/${petId}`, {
+          visitType: 'Medical Visit',
+          visitDate: new Date(),
+          veterinarian: '',
+          diagnosis: '',
+          treatment: '',
+          notes: ''
+        });
         setSuccess(true);
         setError(null);
     } catch (err) {
