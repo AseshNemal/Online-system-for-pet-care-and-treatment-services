@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Card, Table, Button, Modal, Form } from 'react-bootstrap';
 
 const PetRecord = () => {
   const { petId } = useParams();
-  const navigate = useNavigate();
   const [pet, setPet] = useState(null);
   const [medicalRecords, setMedicalRecords] = useState([]);
   const [loading, setLoading] = useState(true);
