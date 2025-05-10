@@ -5,32 +5,63 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "build" }
+    },
+    {
+      "src": "server/src/app.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
+      "src": "/api/(.*)",
+      "dest": "server/src/app.js"
     },
     {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
+      "src": "/auth/(.*)",
+      "dest": "server/src/app.js"
     },
     {
-      "src": "/manifest.json",
-      "dest": "/manifest.json"
+      "src": "/pet/(.*)",
+      "dest": "server/src/app.js"
     },
     {
-      "src": "/logo192.png",
-      "dest": "/logo192.png"
+      "src": "/medical/(.*)",
+      "dest": "server/src/app.js"
     },
     {
-      "src": "/logo512.png",
-      "dest": "/logo512.png"
+      "src": "/product/(.*)",
+      "dest": "server/src/app.js"
+    },
+    {
+      "src": "/order/(.*)",
+      "dest": "server/src/app.js"
+    },
+    {
+      "src": "/employee/(.*)",
+      "dest": "server/src/app.js"
+    },
+    {
+      "src": "/pet-ad/(.*)",
+      "dest": "server/src/app.js"
+    },
+    {
+      "src": "/gemini/(.*)",
+      "dest": "server/src/app.js"
+    },
+    {
+      "src": "/feedback/(.*)",
+      "dest": "server/src/app.js"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "server/src/app.js"
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/$1"
     }
   ]
 } 

@@ -17,6 +17,46 @@
       "dest": "backend/src/app.js"
     },
     {
+      "src": "/auth/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/pet/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/medical/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/product/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/order/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/employee/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/pet-ad/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/gemini/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/feedback/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "backend/src/app.js"
+    },
+    {
       "handle": "filesystem"
     },
     {
