@@ -50,7 +50,7 @@ routesInit(app, passport);
 
 // ✅ Main Routes
 app.get("/", (req, res) => {
-    res.send("<a href='http://localhost:8090/auth/google'>Login with Google</a> <h1>Welcome</h1>");
+    res.send("<a href='https://online-system-for-pet-care-and-treatment.onrender.com/auth/google'>Login with Google</a> <h1>Welcome</h1>");
 });
 
 // ✅ Fix: Get session correctly
@@ -70,7 +70,7 @@ app.get("/logout", (req, res) => {
       }
       req.session.destroy(() => {
           res.clearCookie("connect.sid"); // ✅ Clear session cookie
-          res.redirect("http://localhost:3000"); // ✅ Redirect to React home page
+          res.redirect("https://online-system-for-pet-care-and-treatment-services-y8-f5auqwt0u.vercel.app"); // ✅ Redirect to React home page
       });
   });
 });
