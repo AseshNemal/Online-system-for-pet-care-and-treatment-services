@@ -16,7 +16,7 @@ const routesInit = (app, passport) => {
 
   // Protected User Route
   app.get("/user", authenticate, (req, res) => {
-    res.send("<h3>User is authenticated</h3><a href='https://online-system-for-pet-care-and-treatment-services-y8-bcdt1rxb5.vercel.app/profile'>Profile</a>");
+    res.send("<h3>User is authenticated</h3><a href='https://online-system-for-pet-care-and-treatment-services-y8-105b16fy9.vercel.app/profile'>Profile</a>");
   });
 };
 

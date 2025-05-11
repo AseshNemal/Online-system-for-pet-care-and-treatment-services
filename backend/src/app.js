@@ -20,7 +20,7 @@ const PORT = process.env.PORT || "8090";
 
 
 app.use(cors({
-    origin: "https://online-system-for-pet-care-and-treatment-services-y8-bcdt1rxb5.vercel.app", // Frontend URL
+    origin: "https://online-system-for-pet-care-and-treatment-services-y8-105b16fy9.vercel.app", // Frontend URL
     credentials: true 
 }));
 
@@ -70,7 +70,7 @@ app.get("/logout", (req, res) => {
       }
       req.session.destroy(() => {
           res.clearCookie("connect.sid"); // ✅ Clear session cookie
-          res.redirect("https://online-system-for-pet-care-and-treatment-services-y8-f5auqwt0u.vercel.app"); // ✅ Redirect to React home page
+          res.redirect("https://online-system-for-pet-care-and-treatment-services-y8-105b16fy9.vercel.app"); // ✅ Redirect to React home page
       });
   });
 });
