@@ -21,7 +21,7 @@ const AppointmentList = () => {
     const fetchAppointments = async () => {
       try {
         setLoading(true);
-        const sessionRes = await fetch('http://localhost:8090/get-session', { credentials: 'include' });
+        const sessionRes = await fetch('https://online-system-for-pet-care-and-treatment.onrender.com/get-session', { credentials: 'include' });
         const sessionData = await sessionRes.json();
         if (!sessionData.user?._id) {
           setError('User not authenticated.');
@@ -29,7 +29,7 @@ const AppointmentList = () => {
           return;
         }
         const userId = sessionData.user._id;
-        const res = await axios.get(`http://localhost:8090/api/appointments/user/${userId}`, { withCredentials: true });
+        const res = await axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/api/appointments/user/${userId}`, { withCredentials: true });
         setAppointments(res.data);
         setLoading(false);
       } catch (err) {
@@ -69,7 +69,7 @@ const AppointmentList = () => {
     setSuccessMessage('');
     try {
       const res = await axios.put(
-        `http://localhost:8090/api/appointments/${editingId}`,
+        `https://online-system-for-pet-care-and-treatment.onrender.com/api/appointments/${editingId}`,
         {
           petName: editForm.petName,
           staffId: editForm.staffId,
@@ -94,7 +94,7 @@ const AppointmentList = () => {
     setError('');
     setSuccessMessage('');
     try {
-      await axios.delete(`http://localhost:8090/api/appointments/${id}`, { withCredentials: true });
+      await axios.delete(`https://online-system-for-pet-care-and-treatment.onrender.com/api/appointments/${id}`, { withCredentials: true });
       setAppointments((prev) => prev.filter((appt) => appt._id !== id));
       setSuccessMessage('Appointment cancelled successfully.');
     } catch (err) {

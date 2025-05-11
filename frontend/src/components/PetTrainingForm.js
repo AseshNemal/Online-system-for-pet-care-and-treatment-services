@@ -212,7 +212,7 @@ const PetTrainingForm = () => {
     setLoading(true)
 
     const url =
-      activeTab === "behavioral" ? "http://localhost:8090/gemini/behavioral" : "http://localhost:8090/gemini/obedience"
+      activeTab === "behavioral" ? "https://online-system-for-pet-care-and-treatment.onrender.com/gemini/behavioral" : "https://online-system-for-pet-care-and-treatment.onrender.com/gemini/obedience"
 
     const dataToSend = activeTab === "behavioral" ? behavioralData : obedienceData
 

@@ -22,7 +22,7 @@ const EditPet = () => {
   useEffect(() => {
     const fetchPetData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8090/pet/petDetaile/${petId}`);
+        const response = await axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/pet/petDetaile/${petId}`);
         if (!response.data.pet) {
           throw new Error('Pet not found');
         }
@@ -50,7 +50,7 @@ const EditPet = () => {
     setIsSubmitting(true);
     
     try {
-      await axios.put(`http://localhost:8090/pet/update/${petId}`, {
+      await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/pet/update/${petId}`, {
         ...pet,
         // Don't include image in this version since we're focused on device ID
       });

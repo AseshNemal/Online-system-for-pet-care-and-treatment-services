@@ -12,7 +12,7 @@ function UserPets() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sessionRes = await fetch("http://localhost:8090/get-session", { 
+        const sessionRes = await fetch("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", { 
           credentials: "include" 
         });
         const sessionData = await sessionRes.json();
@@ -22,7 +22,7 @@ function UserPets() {
         }
 
         setUser(sessionData.user);
-        const petsRes = await axios.get(`http://localhost:8090/pet/find/${sessionData.user._id}`);
+        const petsRes = await axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/pet/find/${sessionData.user._id}`);
         setPets(petsRes.data.pets || []);
       } catch (err) {
         console.error("Error:", err);
@@ -50,7 +50,7 @@ function UserPets() {
       const confirmDelete = window.confirm("Are you sure you want to delete this pet?");
       if (!confirmDelete) return;
       
-      await axios.delete(`http://localhost:8090/pet/delete/${petId}`);
+      await axios.delete(`https://online-system-for-pet-care-and-treatment.onrender.com/pet/delete/${petId}`);
       setPets(pets.filter(pet => pet._id !== petId));
     } catch (err) {
       console.error("Error deleting pet:", err);

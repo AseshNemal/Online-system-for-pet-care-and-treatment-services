@@ -7,7 +7,7 @@ export default function AllPets() {
 
     useEffect(( ) => {
         function getPet(){
-            axios.get("http://localhost:8090/pet/").then((res) => {
+            axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/pet/").then((res) => {
                setpets(res.data);
                
             }).catch((err) =>{

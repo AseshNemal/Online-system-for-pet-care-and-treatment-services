@@ -23,7 +23,7 @@ const ExpensesManagement = () => {
 
   const fetchExpenses = async () => {
     try {
-      const response = await axios.get('http://localhost:8090/api/expenses');
+      const response = await axios.get('https://online-system-for-pet-care-and-treatment.onrender.com/api/expenses');
       setExpenses(response.data);
     } catch (error) {
       console.error('Error fetching expenses:', error);
@@ -41,7 +41,7 @@ const ExpensesManagement = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8090/api/expenses', formData);
+      const response = await axios.post('https://online-system-for-pet-care-and-treatment.onrender.com/api/expenses', formData);
       setExpenses(prev => [...prev, response.data]);
       setFormData({
         itemName: '',
@@ -80,7 +80,7 @@ const ExpensesManagement = () => {
 
   const handleDeleteConfirm = async () => {
     try {
-      await axios.delete(`http://localhost:8090/api/expenses/${expenseToDelete._id}`);
+      await axios.delete(`https://online-system-for-pet-care-and-treatment.onrender.com/api/expenses/${expenseToDelete._id}`);
       setExpenses(prev => prev.filter(expense => expense._id !== expenseToDelete._id));
       setShowDeleteConfirm(false);
       setExpenseToDelete(null);

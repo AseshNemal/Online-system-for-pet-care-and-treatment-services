@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
     useEffect(() => {
       const fetchUserData = async () => {
         try {
-          const response = await axios.get("http://localhost:8090/get-session", {
+          const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", {
             withCredentials: true
           });
           if (response.data.user) {

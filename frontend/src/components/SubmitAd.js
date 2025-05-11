@@ -88,7 +88,7 @@ function SubmitAd() {
           
         }
 
-        await axios.post("http://localhost:8090/pet-ad/submit", adData)
+        await axios.post("https://online-system-for-pet-care-and-treatment.onrender.com/pet-ad/submit", adData)
         setSuccess("Ad submitted successfully, awaiting approval!")
         setImage(null)
         setImagePreview("")

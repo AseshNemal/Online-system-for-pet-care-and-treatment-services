@@ -128,7 +128,7 @@ const AdminDashboard = () => {
                   <td>{prod.restockAmount}</td>
                   <td>
                     <div className="product-image-container">
-                      <img src={`http://localhost:8090/${prod.image}`} alt={prod.name} className="product-image" />
+                      <img src={`https://online-system-for-pet-care-and-treatment.onrender.com/${prod.image}`} alt={prod.name} className="product-image" />
                     </div>
                   </td>
                   <td>

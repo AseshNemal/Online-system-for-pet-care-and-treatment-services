@@ -10,7 +10,7 @@ function NotificationIcon() {
     const fetchNotificationCount = async () => {
       try {
         // First get the authenticated user
-        const sessionRes = await fetch('http://localhost:8090/get-session', { 
+        const sessionRes = await fetch('https://online-system-for-pet-care-and-treatment.onrender.com/get-session', { 
           credentials: 'include' 
         });
         const sessionData = await sessionRes.json();
@@ -20,7 +20,7 @@ function NotificationIcon() {
         }
 
         const userId = sessionData.user._id;
-        const response = await axios.get(`http://localhost:8090/api/notifications/user/${userId}/unread-count`, {
+        const response = await axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/api/notifications/user/${userId}/unread-count`, {
           withCredentials: true
         });
         

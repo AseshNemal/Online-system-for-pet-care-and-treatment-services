@@ -116,7 +116,7 @@ const AppointmentForm = ({ serviceType, onClose }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8090/api/appointments",
+        "https://online-system-for-pet-care-and-treatment.onrender.com/api/appointments",
         {
           userId,
           employeeId: form.employeeId,

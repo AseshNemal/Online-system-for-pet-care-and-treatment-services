@@ -30,7 +30,7 @@ function PetAdAdminDashboard() {
       setError("")
       setSuccess("")
       setLoading(true)
-      const response = await axios.get(`http://localhost:8090/pet-ad/admin/list?status=${newStatus}`)
+      const response = await axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/pet-ad/admin/list?status=${newStatus}`)
       setAds(response.data.ads)
       setCounts((prev) => ({ ...prev, [newStatus]: response.data.count }))
     } catch (err) {
@@ -50,7 +50,7 @@ function PetAdAdminDashboard() {
     try {
       setError("")
       setSuccess("")
-      await axios.post(`http://localhost:8090/pet-ad/admin/approve/${id}`)
+      await axios.post(`https://online-system-for-pet-care-and-treatment.onrender.com/pet-ad/admin/approve/${id}`)
       setSuccess("Ad approved successfully!")
       fetchAds(status)
     } catch (err) {
@@ -64,7 +64,7 @@ function PetAdAdminDashboard() {
     try {
       setError("")
       setSuccess("")
-      await axios.post(`http://localhost:8090/pet-ad/admin/reject/${id}`, { rejectionReason })
+      await axios.post(`https://online-system-for-pet-care-and-treatment.onrender.com/pet-ad/admin/reject/${id}`, { rejectionReason })
       setSuccess("Ad rejected successfully!")
       fetchAds(status)
     } catch (err) {
@@ -78,7 +78,7 @@ function PetAdAdminDashboard() {
     try {
       setError("")
       setSuccess("")
-      await axios.post(`http://localhost:8090/pet-ad/admin/delete/${id}`, { rejectionReason: deletionReason })
+      await axios.post(`https://online-system-for-pet-care-and-treatment.onrender.com/pet-ad/admin/delete/${id}`, { rejectionReason: deletionReason })
       setSuccess("Ad deleted successfully!")
       fetchAds(status)
     } catch (err) {
@@ -92,7 +92,7 @@ function PetAdAdminDashboard() {
     try {
       setError("")
       setSuccess("")
-      await axios.delete(`http://localhost:8090/pet-ad/admin/approved/delete/${id}`, {
+      await axios.delete(`https://online-system-for-pet-care-and-treatment.onrender.com/pet-ad/admin/approved/delete/${id}`, {
         data: { deletionReason },
       })
       setSuccess("Approved ad deleted successfully!")
@@ -107,7 +107,7 @@ function PetAdAdminDashboard() {
     try {
       setError("")
       setSuccess("")
-      await axios.put(`http://localhost:8090/pet-ad/admin/approved/edit/${editAd._id}`, formData)
+      await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/pet-ad/admin/approved/edit/${editAd._id}`, formData)
       setSuccess("Approved ad updated successfully!")
       setEditAd(null)
       fetchAds(status)

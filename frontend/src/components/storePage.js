@@ -22,7 +22,7 @@ const StorePage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:8090/product/all")
+      const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/product/all")
       setProducts(response.data)
     } catch (error) {
       console.error("Error fetching products:", error)
@@ -109,7 +109,7 @@ const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
           .filter((prod) => prod.name.toLowerCase().includes(searchTerm.toLowerCase()))
           .map((prod) => (
             <div key={prod._id} className="product-card">
-              <img src={`http://localhost:8090/${prod.image}`} alt={prod.name} className="product-image" />
+              <img src={`https://online-system-for-pet-care-and-treatment.onrender.com/${prod.image}`} alt={prod.name} className="product-image" />
               <h3 className="product-name">{prod.name}</h3>
               <p className="product-category">{prod.category}</p>
               <p className="product-price">Rs. {prod.price}.00</p>

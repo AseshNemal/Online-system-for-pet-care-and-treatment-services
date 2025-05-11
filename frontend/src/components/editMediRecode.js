@@ -21,7 +21,7 @@ const EditMedicalRecord = () => {
   useEffect(() => {
     const fetchRecordData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8090/medical/single/${recordId}`);
+        const response = await axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/medical/single/${recordId}`);
         if (!response.data) {
           throw new Error('Medical record not found');
         }
@@ -80,7 +80,7 @@ const EditMedicalRecord = () => {
     setIsSubmitting(true);
     
     try {
-      await axios.put(`http://localhost:8090/medical/${recordId}`, record);
+      await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/medical/${recordId}`, record);
       navigate(`/pets/${petId}`);
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Error updating record');

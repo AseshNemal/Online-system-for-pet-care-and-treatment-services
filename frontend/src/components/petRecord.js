@@ -17,8 +17,8 @@ const PetRecord = () => {
     const fetchData = async () => {
       try {
         const [petResponse, recordsResponse] = await Promise.all([
-          axios.get(`http://localhost:8090/pet/petDetaile/${petId}`),
-          axios.get(`http://localhost:8090/medical/${petId}`)
+          axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/pet/petDetaile/${petId}`),
+          axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/medical/${petId}`)
         ]);
   
         if (!petResponse.data.pet) {
@@ -47,7 +47,7 @@ const PetRecord = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8090/medical/delete/${recordToDelete}`);
+      await axios.delete(`https://online-system-for-pet-care-and-treatment.onrender.com/medical/delete/${recordToDelete}`);
       setMedicalRecords(medicalRecords.filter(record => record._id !== recordToDelete));
     } catch (err) {
       setError('Failed to delete record');
@@ -157,7 +157,7 @@ const PetRecord = () => {
                 return;
               }
               try {
-                const response = await axios.put(`http://localhost:8090/pet/update/${pet._id}`, {
+                const response = await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/pet/update/${pet._id}`, {
                   deviceId: pet.deviceIdInput
                 });
                 setPet(prev => ({ ...prev, deviceId: pet.deviceIdInput, deviceIdInput: '' }));

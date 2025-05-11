@@ -11,7 +11,7 @@ const HRFinanceManagement = () => {
 
   const fetchEmployeeData = async () => {
     try {
-      const response = await axios.get('http://localhost:8090/api/appointments/all');
+      const response = await axios.get('https://online-system-for-pet-care-and-treatment.onrender.com/api/appointments/all');
       const appointments = response.data;
       
       // Group appointments by employee and calculate counts

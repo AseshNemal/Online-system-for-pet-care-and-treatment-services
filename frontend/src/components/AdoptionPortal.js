@@ -19,7 +19,7 @@ function AdoptionPortal() {
   async function fetchApprovedAds() {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8090/pet-ad/approved");
+      const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/pet-ad/approved");
       setAds(response.data);
     } catch (error) {
       console.error("Error fetching ads:", error);

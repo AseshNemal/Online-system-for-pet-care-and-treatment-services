@@ -18,7 +18,7 @@ const FeedbackPage = () => {
   useEffect(() => {
     // Fetch logged-in user
     axios
-      .get("http://localhost:8090/get-session", { withCredentials: true })
+      .get("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", { withCredentials: true })
       .then((res) => {
         if (res.data.user) {
           setUser(res.data.user)
@@ -29,7 +29,7 @@ const FeedbackPage = () => {
 
     // Fetch existing feedbacks
     axios
-      .get("http://localhost:8090/feedback/all")
+      .get("https://online-system-for-pet-care-and-treatment.onrender.com/feedback/all")
       .then((res) => setFeedbacks(res.data))
       .catch((err) => console.error(err))
   }, [])
@@ -50,7 +50,7 @@ const FeedbackPage = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:8090/feedback/add", newFeedback)
+      const res = await axios.post("https://online-system-for-pet-care-and-treatment.onrender.com/feedback/add", newFeedback)
       const savedFeedback = res.data
 
       setFeedbacks([savedFeedback, ...feedbacks])
@@ -105,7 +105,7 @@ const FeedbackPage = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this feedback?")) {
       try {
-        await axios.delete(`http://localhost:8090/feedback/delete/${id}`)
+        await axios.delete(`https://online-system-for-pet-care-and-treatment.onrender.com/feedback/delete/${id}`)
         setFeedbacks(feedbacks.filter((fb) => fb._id !== id))
       } catch (err) {
         console.error("Failed to delete feedback", err)
@@ -124,7 +124,7 @@ const FeedbackPage = () => {
     e.preventDefault()
 
     try {
-      const res = await axios.put(`http://localhost:8090/feedback/edit/${editingId}`, {
+      const res = await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/feedback/edit/${editingId}`, {
         feedback: editingText,
         rating: editingRating,
       })

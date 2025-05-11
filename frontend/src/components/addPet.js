@@ -7,7 +7,7 @@ function AddPet() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8090/get-session", { credentials: "include" })
+    fetch("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.user) {
@@ -45,7 +45,7 @@ function AddPet() {
     };
 
     axios
-      .post("http://localhost:8090/pet/add", newPet)
+      .post("https://online-system-for-pet-care-and-treatment.onrender.com/pet/add", newPet)
       .then(() => {
         alert("Pet Added Successfully");
         // Redirect to user pets page after successful addition

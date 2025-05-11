@@ -23,7 +23,7 @@ const PaymentPage = () => {
 
   useEffect(() => {
     // Fetch the user ID from session
-    fetch("http://localhost:8090/get-session", { credentials: "include" })
+    fetch("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.user) setUserId(data.user._id)
@@ -33,7 +33,7 @@ const PaymentPage = () => {
 
   const handlePay = async () => {
     try {
-      const orderResponse = await axios.post("http://localhost:8090/order/create", {
+      const orderResponse = await axios.post("https://online-system-for-pet-care-and-treatment.onrender.com/order/create", {
         userId,
         items: cartItems.map(({ _id, name, price, quantity }) => ({
           productId: _id,
@@ -45,7 +45,7 @@ const PaymentPage = () => {
       })
 
       for (const item of cartItems) {
-        await axios.put(`http://localhost:8090/product/reduce-stock/${item._id}`, {
+        await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/product/reduce-stock/${item._id}`, {
           quantity: item.quantity,
         })
       }

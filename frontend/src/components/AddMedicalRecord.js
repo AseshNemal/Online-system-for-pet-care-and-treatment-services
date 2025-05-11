@@ -56,7 +56,7 @@ const AddMedicalRecord = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:8090/medical`, {
+      await axios.post(`https://online-system-for-pet-care-and-treatment.onrender.com/medical`, {
         ...formData,
         petId
       });

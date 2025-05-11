@@ -25,7 +25,7 @@ function Header() {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const response = await fetch("http://localhost:8090/get-session", { 
+        const response = await fetch("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", { 
           credentials: "include" 
         });
         if (!response.ok) throw new Error('Session fetch failed');
@@ -222,7 +222,7 @@ function Header() {
                     <Link to="/profile" className="dropdown-item">Profile</Link>
                     <Link to="/notifications" className="dropdown-item">Notifications</Link>
                     <Link to="/appointments/manage" className="dropdown-item">My Appointment</Link>
-                    <a href="http://localhost:8090/logout" className="dropdown-item">Logout</a>
+                    <a href="https://online-system-for-pet-care-and-treatment.onrender.com/logout" className="dropdown-item">Logout</a>
                   </div>
                 </div>
               ) : (

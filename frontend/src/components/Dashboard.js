@@ -28,7 +28,7 @@ function Dashboard() {
     try {
       setLoading(true)
       console.log("Fetching appointment data")
-      const response = await axios.get("http://localhost:8090/api/appointments/all", {
+      const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/api/appointments/all", {
         timeout: 5000,
       })
       console.log("Fetched appointment data:", response.data)
@@ -65,7 +65,7 @@ function Dashboard() {
 
   async function fetchEmployeeCount() {
     try {
-      const response = await axios.get("http://localhost:8090/employee/count", {
+      const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/employee/count", {
         timeout: 5000,
       })
       console.log("Fetched employee count:", response.data)

@@ -26,7 +26,7 @@ function AddEmployee() {
         try {
             setLoading(true);
             setError(""); // Clear previous errors
-            const response = await axios.get("http://localhost:8090/employee/get", {
+            const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/employee/get", {
                 timeout: 5000 // Add timeout to prevent hanging
             });
             console.log("Fetched employees:", response.data); // Debug log
@@ -70,13 +70,13 @@ function AddEmployee() {
 
         try {
             if (editingEmployee) {
-                const response = await axios.put(`http://localhost:8090/employee/${editingEmployee._id}`, employeeData);
+                const response = await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/employee/${editingEmployee._id}`, employeeData);
                 console.log("Updated employee:", response.data); // Debug log
                 setEmployees(employees.map(emp => emp._id === editingEmployee._id ? response.data.employee : emp));
                 setTotalCount(response.data.totalCount);
                 setSuccess("Employee updated successfully!");
             } else {
-                const response = await axios.post("http://localhost:8090/employee/create", employeeData);
+                const response = await axios.post("https://online-system-for-pet-care-and-treatment.onrender.com/employee/create", employeeData);
                 console.log("Created employee:", response.data); // Debug log
                 setEmployees([...employees, response.data.employee]);
                 setTotalCount(response.data.totalCount);
@@ -101,7 +101,7 @@ function AddEmployee() {
         if (window.confirm("Are you sure you want to delete this employee?")) {
             try {
                 setActionLoading((prev) => ({ ...prev, [id]: "delete" }));
-                const response = await axios.delete(`http://localhost:8090/employee/${id}`);
+                const response = await axios.delete(`https://online-system-for-pet-care-and-treatment.onrender.com/employee/${id}`);
                 console.log("Deleted employee:", response.data); // Debug log
                 setEmployees(employees.filter((emp) => emp._id !== id));
                 setTotalCount(response.data.totalCount);

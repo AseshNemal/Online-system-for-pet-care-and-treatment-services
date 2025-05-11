@@ -9,7 +9,7 @@ const MyOrdersPage = () => {
 
   useEffect(() => {
     // Get logged-in user
-    fetch("http://localhost:8090/get-session", { credentials: "include" })
+    fetch("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.user) {
@@ -22,7 +22,7 @@ const MyOrdersPage = () => {
     if (!userId) return
 
     axios
-      .get(`http://localhost:8090/order/user/${userId}`)
+      .get(`https://online-system-for-pet-care-and-treatment.onrender.com/order/user/${userId}`)
       .then((res) => setOrders(res.data))
       .catch((err) => console.error("Error fetching orders:", err))
   }, [userId])
