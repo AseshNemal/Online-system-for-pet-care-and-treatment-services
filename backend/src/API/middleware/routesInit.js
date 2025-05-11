@@ -10,13 +10,13 @@ const routesInit = (app, passport) => {
       failureRedirect: "/login",  // Redirect to login on failure
     }),
     (req, res) => {
-      res.redirect("https://online-system-for-pet-care-and-treatment-services-y8-bcdt1rxb5.vercel.app/profile");  // Redirect to frontend profile page
+      res.redirect("https://petwellnesshub.vercel.app/profile");  // Redirect to frontend profile page
     }
   );
 
   // Protected User Route
   app.get("/user", authenticate, (req, res) => {
-    res.send("<h3>User is authenticated</h3><a href='https://online-system-for-pet-care-and-treatment-services-y8-105b16fy9.vercel.app/profile'>Profile</a>");
+    res.send("<h3>User is authenticated</h3><a href='https://petwellnesshub.vercel.app/profile'>Profile</a>");
   });
 };
 
