@@ -20,7 +20,7 @@ const AppointmentForm = ({ serviceType, onClose }) => {
   const [availableSlots, setAvailableSlots] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8090/get-session", { credentials: "include" })
+    fetch("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.user?._id) {
@@ -33,7 +33,7 @@ const AppointmentForm = ({ serviceType, onClose }) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:8090/employee/");
+        const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/employee/");
         setEmployees(response.data);
       } catch (err) {
         console.error("Failed to fetch employees:", err);
@@ -84,7 +84,7 @@ const AppointmentForm = ({ serviceType, onClose }) => {
 
     if (updatedForm.employeeId && updatedForm.category && updatedForm.date) {
       try {
-        const response = await axios.get('http://localhost:8090/api/appointments/available-slots', {
+        const response = await axios.get('https://online-system-for-pet-care-and-treatment.onrender.com/api/appointments/available-slots', {
           params: {
             employeeId: updatedForm.employeeId,
             date: updatedForm.date,
