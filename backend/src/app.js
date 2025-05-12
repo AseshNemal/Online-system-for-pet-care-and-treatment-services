@@ -30,15 +30,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // ✅ Set up session middleware
 app.use(session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false, // Prevent empty sessions
-    store: MongoStore.create({ mongoUrl: config.DB_CONNECTION_STRING}),
-    cookie: { 
-        secure: false,  // Change to `true` in production (HTTPS required)
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 1 day session expiration
-    }
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: config.DB_CONNECTION_STRING }),
+  cookie: {
+    secure: true,             // HTTPS only
+    httpOnly: true,
+    sameSite: "none",         // For cross-origin requests (Vercel -> Render)
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
+  }
 }));
 
 // ✅ Initialize Passport
