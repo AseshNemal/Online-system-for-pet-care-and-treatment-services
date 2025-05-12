@@ -24,7 +24,7 @@ const AdminDashboard = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:8090/product/all")
+      const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/product/all")
       setProducts(response.data)
     } catch (error) {
       console.error("Error fetching products:", error)
@@ -49,9 +49,9 @@ const AdminDashboard = () => {
 
     try {
       if (editingProductId) {
-        await axios.put(`http://localhost:8090/product/update/${editingProductId}`, formData)
+        await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/product/update/${editingProductId}`, formData)
       } else {
-        await axios.post("http://localhost:8090/product/add", formData)
+        await axios.post("https://online-system-for-pet-care-and-treatment.onrender.com/product/add", formData)
       }
       fetchProducts()
       closeForm()
@@ -68,7 +68,7 @@ const AdminDashboard = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8090/product/delete/${id}`)
+      await axios.delete(`https://online-system-for-pet-care-and-treatment.onrender.com/product/delete/${id}`)
       fetchProducts()
     } catch (error) {
       console.error("Error deleting product:", error)
