@@ -55,12 +55,16 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Fix: Get session correctly
-app.get("/get-session", (req, res) => {
-    if (req.user) {
-        res.json({ sessionID: req.sessionID, user: req.user });
-    } else {
-        res.json({ message: "No session found", user: null });
-    }
+app.get("/get-session",{withCredentials: true}, (req, res) => {
+  console.log("Cookies:", req.headers.cookie);
+  console.log("Session:", req.session);
+  console.log("User:", req.user);
+
+  if (req.user) {
+    res.json({ sessionID: req.sessionID, user: req.user });
+  } else {
+    res.json({ message: "No session found", user: null });
+  }
 });
 
 app.get("/logout", (req, res) => {
