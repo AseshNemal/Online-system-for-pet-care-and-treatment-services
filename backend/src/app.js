@@ -55,7 +55,7 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Fix: Get session correctly
-app.get("/get-session",{withCredentials: true}, (req, res) => {
+app.get("/get-session", (req, res) => {
   console.log("Cookies:", req.headers.cookie);
   console.log("Session:", req.session);
   console.log("User:", req.user);
