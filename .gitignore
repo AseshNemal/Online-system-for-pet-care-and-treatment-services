@@ -25,3 +25,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+client_secret_.json
+client_secret_
