@@ -35,7 +35,7 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: config.DB_CONNECTION_STRING }),
   cookie: {
-    secure: true,             // HTTPS only
+    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
     httpOnly: true,
     sameSite: "none",         // For cross-origin requests (Vercel -> Render)
     maxAge: 24 * 60 * 60 * 1000 // 1 day
