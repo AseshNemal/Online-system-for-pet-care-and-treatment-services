@@ -9,7 +9,7 @@ function Login() {
     
     console.log("Email:", email, "Password:", password);
 
-    if(email === "admin" && password === "admin"){
+    if(email === "admin" && password === "kingyrk"){
       alert("Login successful!");
       window.location.href = "/adminDashboard";
     }
