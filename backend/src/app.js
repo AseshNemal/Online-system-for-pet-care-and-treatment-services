@@ -21,7 +21,9 @@ const PORT = process.env.PORT || "8090";
 
 app.use(cors({
     origin: "https://petwellnesshub.vercel.app", // Frontend URL
-    credentials: true 
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // ✅ Ensure Express parses JSON properly
@@ -31,21 +33,23 @@ app.use(express.urlencoded({ extended: true }));
 // ✅ Set up session middleware
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   store: MongoStore.create({ 
     mongoUrl: config.DB_CONNECTION_STRING,
     ttl: 24 * 60 * 60, // 1 day in seconds
     autoRemove: 'native',
-    touchAfter: 24 * 3600 // time period in seconds
+    touchAfter: 24 * 3600, // time period in seconds
+    stringify: false // Don't stringify the session
   }),
-  name: 'sessionId', // Change the default connect.sid
+  name: 'sessionId',
   cookie: {
     secure: true,
     httpOnly: true,
     sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
-    path: '/'
+    path: '/',
+    domain: '.onrender.com' // Allow sharing between subdomains
   }
 }));
 
@@ -149,7 +153,16 @@ app.use("/feedback", feedbackRoutes);
 import notificationRoutes from "./API/routes/notificationRoutes.js";
 app.use("/api/notifications", notificationRoutes);
 
-
+// Add debug logging for session
+app.use((req, res, next) => {
+  console.log('Session Debug:', {
+    sessionID: req.sessionID,
+    cookie: req.session.cookie,
+    user: req.user,
+    isAuthenticated: req.isAuthenticated()
+  });
+  next();
+});
 
 app.listen(PORT, () => {
     logger.info(`Server is running on PORT ${PORT}`);
