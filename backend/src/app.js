@@ -7,7 +7,7 @@ import MongoStore from "connect-mongo";
 import logger from "./utils/logger.js";
 import { connect } from "./utils/database.connection.js";
 import { googleAuth } from "../src/configs/google.auth.js";
-import { routesInit } from "./API/middleware/routesInit.js";
+import routesInit from "./API/middleware/routesInit.js";
 import config from "./configs/index.js";
 import router from "./API/routes/pets.js";
 import Employee from "./API/model/Employee.js";
