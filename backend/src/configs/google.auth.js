@@ -47,7 +47,7 @@ const googleAuth = (passport) => {
       displayName: user.displayName,
       email: user.gmail
     });
-    done(null, user._id);
+    done(null, user._id.toString());
   });
 
   passport.deserializeUser(async (id, done) => {

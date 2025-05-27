@@ -35,13 +35,17 @@ app.use(session({
   saveUninitialized: true,
   store: MongoStore.create({ 
     mongoUrl: config.DB_CONNECTION_STRING,
-    ttl: 24 * 60 * 60 // 1 day in seconds
+    ttl: 24 * 60 * 60, // 1 day in seconds
+    autoRemove: 'native',
+    touchAfter: 24 * 3600 // time period in seconds
   }),
+  name: 'sessionId', // Change the default connect.sid
   cookie: {
     secure: true,
     httpOnly: true,
     sameSite: "none",
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    path: '/'
   }
 }));
 
@@ -67,6 +71,7 @@ app.get("/get-session", (req, res) => {
   console.log("User:", req.user);
   console.log("Is Authenticated:", req.isAuthenticated());
   console.log("Session ID:", req.sessionID);
+  console.log("Session Store:", req.sessionStore);
 
   if (req.isAuthenticated()) {
     res.json({ 

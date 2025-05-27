@@ -36,10 +36,19 @@ const routesInit = (app, passport) => {
         
         // Set cookie headers explicitly
         res.setHeader('Set-Cookie', [
-          `connect.sid=${req.sessionID}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400`
+          `sessionId=${req.sessionID}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400`
         ]);
         
-        res.redirect("https://petwellnesshub.vercel.app/profile");
+        // Ensure user is authenticated
+        req.login(req.user, (err) => {
+          if (err) {
+            console.error('Error in req.login:', err);
+            return res.redirect('/login');
+          }
+          
+          console.log('User authenticated in session:', req.isAuthenticated());
+          res.redirect("https://petwellnesshub.vercel.app/profile");
+        });
       });
     }
   );
