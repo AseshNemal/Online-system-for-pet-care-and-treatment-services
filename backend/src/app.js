@@ -33,18 +33,25 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: config.DB_CONNECTION_STRING }),
+  store: MongoStore.create({ 
+    mongoUrl: config.DB_CONNECTION_STRING,
+    ttl: 24 * 60 * 60 // 1 day in seconds
+  }),
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+    secure: true, // Always true for cross-origin
     httpOnly: true,
-    sameSite: "none",         // For cross-origin requests (Vercel -> Render)
-    maxAge: 24 * 60 * 60 * 1000 // 1 day
+    sameSite: "none",
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    domain: ".onrender.com" // Allow sharing between subdomains
   }
 }));
 
 // ✅ Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
+
+// ✅ Initialize Google Auth
+googleAuth(passport);
 
 // ✅ Apply Routes
 routesInit(app, passport);
@@ -59,11 +66,20 @@ app.get("/get-session", (req, res) => {
   console.log("Cookies:", req.headers.cookie);
   console.log("Session:", req.session);
   console.log("User:", req.user);
+  console.log("Is Authenticated:", req.isAuthenticated());
 
-  if (req.user) {
-    res.json({ sessionID: req.sessionID, user: req.user });
+  if (req.isAuthenticated()) {
+    res.json({ 
+      sessionID: req.sessionID, 
+      user: req.user,
+      isAuthenticated: true 
+    });
   } else {
-    res.json({ message: "No session found", user: null });
+    res.json({ 
+      message: "No session found", 
+      user: null,
+      isAuthenticated: false 
+    });
   }
 });
 
@@ -133,7 +149,6 @@ app.use("/api/notifications", notificationRoutes);
 app.listen(PORT, () => {
     logger.info(`Server is running on PORT ${PORT}`);
     connect();
-    googleAuth(passport);
 });
 
 export default app;

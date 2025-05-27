@@ -2,22 +2,39 @@ import { authenticate } from "./auth.middlewere";
 
 const routesInit = (app, passport) => {
   // Google Login Route
-  app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+  app.get("/auth/google", 
+    (req, res, next) => {
+      console.log('Starting Google OAuth flow');
+      next();
+    },
+    passport.authenticate("google", { 
+      scope: ["profile", "email"],
+      prompt: 'select_account'
+    })
+  );
 
   // Google Callback Route
   app.get("/auth/google/callback", 
+    (req, res, next) => {
+      console.log('Received Google OAuth callback');
+      next();
+    },
     passport.authenticate("google", {
-      failureRedirect: "/login",  // Redirect to login on failure
+      failureRedirect: "/login",
+      failureMessage: true
     }),
     (req, res) => {
-      res.redirect("https://petwellnesshub.vercel.app/profile");  // Redirect to frontend profile page
+      console.log('Google OAuth successful, user:', req.user);
+      console.log('Session ID:', req.sessionID);
+      res.redirect("https://petwellnesshub.vercel.app/profile");
     }
   );
 
   // Protected User Route
   app.get("/user", authenticate, (req, res) => {
+    console.log('Protected route accessed by user:', req.user);
     res.send("<h3>User is authenticated</h3><a href='https://petwellnesshub.vercel.app/profile'>Profile</a>");
   });
 };
 
-export { routesInit };
+export default routesInit;
