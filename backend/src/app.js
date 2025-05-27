@@ -31,18 +31,17 @@ app.use(express.urlencoded({ extended: true }));
 // ✅ Set up session middleware
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
   store: MongoStore.create({ 
     mongoUrl: config.DB_CONNECTION_STRING,
     ttl: 24 * 60 * 60 // 1 day in seconds
   }),
   cookie: {
-    secure: true, // Always true for cross-origin
+    secure: true,
     httpOnly: true,
     sameSite: "none",
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
-    domain: ".onrender.com" // Allow sharing between subdomains
+    maxAge: 24 * 60 * 60 * 1000 // 1 day
   }
 }));
 
@@ -67,6 +66,7 @@ app.get("/get-session", (req, res) => {
   console.log("Session:", req.session);
   console.log("User:", req.user);
   console.log("Is Authenticated:", req.isAuthenticated());
+  console.log("Session ID:", req.sessionID);
 
   if (req.isAuthenticated()) {
     res.json({ 

@@ -26,7 +26,21 @@ const routesInit = (app, passport) => {
     (req, res) => {
       console.log('Google OAuth successful, user:', req.user);
       console.log('Session ID:', req.sessionID);
-      res.redirect("https://petwellnesshub.vercel.app/profile");
+      
+      // Save session before redirect
+      req.session.save((err) => {
+        if (err) {
+          console.error('Error saving session:', err);
+          return res.redirect('/login');
+        }
+        
+        // Set cookie headers explicitly
+        res.setHeader('Set-Cookie', [
+          `connect.sid=${req.sessionID}; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=86400`
+        ]);
+        
+        res.redirect("https://petwellnesshub.vercel.app/profile");
+      });
     }
   );
 

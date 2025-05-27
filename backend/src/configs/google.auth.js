@@ -43,11 +43,11 @@ const googleAuth = (passport) => {
 
   passport.serializeUser((user, done) => {
     console.log('Serializing user:', {
-      id: user.id,
+      id: user._id,
       displayName: user.displayName,
       email: user.gmail
     });
-    done(null, user.id);
+    done(null, user._id);
   });
 
   passport.deserializeUser(async (id, done) => {
@@ -59,7 +59,7 @@ const googleAuth = (passport) => {
         return done(null, false);
       }
       console.log('Deserialized user:', {
-        id: user.id,
+        id: user._id,
         displayName: user.displayName,
         email: user.gmail
       });
