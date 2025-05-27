@@ -33,14 +33,15 @@ app.use(express.urlencoded({ extended: true }));
 // ✅ Set up session middleware
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
   store: MongoStore.create({ 
     mongoUrl: config.DB_CONNECTION_STRING,
     ttl: 24 * 60 * 60, // 1 day in seconds
     autoRemove: 'native',
     touchAfter: 24 * 3600, // time period in seconds
-    stringify: false // Don't stringify the session
+    stringify: false, // Don't stringify the session
+    collectionName: 'sessions'
   }),
   name: 'sessionId',
   cookie: {
@@ -49,7 +50,7 @@ app.use(session({
     sameSite: "none",
     maxAge: 24 * 60 * 60 * 1000, // 1 day
     path: '/',
-    domain: '.onrender.com' // Allow sharing between subdomains
+    domain: 'online-system-for-pet-care-and-treatment.onrender.com' // Use full domain
   }
 }));
 
@@ -159,7 +160,8 @@ app.use((req, res, next) => {
     sessionID: req.sessionID,
     cookie: req.session.cookie,
     user: req.user,
-    isAuthenticated: req.isAuthenticated()
+    isAuthenticated: req.isAuthenticated(),
+    headers: req.headers
   });
   next();
 });

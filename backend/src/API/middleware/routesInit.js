@@ -36,7 +36,7 @@ const routesInit = (app, passport) => {
         
         // Set cookie headers explicitly
         res.setHeader('Set-Cookie', [
-          `sessionId=${req.sessionID}; Path=/; HttpOnly; Secure; SameSite=None; Domain=.onrender.com; Max-Age=86400`
+          `sessionId=${req.sessionID}; Path=/; HttpOnly; Secure; SameSite=None; Domain=online-system-for-pet-care-and-treatment.onrender.com; Max-Age=86400`
         ]);
         
         // Ensure user is authenticated
