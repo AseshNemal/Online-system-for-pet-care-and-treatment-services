@@ -74,12 +74,12 @@ import { useNavigate } from "react-router-dom";
       <div className="profile-header">
         <div className="profile-image-container">
           <img
-            src={user.image ? user.image.replace('=s96-c', '=s200-c') : "https://dummyimage.com/200x200/cccccc/ffffff&text=No+Image"}
+            src={user.image || ""}
             alt="Profile"
             className="profile-image"
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = "https://dummyimage.com/200x200/cccccc/ffffff&text=No+Image";
+              // Do not fallback to dummy image, keep broken image if any
             }}
           />
         </div>
