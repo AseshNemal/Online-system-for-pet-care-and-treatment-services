@@ -45,7 +45,9 @@ function AddPet() {
     };
 
     axios
-      .post("https://online-system-for-pet-care-and-treatment.onrender.com/pet/add", newPet)
+      .post("https://online-system-for-pet-care-and-treatment.onrender.com/pet/add", newPet, {
+        withCredentials: true
+      })
       .then(() => {
         alert("Pet Added Successfully");
         // Redirect to user pets page after successful addition

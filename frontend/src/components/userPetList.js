@@ -22,7 +22,9 @@ function UserPets() {
         }
 
         setUser(sessionData.user);
-        const petsRes = await axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/pet/find/${sessionData.user._id}`);
+        const petsRes = await axios.get(`https://online-system-for-pet-care-and-treatment.onrender.com/pet/find/${sessionData.user._id}`, {
+          withCredentials: true
+        });
         setPets(petsRes.data.pets || []);
       } catch (err) {
         console.error("Error:", err);

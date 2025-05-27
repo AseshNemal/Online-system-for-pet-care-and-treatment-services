@@ -22,7 +22,9 @@ const MyOrdersPage = () => {
     if (!userId) return
 
     axios
-      .get(`https://online-system-for-pet-care-and-treatment.onrender.com/order/user/${userId}`)
+      .get(`https://online-system-for-pet-care-and-treatment.onrender.com/order/user/${userId}`, {
+        withCredentials: true
+      })
       .then((res) => setOrders(res.data))
       .catch((err) => console.error("Error fetching orders:", err))
   }, [userId])

@@ -217,7 +217,9 @@ const PetTrainingForm = () => {
     const dataToSend = activeTab === "behavioral" ? behavioralData : obedienceData
 
     try {
-      const response = await axios.post(url, dataToSend)
+      const response = await axios.post(url, dataToSend, {
+        withCredentials: true
+      })
       setResult(response.data)
     } catch (error) {
       console.error("Error:", error)

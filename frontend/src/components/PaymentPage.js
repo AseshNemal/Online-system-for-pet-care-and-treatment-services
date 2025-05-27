@@ -42,11 +42,15 @@ const PaymentPage = () => {
           quantity,
         })),
         totalAmount,
+      }, {
+        withCredentials: true
       })
 
       for (const item of cartItems) {
         await axios.put(`https://online-system-for-pet-care-and-treatment.onrender.com/product/reduce-stock/${item._id}`, {
           quantity: item.quantity,
+        }, {
+          withCredentials: true
         })
       }
 
