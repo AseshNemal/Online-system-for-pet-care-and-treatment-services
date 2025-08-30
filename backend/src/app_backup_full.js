@@ -13,6 +13,8 @@ import router from "./API/routes/pets.js";
 import Employee from "./API/model/Employee.js";
 import PetAd from "./API/model/PetAd.js";
 
+
+
 const app = express();
 const PORT = process.env.PORT || "8090";
 
@@ -46,6 +48,15 @@ app.use(session({
         sameSite: isProduction ? 'none' : 'lax' // Allow cross-site cookies in production
     }
 }));
+    resave: false,
+    saveUninitialized: false, // Prevent empty sessions
+    store: MongoStore.create({ mongoUrl: config.DB_CONNECTION_STRING}),
+    cookie: { 
+        secure: false,  // Change to `true` in production (HTTPS required)
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 1 day session expiration
+    }
+}));
 
 // ✅ Initialize Passport
 app.use(passport.initialize());
@@ -76,7 +87,7 @@ app.get("/logout", (req, res) => {
       }
       req.session.destroy(() => {
           res.clearCookie("connect.sid"); // ✅ Clear session cookie
-          res.redirect(frontendURL); // ✅ Redirect to React home page (production safe)
+          res.redirect("http://localhost:3000"); // ✅ Redirect to React home page
       });
   });
 });
@@ -114,11 +125,13 @@ app.use("/employee",employeeRoutes)
 const PetAdRoutes = require("./API/routes/PetAdRoutes.js")
 app.use("/pet-ad", PetAdRoutes);
 
+
 const expenseRoutes = require("./API/routes/expenseRoutes.js");
 app.use("/api/expenses", expenseRoutes);
 
 const geminiRoutes = require("./API/routes/gemini.js")
 app.use("/gemini", geminiRoutes);
+
 
 const feedbackRoutes = require("./API/routes/feedbackRoutes.js")
 app.use("/feedback", feedbackRoutes);
@@ -126,6 +139,8 @@ app.use("/feedback", feedbackRoutes);
 // Notification routes
 import notificationRoutes from "./API/routes/notificationRoutes.js";
 app.use("/api/notifications", notificationRoutes);
+
+
 
 app.listen(PORT, () => {
     logger.info(`Server is running on PORT ${PORT}`);
