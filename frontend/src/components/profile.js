@@ -1,17 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import "./profile.css";
 
-  const Profile = () => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
+function Profile() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
     useEffect(() => {
       const fetchUserData = async () => {
         try {
           const backendURL = process.env.REACT_APP_BACKEND_URL || "https://online-system-for-pet-care-and-treatment.onrender.com";
+          
+          // Check if there's a token in the URL (from OAuth callback)
+          const urlParams = new URLSearchParams(location.search);
+          const token = urlParams.get('token');
+          
+          if (token) {
+            // Validate token and establish session
+            const tokenResponse = await axios.post(`${backendURL}/auth/validate-token`, 
+              { token },
+              { withCredentials: true }
+            );
+            
+            if (tokenResponse.data.user) {
+              setUser(tokenResponse.data.user);
+              // Remove token from URL
+              window.history.replaceState({}, '', '/profile');
+              return;
+            }
+          }
+          
+          // Try to get existing session
           const response = await axios.get(`${backendURL}/get-session`, {
             withCredentials: true
           });
@@ -30,7 +53,7 @@ import { useNavigate } from "react-router-dom";
       };
 
       fetchUserData();
-    }, []);
+    }, [location.search]);
 
   const handleLogout = async () => {
     try {
