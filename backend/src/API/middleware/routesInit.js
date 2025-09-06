@@ -1,62 +1,57 @@
 import { authenticate } from "./auth.middlewere";
 
 const routesInit = (app, passport) => {
-  // Google Login Route
-  app.get("/auth/google", 
-    (req, res, next) => {
-      console.log('Starting Google OAuth flow');
-      next();
-    },
-    passport.authenticate("google", { 
-      scope: ["profile", "email"],
-      prompt: 'select_account'
-    })
-  );
+  // Use production frontend URL
+  const frontendURL = process.env.FRONTEND_URL || "https://your-frontend-domain.com";
 
-  // Google Callback Route
+  console.log('Environment:', { 
+    frontendURL, 
+    NODE_ENV: process.env.NODE_ENV,
+    GOOGLE_REDIRECT_URL: process.env.GOOGLE_REDIRECT_URL 
+  });
+
+  // Google Login Route
+  app.get("/auth/google", (req, res, next) => {
+    console.log('Initiating Google OAuth');
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+  });
+
+  // Google Callback Route with enhanced error handling
   app.get("/auth/google/callback", 
     (req, res, next) => {
-      console.log('Received Google OAuth callback');
-      next();
-    },
-    passport.authenticate("google", {
-      failureRedirect: "/login",
-      failureMessage: true
-    }),
-    (req, res) => {
-      console.log('Google OAuth successful, user:', req.user);
-      console.log('Session ID:', req.sessionID);
+      console.log('Google callback hit:', {
+        query: req.query,
+        session: req.sessionID
+      });
       
-      // Save session before redirect
-      req.session.save((err) => {
-        if (err) {
-          console.error('Error saving session:', err);
-          return res.redirect('/login');
+      passport.authenticate("google", {
+        failureRedirect: `${frontendURL}/login?error=auth_failed`,
+      })(req, res, next);
+    },
+    (req, res) => {
+      try {
+        console.log("User authenticated successfully:", {
+          user: req.user,
+          sessionID: req.sessionID,
+          isAuthenticated: req.isAuthenticated()
+        });
+        
+        if (!req.user) {
+          console.error('No user found after authentication');
+          return res.redirect(`${frontendURL}/login?error=no_user`);
         }
         
-        // Set cookie headers explicitly
-        res.setHeader('Set-Cookie', [
-          `sessionId=${req.sessionID}; Path=/; HttpOnly; Secure; SameSite=None; Domain=online-system-for-pet-care-and-treatment.onrender.com; Max-Age=86400`
-        ]);
-        
-        // Ensure user is authenticated
-        req.login(req.user, (err) => {
-          if (err) {
-            console.error('Error in req.login:', err);
-            return res.redirect('/login');
-          }
-          
-          console.log('User authenticated in session:', req.isAuthenticated());
-          res.redirect("https://petwellnesshub.vercel.app/profile");
-        });
-      });
+        res.redirect(`${frontendURL}/profile`);
+      } catch (error) {
+        console.error('Error in callback route:', error);
+        res.redirect(`${frontendURL}/login?error=callback_error`);
+      }
     }
   );
 
   // Protected User Route
   app.get("/user", authenticate, (req, res) => {
-    console.log('Protected route accessed by user:', req.user);
-    res.send("<h3>User is authenticated</h3><a href='https://petwellnesshub.vercel.app/profile'>Profile</a>");
+    res.send("<h3>User is authenticated</h3><a href='" + frontendURL + "/profile'>Profile</a>");
   });
 };
 

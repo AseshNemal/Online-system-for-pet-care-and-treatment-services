@@ -11,7 +11,8 @@ import { useNavigate } from "react-router-dom";
     useEffect(() => {
       const fetchUserData = async () => {
         try {
-          const response = await axios.get("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", {
+          const backendURL = process.env.REACT_APP_BACKEND_URL || "https://online-system-for-pet-care-and-treatment.onrender.com";
+          const response = await axios.get(`${backendURL}/get-session`, {
             withCredentials: true
           });
           if (response.data.user) {
@@ -33,7 +34,8 @@ import { useNavigate } from "react-router-dom";
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:8090/logout", {
+      const backendURL = process.env.REACT_APP_BACKEND_URL || "https://online-system-for-pet-care-and-treatment.onrender.com";
+      await axios.get(`${backendURL}/logout`, {
         withCredentials: true
       });
       navigate("/login");
@@ -54,7 +56,10 @@ import { useNavigate } from "react-router-dom";
   if (error) {
     return (
       <div className="profile-error">
+        <h2>Authentication Required</h2>
         <p>{error}</p>
+        <p>Please log in to view your profile.</p>
+        <button onClick={() => navigate("/login")}>Go to Login</button>
         <button onClick={() => window.location.reload()}>Try Again</button>
       </div>
     );

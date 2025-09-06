@@ -63,7 +63,8 @@ const Notifications = () => {
 
   const markAsRead = async (notificationId) => {
     try {
-      await axios.put(`http://localhost:8090/api/notifications/${notificationId}/mark-read`, {}, {
+      const backendURL = process.env.REACT_APP_BACKEND_URL || "https://online-system-for-pet-care-and-treatment.onrender.com";
+      await axios.put(`${backendURL}/api/notifications/${notificationId}/mark-read`, {}, {
         withCredentials: true
       });
       

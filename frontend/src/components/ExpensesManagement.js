@@ -66,7 +66,8 @@ const ExpensesManagement = () => {
       costPerItem: expenseToUpdate.costPerItem
     });
     try {
-      await axios.delete(`http://localhost:8090/api/expenses/${id}`);
+      const backendURL = process.env.REACT_APP_BACKEND_URL || "https://online-system-for-pet-care-and-treatment.onrender.com";
+      await axios.delete(`${backendURL}/api/expenses/${id}`);
       setExpenses(prev => prev.filter(expense => expense._id !== id));
     } catch (error) {
       console.error('Error deleting expense:', error);

@@ -7,7 +7,9 @@ function AddPet() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://online-system-for-pet-care-and-treatment.onrender.com/get-session", { credentials: "include" })
+    const backendURL = process.env.REACT_APP_BACKEND_URL || "https://online-system-for-pet-care-and-treatment.onrender.com";
+    
+    fetch(`${backendURL}/get-session`, { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         if (data.user) {
@@ -33,6 +35,8 @@ function AddPet() {
   function sendData(e) {
     e.preventDefault();
 
+    const backendURL = process.env.REACT_APP_BACKEND_URL || "https://online-system-for-pet-care-and-treatment.onrender.com";
+
     const newPet = {
       petName,
       userId: UID, 
@@ -45,7 +49,7 @@ function AddPet() {
     };
 
     axios
-      .post("https://online-system-for-pet-care-and-treatment.onrender.com/pet/add", newPet, {
+      .post(`${backendURL}/pet/add`, newPet, {
         withCredentials: true
       })
       .then(() => {

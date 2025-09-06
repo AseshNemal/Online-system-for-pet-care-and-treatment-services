@@ -7,7 +7,7 @@ import MongoStore from "connect-mongo";
 import logger from "./utils/logger.js";
 import { connect } from "./utils/database.connection.js";
 import { googleAuth } from "../src/configs/google.auth.js";
-import routesInit from "./API/middleware/routesInit.js";
+import { routesInit } from "./API/middleware/routesInit.js";
 import config from "./configs/index.js";
 import router from "./API/routes/pets.js";
 import Employee from "./API/model/Employee.js";
@@ -18,12 +18,13 @@ const PORT = process.env.PORT || "8090";
 
 // Environment check
 const isProduction = process.env.NODE_ENV === 'production';
-const frontendURL = process.env.FRONTEND_URL || "https://your-frontend-domain.com";
+const frontendURL = isProduction ? process.env.FRONTEND_URL : "http://localhost:3000";
 
 app.use(cors({
     origin: [
-        frontendURL, // Production frontend URL
-        process.env.FRONTEND_URL // Additional production URL from env
+        "http://localhost:3000", // Development
+        frontendURL, // Production
+        process.env.FRONTEND_URL // Additional production URL
     ].filter(Boolean), // Remove undefined values
     credentials: true 
 }));
@@ -39,10 +40,10 @@ app.use(session({
     saveUninitialized: false, // Prevent empty sessions
     store: MongoStore.create({ mongoUrl: config.DB_CONNECTION_STRING}),
     cookie: { 
-        secure: true,  // Always use secure cookies for production
+        secure: isProduction,  // Use secure cookies in production (HTTPS required)
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000, // 1 day session expiration
-        sameSite: 'none' // Allow cross-site cookies for production
+        sameSite: isProduction ? 'none' : 'lax' // Allow cross-site cookies in production
     }
 }));
 
