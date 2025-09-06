@@ -2,7 +2,7 @@ import { authenticate } from "./auth.middlewere";
 
 const routesInit = (app, passport) => {
   // Use production frontend URL
-  const frontendURL = process.env.FRONTEND_URL || "https://your-frontend-domain.com";
+  const frontendURL = process.env.FRONTEND_URL || "https://petwellnesshub.vercel.app";
 
   console.log('Environment:', { 
     frontendURL, 

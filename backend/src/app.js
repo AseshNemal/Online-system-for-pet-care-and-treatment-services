@@ -18,7 +18,7 @@ const PORT = process.env.PORT || "8090";
 
 // Environment check
 const isProduction = process.env.NODE_ENV === 'production';
-const frontendURL = process.env.FRONTEND_URL || "https://your-frontend-domain.com";
+const frontendURL = process.env.FRONTEND_URL || "https://petwellnesshub.vercel.app";
 
 app.use(cors({
     origin: [
