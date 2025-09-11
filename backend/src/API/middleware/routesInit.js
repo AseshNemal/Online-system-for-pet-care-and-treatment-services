@@ -87,20 +87,8 @@ const routesInit = (app, passport) => {
       try {
         User = require("../../model/user.model.js");
       } catch (err) {
-        try {
-          User = require("../../model/user.model");
-        } catch (err2) {
-          try {
-            User = require("../../../model/user.model.js");
-          } catch (err3) {
-            try {
-              User = require("../../../model/user.model");
-            } catch (err4) {
-              console.error('User model import error:', err, err2, err3, err4);
-              return res.status(500).json({ error: "User model import error" });
-            }
-          }
-        }
+        console.error('User model import error:', err);
+        return res.status(500).json({ error: "User model import error" });
       }
       const user = await User.findById(decoded.userId);
       console.log('User found:', user);
