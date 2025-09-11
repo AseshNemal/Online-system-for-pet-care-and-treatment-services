@@ -63,22 +63,39 @@ const routesInit = (app, passport) => {
   app.post("/auth/validate-token", async (req, res) => {
     try {
       const { token } = req.body;
+      console.log('Received token:', token);
       if (!token) {
         return res.status(400).json({ error: "Token required" });
       }
 
-      // Decode the token
-      const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
-      
+      let decoded;
+      try {
+        decoded = JSON.parse(Buffer.from(token, 'base64').toString());
+        console.log('Decoded token:', decoded);
+      } catch (err) {
+        console.error('Token decode error:', err);
+        return res.status(400).json({ error: "Invalid token format" });
+      }
+
       // Check if token is not too old (5 minutes max)
       if (Date.now() - decoded.timestamp > 5 * 60 * 1000) {
         return res.status(401).json({ error: "Token expired" });
       }
 
       // Find user in database
-      const User = require("../../model/user.model.js").default;
+      let User;
+      try {
+        User = require("../../model/user.model.js");
+      } catch (err) {
+        try {
+          User = require("../../model/user.model.js").default;
+        } catch (err2) {
+          console.error('User model import error:', err, err2);
+          return res.status(500).json({ error: "User model import error" });
+        }
+      }
       const user = await User.findById(decoded.userId);
-      
+      console.log('User found:', user);
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
@@ -89,7 +106,6 @@ const routesInit = (app, passport) => {
           console.error('Session establishment error:', err);
           return res.status(500).json({ error: "Session error" });
         }
-        
         res.json({ 
           user: {
             _id: user._id,
